@@ -11,8 +11,18 @@ const urlsToCache = [
   '/scripts/levels/intermediate.js',
   '/scripts/levels/advanced.js',
   '/scripts/levels/complex.js',
+  '/data/beginner.json',
+  '/data/intermediate.json',
+  '/data/advanced.json',
+  '/data/complex.json',
+  '/icons/icon-48.png',
+  '/icons/icon-72.png',
+  '/icons/icon-96.png',
+  '/icons/icon-144.png',
   '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  '/icons/icon-512.png',
+  '/screenshots/home.png',
+  '/screenshots/level.png'
 ];
 
 self.addEventListener('install', event => {

@@ -4,8 +4,15 @@ const urlsToCache = [
   '/',
   '/index.html',
   '/styles/main.css',
+  '/styles/levels.css',
   '/scripts/main.js',
-  // أضف جميع الملفات الأساسية هنا
+  '/scripts/navigation.js',
+  '/scripts/levels/beginner.js',
+  '/scripts/levels/intermediate.js',
+  '/scripts/levels/advanced.js',
+  '/scripts/levels/complex.js',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png'
 ];
 
 self.addEventListener('install', event => {

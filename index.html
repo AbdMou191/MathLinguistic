@@ -16,7 +16,7 @@
     <meta property="og:title" content="MathLinguistic - منصة تعليم الرياضيات باللغة العربية">
     <meta property="og:description" content="تعلم الرياضيات باللغة العربية بطريقة تفاعلية وجذابة للأطفال من عمر 5 إلى 11 سنة. تمارين متنوعة، اختبارات ذكية، وتقدم فوري — بدون اتصال بالإنترنت!">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.example.com">
+    <meta property="og:url" content="https://abdmou191.github.io/MathLinguistic/">
     <meta property="og:image" content="https://www.example.com/images/og-image.jpg">
     <meta property="og:locale" content="ar_SA">
     
@@ -112,8 +112,10 @@
                         <p>مسائل معقدة وتفكير نقدي</p>
                         <button class="btn-primary" data-page="complex">ابدأ التحدي</button>
                     </div>
+                    
                 </div>
             </div>
+           
         </section>
     </main>
 
@@ -161,13 +163,13 @@
         </div>
     </footer>
     
-    <script>
+ <script>
 // تسجيل Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('تم تسجيل Service Worker:', reg))
-      .catch(err => console.log('فشل تسجيل Service Worker:', err));
+    navigator.serviceWorker.register('/MathLinguistic/sw.js')
+      .then(reg => console.log('تم تفعيل PWA:', reg))
+      .catch(err => console.log('فشل تفعيل PWA:', err));
   });
 }
 </script>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- Theme Color for Android -->
+<meta name="theme-color" content="#2ecc71">
+
+<!-- Icons for iOS/Safari -->
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>MathLinguistic - تعلم الرياضيات باللغة العربية</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/levels.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- الهيدر غير ثابت -->
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <h1><i class="fas fa-calculator"></i> MathLinguistic</h1>
+                <p>تعلم الرياضيات باللغة العربية</p>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#" class="active" data-page="home"><i class="fas fa-home"></i> الرئيسية</a></li>
+                    <li><a href="#" data-page="beginner"><i class="fas fa-user-graduate"></i>  الابتدائية</a></li>
+                    <li><a href="#" data-page="intermediate"><i class="fas fa-chalkboard-teacher"></i>  المتوسطة</a></li>
+                    <li><a href="#" data-page="advanced"><i class="fas fa-user-tie"></i>  المتقدمة</a></li>
+                    <li><a href="#" data-page="complex"><i class="fas fa-brain"></i>  المعقدة</a></li>
+                    <li><a href="#" data-page="achievements"><i class="fas fa-trophy"></i> الإنجازات</a></li>
+                </ul>
+            </nav>
+            <button class="menu-toggle" aria-label="قائمة التنقل">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="main-content" id="main-content">
+        <!-- المحتوى سيعرض هنا ديناميكيًا -->
+        <section class="welcome-section">
+            <div class="container">
+                <h2><i class="fas fa-star"></i> مرحباً بكم في MathLinguistic</h2>
+                <p>منصة تعليمية تفاعلية لتعلم الرياضيات باللغة العربية</p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h3>المرحلة الابتدائية</h3>
+                        <p>جمع، طرح، تفكيك، النصف والضعف</p>
+                        <button class="btn-primary" data-page="beginner">ابدأ التعلم</button>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <h3>المرحلة المتوسطة</h3>
+                        <p>ضرب، قسمة، كسور ونسب مئوية</p>
+                        <button class="btn-primary" data-page="intermediate">ابدأ التعلم</button>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h3>المرحلة المتقدمة</h3>
+                        <p>معادلات، هندسة، إحصاء واحتمالات</p>
+                        <button class="btn-primary" data-page="advanced">ابدأ التعلم</button>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>مرحلة التحدي</h3>
+                        <p>مسائل معقدة وتفكير نقدي</p>
+                        <button class="btn-primary" data-page="complex">ابدأ التحدي</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- الفوتر -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <!-- الصفحات الثابتة -->
+                <div class="footer-section">
+                    <h3><i class="fas fa-link"></i> روابط سريعة</h3>
+                    <ul>
+                        <li><a href="#" data-page="home"><i class="fas fa-home"></i> الرئيسية</a></li>
+                        <li><a href="#" data-page="about"><i class="fas fa-info-circle"></i> من نحن</a></li>
+                        <li><a href="#" data-page="privacy"><i class="fas fa-shield-alt"></i> سياسة الخصوصية</a></li>
+                        <li><a href="#" data-page="terms"><i class="fas fa-file-contract"></i> شروط الاستخدام</a></li>
+                        <li><a href="#" data-page="contact"><i class="fas fa-envelope"></i> اتصل بنا</a></li>
+                    </ul>
+                </div>
+                
+                <!-- إيقونات التواصل الاجتماعي -->
+                <!--
+                <div class="footer-section">
+                    <h3><i class="fas fa-share-alt"></i> تواصل معنا</h3>
+                    <div class="social-icons">
+                        <a href="#" aria-label="فيسبوك"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="تويتر"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="إنستغرام"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="يوتيوب"><i class="fab fa-youtube"></i></a>
+                        <a href="#" aria-label="تليجرام"><i class="fab fa-telegram"></i></a>
+                    </div>
+                    -->
+                    
+                    <div class="contact-info">
+                        <p><i class="fas fa-envelope"></i> moussa.abderrezagui191@gmail.com</p>
+                        
+                    </div>
+                </div>
+                
+                <!-- معلومات إضافية -->
+                <div class="footer-section">
+                    <h3><i class="fas fa-book"></i> MathLinguistic</h3>
+                    <p>منصة تعليمية متخصصة في تعليم الرياضيات باللغة العربية لجميع المراحل التعليمية.</p>
+                    <p>جميع الحقوق محفوظة &copy; <span id="current-year">2024</span></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- أكواد JavaScript -->
+    <script src="scripts/main.js"></script>
+    <script src="scripts/navigation.js"></script>
+    <script src="scripts/print.js"></script>
+    <script src="scripts/levels/beginner.js"></script>
+    <script src="scripts/levels/intermediate.js"></script>
+    <script src="scripts/levels/advanced.js"></script>
+    <script src="scripts/levels/complex.js"></script>
+    
+
+     
+     
+</body>
+</html>

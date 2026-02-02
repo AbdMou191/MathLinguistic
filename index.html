@@ -3,17 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- === وسوم SEO الأساسية === -->
+    <title>MathLinguistic - منصة تعليم الرياضيات باللغة العربية للأطفال</title>
+    <meta name="description" content="تعلم الرياضيات باللغة العربية بطريقة تفاعلية وجذابة للأطفال من عمر 5 إلى 11 سنة. تمارين متنوعة، اختبارات ذكية، وتقدم فوري — بدون اتصال بالإنترنت!">
+    <meta name="keywords" content="رياضيات, تعليم رياضيات, رياضيات أطفال, تعلم الحساب, جمع وطرح, ضرب وقسمة, كسور, نسب مئوية, معادلات, تمارين رياضيات, اختبارات رياضيات, منصة تعليمية, رياضيات بالعربي, MathLinguistic, تعليم بدون نت">
+    <meta name="author" content="MathLinguistic">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://abdmou191.github.io/MathLinguistic/">
+    
+    <!-- Open Graph (للمشاركة على السوشيال ميديا) -->
+    <meta property="og:title" content="MathLinguistic - منصة تعليم الرياضيات باللغة العربية">
+    <meta property="og:description" content="تعلم الرياضيات باللغة العربية بطريقة تفاعلية وجذابة للأطفال من عمر 5 إلى 11 سنة. تمارين متنوعة، اختبارات ذكية، وتقدم فوري — بدون اتصال بالإنترنت!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.example.com">
+    <meta property="og:image" content="https://www.example.com/images/og-image.jpg">
+    <meta property="og:locale" content="ar_SA">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MathLinguistic - منصة تعليم الرياضيات باللغة العربية">
+    <meta name="twitter:description" content="تعلم الرياضيات باللغة العربية بطريقة تفاعلية وجذابة للأطفال من عمر 5 إلى 11 سنة.">
+    <meta name="twitter:image" content="https://www.example.com/images/twitter-image.jpg">
+    
+    <!-- === نهاية وسوم SEO === -->
+    
     <!-- PWA Manifest -->
-<link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.json">
 
-<!-- Theme Color for Android -->
-<meta name="theme-color" content="#2ecc71">
+    <!-- Theme Color for Android -->
+    <meta name="theme-color" content="#2ecc71">
 
-<!-- Icons for iOS/Safari -->
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <title>MathLinguistic - تعلم الرياضيات باللغة العربية</title>
+    <!-- Icons for iOS/Safari -->
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/levels.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -22,8 +47,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- الهيدر غير ثابت -->
-    <header class="main-header">
+    <!-- الهيدر غير ثابت -->    <header class="main-header">
         <div class="container">
             <div class="logo">
                 <h1><i class="fas fa-calculator"></i> MathLinguistic</h1>
@@ -72,8 +96,7 @@
                         <button class="btn-primary" data-page="intermediate">ابدأ التعلم</button>
                     </div>
                     
-                    <div class="feature-card">
-                        <div class="feature-icon">
+                    <div class="feature-card">                        <div class="feature-icon">
                             <i class="fas fa-user-tie"></i>
                         </div>
                         <h3>المرحلة المتقدمة</h3>
@@ -122,8 +145,7 @@
                         <a href="#" aria-label="تليجرام"><i class="fab fa-telegram"></i></a>
                     </div>
                     -->
-                    
-                    <div class="contact-info">
+                                        <div class="contact-info">
                         <p><i class="fas fa-envelope"></i> moussa.abderrezagui191@gmail.com</p>
                         
                     </div>
@@ -138,6 +160,17 @@
             </div>
         </div>
     </footer>
+    
+    <script>
+// تسجيل Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('تم تسجيل Service Worker:', reg))
+      .catch(err => console.log('فشل تسجيل Service Worker:', err));
+  });
+}
+</script>
 
     <!-- أكواد JavaScript -->
     <script src="scripts/main.js"></script>

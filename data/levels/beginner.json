@@ -1,0 +1,3437 @@
+{
+  "level": "beginner",
+  "title": "المرحلة الابتدائية",
+  "description": "تمارين في الجمع والطرح والتفكيك والنصف والضعف للمبتدئين",
+  "problems": [
+    {
+      "id": 1,
+      "type": "addition",
+      "question": "ما ناتج 1 + 1؟",
+      "answer": 2,
+      "hint": "اجمع 1 و 1 معاً"
+    },
+    {
+      "id": 2,
+      "type": "addition",
+      "question": "ما ناتج 1 + 2؟",
+      "answer": 3,
+      "hint": "اجمع 1 و 2 معاً"
+    },
+    {
+      "id": 3,
+      "type": "addition",
+      "question": "ما ناتج 2 + 1؟",
+      "answer": 3,
+      "hint": "اجمع 2 و 1 معاً"
+    },
+    {
+      "id": 4,
+      "type": "addition",
+      "question": "ما ناتج 2 + 2؟",
+      "answer": 4,
+      "hint": "اجمع 2 و 2 معاً"
+    },
+    {
+      "id": 5,
+      "type": "addition",
+      "question": "ما ناتج 1 + 3؟",
+      "answer": 4,
+      "hint": "اجمع 1 و 3 معاً"
+    },
+    {
+      "id": 6,
+      "type": "subtraction",
+      "question": "ما ناتج 2 - 1؟",
+      "answer": 1,
+      "hint": "اطرح 1 من 2"
+    },
+    {
+      "id": 7,
+      "type": "subtraction",      "question": "ما ناتج 3 - 1؟",
+      "answer": 2,
+      "hint": "اطرح 1 من 3"
+    },
+    {
+      "id": 8,
+      "type": "subtraction",
+      "question": "ما ناتج 3 - 2؟",
+      "answer": 1,
+      "hint": "اطرح 2 من 3"
+    },
+    {
+      "id": 9,
+      "type": "subtraction",
+      "question": "ما ناتج 4 - 1؟",
+      "answer": 3,
+      "hint": "اطرح 1 من 4"
+    },
+    {
+      "id": 10,
+      "type": "subtraction",
+      "question": "ما ناتج 4 - 2؟",
+      "answer": 2,
+      "hint": "اطرح 2 من 4"
+    },
+    {
+      "id": 11,
+      "type": "addition",
+      "question": "ما ناتج 3 + 2؟",
+      "answer": 5,
+      "hint": "اجمع 3 و 2 معاً"
+    },
+    {
+      "id": 12,
+      "type": "addition",
+      "question": "ما ناتج 4 + 1؟",
+      "answer": 5,
+      "hint": "اجمع 4 و 1 معاً"
+    },
+    {
+      "id": 13,
+      "type": "subtraction",
+      "question": "ما ناتج 5 - 1؟",
+      "answer": 4,
+      "hint": "اطرح 1 من 5"
+    },
+    {
+      "id": 14,
+      "type": "subtraction",
+      "question": "ما ناتج 5 - 2؟",      "answer": 3,
+      "hint": "اطرح 2 من 5"
+    },
+    {
+      "id": 15,
+      "type": "subtraction",
+      "question": "ما ناتج 5 - 3؟",
+      "answer": 2,
+      "hint": "اطرح 3 من 5"
+    },
+    {
+      "id": 16,
+      "type": "subtraction",
+      "question": "ما ناتج 5 - 4؟",
+      "answer": 1,
+      "hint": "اطرح 4 من 5"
+    },
+    {
+      "id": 17,
+      "type": "addition",
+      "question": "ما ناتج 1 + 4؟",
+      "answer": 5,
+      "hint": "اجمع 1 و 4 معاً"
+    },
+    {
+      "id": 18,
+      "type": "addition",
+      "question": "ما ناتج 2 + 3؟",
+      "answer": 5,
+      "hint": "اجمع 2 و 3 معاً"
+    },
+    {
+      "id": 19,
+      "type": "addition",
+      "question": "ما ناتج 3 + 3؟",
+      "answer": 6,
+      "hint": "اجمع 3 و 3 معاً"
+    },
+    {
+      "id": 20,
+      "type": "addition",
+      "question": "ما ناتج 4 + 2؟",
+      "answer": 6,
+      "hint": "اجمع 4 و 2 معاً"
+    },
+    {
+      "id": 21,
+      "type": "half",
+      "question": "ما نصف العدد 2؟",
+      "answer": 1,      "hint": "اقسم 2 على 2"
+    },
+    {
+      "id": 22,
+      "type": "half",
+      "question": "ما نصف العدد 4؟",
+      "answer": 2,
+      "hint": "اقسم 4 على 2"
+    },
+    {
+      "id": 23,
+      "type": "double",
+      "question": "ما ضعف العدد 1؟",
+      "answer": 2,
+      "hint": "اضرب 1 في 2"
+    },
+    {
+      "id": 24,
+      "type": "double",
+      "question": "ما ضعف العدد 2؟",
+      "answer": 4,
+      "hint": "اضرب 2 في 2"
+    },
+    {
+      "id": 25,
+      "type": "decomposition",
+      "question": "فكك العدد 4 إلى عددين",
+      "answer": "3 + 1",
+      "hint": "4 = 3 + 1"
+    },
+    {
+      "id": 26,
+      "type": "decomposition",
+      "question": "فكك العدد 5 إلى عددين",
+      "answer": "4 + 1",
+      "hint": "5 = 4 + 1"
+    },
+    {
+      "id": 27,
+      "type": "decomposition",
+      "question": "فكك العدد 6 إلى عددين",
+      "answer": "5 + 1",
+      "hint": "6 = 5 + 1"
+    },
+    {
+      "id": 28,
+      "type": "addition",
+      "question": "ما ناتج 5 + 2؟",
+      "answer": 7,
+      "hint": "اجمع 5 و 2 معاً"    },
+    {
+      "id": 29,
+      "type": "addition",
+      "question": "ما ناتج 6 + 1؟",
+      "answer": 7,
+      "hint": "اجمع 6 و 1 معاً"
+    },
+    {
+      "id": 30,
+      "type": "subtraction",
+      "question": "ما ناتج 6 - 1؟",
+      "answer": 5,
+      "hint": "اطرح 1 من 6"
+    },
+    {
+      "id": 31,
+      "type": "subtraction",
+      "question": "ما ناتج 6 - 2؟",
+      "answer": 4,
+      "hint": "اطرح 2 من 6"
+    },
+    {
+      "id": 32,
+      "type": "subtraction",
+      "question": "ما ناتج 6 - 3؟",
+      "answer": 3,
+      "hint": "اطرح 3 من 6"
+    },
+    {
+      "id": 33,
+      "type": "subtraction",
+      "question": "ما ناتج 6 - 4؟",
+      "answer": 2,
+      "hint": "اطرح 4 من 6"
+    },
+    {
+      "id": 34,
+      "type": "subtraction",
+      "question": "ما ناتج 6 - 5؟",
+      "answer": 1,
+      "hint": "اطرح 5 من 6"
+    },
+    {
+      "id": 35,
+      "type": "half",
+      "question": "ما نصف العدد 6؟",
+      "answer": 3,
+      "hint": "اقسم 6 على 2"
+    },    {
+      "id": 36,
+      "type": "double",
+      "question": "ما ضعف العدد 3؟",
+      "answer": 6,
+      "hint": "اضرب 3 في 2"
+    },
+    {
+      "id": 37,
+      "type": "decomposition",
+      "question": "فكك العدد 7 إلى عددين",
+      "answer": "6 + 1",
+      "hint": "7 = 6 + 1"
+    },
+    {
+      "id": 38,
+      "type": "addition",
+      "question": "ما ناتج 4 + 3؟",
+      "answer": 7,
+      "hint": "اجمع 4 و 3 معاً"
+    },
+    {
+      "id": 39,
+      "type": "addition",
+      "question": "ما ناتج 5 + 3؟",
+      "answer": 8,
+      "hint": "اجمع 5 و 3 معاً"
+    },
+    {
+      "id": 40,
+      "type": "addition",
+      "question": "ما ناتج 6 + 2؟",
+      "answer": 8,
+      "hint": "اجمع 6 و 2 معاً"
+    },
+    {
+      "id": 41,
+      "type": "addition",
+      "question": "ما ناتج 7 + 1؟",
+      "answer": 8,
+      "hint": "اجمع 7 و 1 معاً"
+    },
+    {
+      "id": 42,
+      "type": "subtraction",
+      "question": "ما ناتج 7 - 1؟",
+      "answer": 6,
+      "hint": "اطرح 1 من 7"
+    },
+    {      "id": 43,
+      "type": "subtraction",
+      "question": "ما ناتج 7 - 2؟",
+      "answer": 5,
+      "hint": "اطرح 2 من 7"
+    },
+    {
+      "id": 44,
+      "type": "subtraction",
+      "question": "ما ناتج 7 - 3؟",
+      "answer": 4,
+      "hint": "اطرح 3 من 7"
+    },
+    {
+      "id": 45,
+      "type": "subtraction",
+      "question": "ما ناتج 7 - 4؟",
+      "answer": 3,
+      "hint": "اطرح 4 من 7"
+    },
+    {
+      "id": 46,
+      "type": "subtraction",
+      "question": "ما ناتج 7 - 5؟",
+      "answer": 2,
+      "hint": "اطرح 5 من 7"
+    },
+    {
+      "id": 47,
+      "type": "subtraction",
+      "question": "ما ناتج 7 - 6؟",
+      "answer": 1,
+      "hint": "اطرح 6 من 7"
+    },
+    {
+      "id": 48,
+      "type": "half",
+      "question": "ما نصف العدد 8؟",
+      "answer": 4,
+      "hint": "اقسم 8 على 2"
+    },
+    {
+      "id": 49,
+      "type": "double",
+      "question": "ما ضعف العدد 4؟",
+      "answer": 8,
+      "hint": "اضرب 4 في 2"
+    },
+    {
+      "id": 50,      "type": "decomposition",
+      "question": "فكك العدد 8 إلى عددين",
+      "answer": "7 + 1",
+      "hint": "8 = 7 + 1"
+    },
+    {
+      "id": 51,
+      "type": "addition",
+      "question": "ما ناتج 5 + 4؟",
+      "answer": 9,
+      "hint": "اجمع 5 و 4 معاً"
+    },
+    {
+      "id": 52,
+      "type": "addition",
+      "question": "ما ناتج 6 + 3؟",
+      "answer": 9,
+      "hint": "اجمع 6 و 3 معاً"
+    },
+    {
+      "id": 53,
+      "type": "addition",
+      "question": "ما ناتج 7 + 2؟",
+      "answer": 9,
+      "hint": "اجمع 7 و 2 معاً"
+    },
+    {
+      "id": 54,
+      "type": "addition",
+      "question": "ما ناتج 8 + 1؟",
+      "answer": 9,
+      "hint": "اجمع 8 و 1 معاً"
+    },
+    {
+      "id": 55,
+      "type": "subtraction",
+      "question": "ما ناتج 8 - 1؟",
+      "answer": 7,
+      "hint": "اطرح 1 من 8"
+    },
+    {
+      "id": 56,
+      "type": "subtraction",
+      "question": "ما ناتج 8 - 2؟",
+      "answer": 6,
+      "hint": "اطرح 2 من 8"
+    },
+    {
+      "id": 57,
+      "type": "subtraction",      "question": "ما ناتج 8 - 3؟",
+      "answer": 5,
+      "hint": "اطرح 3 من 8"
+    },
+    {
+      "id": 58,
+      "type": "subtraction",
+      "question": "ما ناتج 8 - 4؟",
+      "answer": 4,
+      "hint": "اطرح 4 من 8"
+    },
+    {
+      "id": 59,
+      "type": "subtraction",
+      "question": "ما ناتج 8 - 5؟",
+      "answer": 3,
+      "hint": "اطرح 5 من 8"
+    },
+    {
+      "id": 60,
+      "type": "subtraction",
+      "question": "ما ناتج 8 - 6؟",
+      "answer": 2,
+      "hint": "اطرح 6 من 8"
+    },
+    {
+      "id": 61,
+      "type": "subtraction",
+      "question": "ما ناتج 8 - 7؟",
+      "answer": 1,
+      "hint": "اطرح 7 من 8"
+    },
+    {
+      "id": 62,
+      "type": "half",
+      "question": "ما نصف العدد 10؟",
+      "answer": 5,
+      "hint": "اقسم 10 على 2"
+    },
+    {
+      "id": 63,
+      "type": "double",
+      "question": "ما ضعف العدد 5؟",
+      "answer": 10,
+      "hint": "اضرب 5 في 2"
+    },
+    {
+      "id": 64,
+      "type": "decomposition",
+      "question": "فكك العدد 9 إلى عددين",      "answer": "8 + 1",
+      "hint": "9 = 8 + 1"
+    },
+    {
+      "id": 65,
+      "type": "decomposition",
+      "question": "فكك العدد 10 إلى عددين",
+      "answer": "9 + 1",
+      "hint": "10 = 9 + 1"
+    },
+    {
+      "id": 66,
+      "type": "addition",
+      "question": "ما ناتج 6 + 4؟",
+      "answer": 10,
+      "hint": "اجمع 6 و 4 معاً"
+    },
+    {
+      "id": 67,
+      "type": "addition",
+      "question": "ما ناتج 7 + 3؟",
+      "answer": 10,
+      "hint": "اجمع 7 و 3 معاً"
+    },
+    {
+      "id": 68,
+      "type": "addition",
+      "question": "ما ناتج 8 + 2؟",
+      "answer": 10,
+      "hint": "اجمع 8 و 2 معاً"
+    },
+    {
+      "id": 69,
+      "type": "addition",
+      "question": "ما ناتج 9 + 1؟",
+      "answer": 10,
+      "hint": "اجمع 9 و 1 معاً"
+    },
+    {
+      "id": 70,
+      "type": "subtraction",
+      "question": "ما ناتج 9 - 1؟",
+      "answer": 8,
+      "hint": "اطرح 1 من 9"
+    },
+    {
+      "id": 71,
+      "type": "subtraction",
+      "question": "ما ناتج 9 - 2؟",
+      "answer": 7,      "hint": "اطرح 2 من 9"
+    },
+    {
+      "id": 72,
+      "type": "subtraction",
+      "question": "ما ناتج 9 - 3؟",
+      "answer": 6,
+      "hint": "اطرح 3 من 9"
+    },
+    {
+      "id": 73,
+      "type": "subtraction",
+      "question": "ما ناتج 9 - 4؟",
+      "answer": 5,
+      "hint": "اطرح 4 من 9"
+    },
+    {
+      "id": 74,
+      "type": "subtraction",
+      "question": "ما ناتج 9 - 5؟",
+      "answer": 4,
+      "hint": "اطرح 5 من 9"
+    },
+    {
+      "id": 75,
+      "type": "subtraction",
+      "question": "ما ناتج 9 - 6؟",
+      "answer": 3,
+      "hint": "اطرح 6 من 9"
+    },
+    {
+      "id": 76,
+      "type": "subtraction",
+      "question": "ما ناتج 9 - 7؟",
+      "answer": 2,
+      "hint": "اطرح 7 من 9"
+    },
+    {
+      "id": 77,
+      "type": "subtraction",
+      "question": "ما ناتج 9 - 8؟",
+      "answer": 1,
+      "hint": "اطرح 8 من 9"
+    },
+    {
+      "id": 78,
+      "type": "subtraction",
+      "question": "ما ناتج 10 - 1؟",
+      "answer": 9,
+      "hint": "اطرح 1 من 10"    },
+    {
+      "id": 79,
+      "type": "subtraction",
+      "question": "ما ناتج 10 - 2؟",
+      "answer": 8,
+      "hint": "اطرح 2 من 10"
+    },
+    {
+      "id": 80,
+      "type": "subtraction",
+      "question": "ما ناتج 10 - 3؟",
+      "answer": 7,
+      "hint": "اطرح 3 من 10"
+    },
+    {
+      "id": 81,
+      "type": "subtraction",
+      "question": "ما ناتج 10 - 4؟",
+      "answer": 6,
+      "hint": "اطرح 4 من 10"
+    },
+    {
+      "id": 82,
+      "type": "subtraction",
+      "question": "ما ناتج 10 - 5؟",
+      "answer": 5,
+      "hint": "اطرح 5 من 10"
+    },
+    {
+      "id": 83,
+      "type": "subtraction",
+      "question": "ما ناتج 10 - 6؟",
+      "answer": 4,
+      "hint": "اطرح 6 من 10"
+    },
+    {
+      "id": 84,
+      "type": "subtraction",
+      "question": "ما ناتج 10 - 7؟",
+      "answer": 3,
+      "hint": "اطرح 7 من 10"
+    },
+    {
+      "id": 85,
+      "type": "subtraction",
+      "question": "ما ناتج 10 - 8؟",
+      "answer": 2,
+      "hint": "اطرح 8 من 10"
+    },    {
+      "id": 86,
+      "type": "subtraction",
+      "question": "ما ناتج 10 - 9؟",
+      "answer": 1,
+      "hint": "اطرح 9 من 10"
+    },
+    {
+      "id": 87,
+      "type": "addition",
+      "question": "ما ناتج 5 + 5؟",
+      "answer": 10,
+      "hint": "اجمع 5 و 5 معاً"
+    },
+    {
+      "id": 88,
+      "type": "addition",
+      "question": "ما ناتج 7 + 4؟",
+      "answer": 11,
+      "hint": "اجمع 7 و 4 معاً"
+    },
+    {
+      "id": 89,
+      "type": "addition",
+      "question": "ما ناتج 8 + 3؟",
+      "answer": 11,
+      "hint": "اجمع 8 و 3 معاً"
+    },
+    {
+      "id": 90,
+      "type": "addition",
+      "question": "ما ناتج 9 + 2؟",
+      "answer": 11,
+      "hint": "اجمع 9 و 2 معاً"
+    },
+    {
+      "id": 91,
+      "type": "addition",
+      "question": "ما ناتج 10 + 1؟",
+      "answer": 11,
+      "hint": "اجمع 10 و 1 معاً"
+    },
+    {
+      "id": 92,
+      "type": "subtraction",
+      "question": "ما ناتج 11 - 1؟",
+      "answer": 10,
+      "hint": "اطرح 1 من 11"
+    },
+    {      "id": 93,
+      "type": "subtraction",
+      "question": "ما ناتج 11 - 2؟",
+      "answer": 9,
+      "hint": "اطرح 2 من 11"
+    },
+    {
+      "id": 94,
+      "type": "subtraction",
+      "question": "ما ناتج 11 - 3؟",
+      "answer": 8,
+      "hint": "اطرح 3 من 11"
+    },
+    {
+      "id": 95,
+      "type": "subtraction",
+      "question": "ما ناتج 11 - 4؟",
+      "answer": 7,
+      "hint": "اطرح 4 من 11"
+    },
+    {
+      "id": 96,
+      "type": "subtraction",
+      "question": "ما ناتج 11 - 5؟",
+      "answer": 6,
+      "hint": "اطرح 5 من 11"
+    },
+    {
+      "id": 97,
+      "type": "decomposition",
+      "question": "فكك العدد 11 إلى عشرات ووحدات",
+      "answer": "10 + 1",
+      "hint": "11 = 10 + 1"
+    },
+    {
+      "id": 98,
+      "type": "addition",
+      "question": "ما ناتج 6 + 5؟",
+      "answer": 11,
+      "hint": "اجمع 6 و 5 معاً"
+    },
+    {
+      "id": 99,
+      "type": "addition",
+      "question": "ما ناتج 8 + 4؟",
+      "answer": 12,
+      "hint": "اجمع 8 و 4 معاً"
+    },
+    {
+      "id": 100,      "type": "addition",
+      "question": "ما ناتج 9 + 3؟",
+      "answer": 12,
+      "hint": "اجمع 9 و 3 معاً"
+    },
+    {
+      "id": 101,
+      "type": "addition",
+      "question": "ما ناتج 10 + 2؟",
+      "answer": 12,
+      "hint": "اجمع 10 و 2 معاً"
+    },
+    {
+      "id": 102,
+      "type": "subtraction",
+      "question": "ما ناتج 12 - 2؟",
+      "answer": 10,
+      "hint": "اطرح 2 من 12"
+    },
+    {
+      "id": 103,
+      "type": "subtraction",
+      "question": "ما ناتج 12 - 3؟",
+      "answer": 9,
+      "hint": "اطرح 3 من 12"
+    },
+    {
+      "id": 104,
+      "type": "subtraction",
+      "question": "ما ناتج 12 - 4؟",
+      "answer": 8,
+      "hint": "اطرح 4 من 12"
+    },
+    {
+      "id": 105,
+      "type": "subtraction",
+      "question": "ما ناتج 12 - 5؟",
+      "answer": 7,
+      "hint": "اطرح 5 من 12"
+    },
+    {
+      "id": 106,
+      "type": "half",
+      "question": "ما نصف العدد 12؟",
+      "answer": 6,
+      "hint": "اقسم 12 على 2"
+    },
+    {
+      "id": 107,
+      "type": "double",      "question": "ما ضعف العدد 6؟",
+      "answer": 12,
+      "hint": "اضرب 6 في 2"
+    },
+    {
+      "id": 108,
+      "type": "decomposition",
+      "question": "فكك العدد 12 إلى عشرات ووحدات",
+      "answer": "10 + 2",
+      "hint": "12 = 10 + 2"
+    },
+    {
+      "id": 109,
+      "type": "addition",
+      "question": "ما ناتج 7 + 5؟",
+      "answer": 12,
+      "hint": "اجمع 7 و 5 معاً"
+    },
+    {
+      "id": 110,
+      "type": "addition",
+      "question": "ما ناتج 9 + 4؟",
+      "answer": 13,
+      "hint": "اجمع 9 و 4 معاً"
+    },
+    {
+      "id": 111,
+      "type": "addition",
+      "question": "ما ناتج 10 + 3؟",
+      "answer": 13,
+      "hint": "اجمع 10 و 3 معاً"
+    },
+    {
+      "id": 112,
+      "type": "subtraction",
+      "question": "ما ناتج 13 - 3؟",
+      "answer": 10,
+      "hint": "اطرح 3 من 13"
+    },
+    {
+      "id": 113,
+      "type": "subtraction",
+      "question": "ما ناتج 13 - 4؟",
+      "answer": 9,
+      "hint": "اطرح 4 من 13"
+    },
+    {
+      "id": 114,
+      "type": "subtraction",
+      "question": "ما ناتج 13 - 5؟",      "answer": 8,
+      "hint": "اطرح 5 من 13"
+    },
+    {
+      "id": 115,
+      "type": "decomposition",
+      "question": "فكك العدد 13 إلى عشرات ووحدات",
+      "answer": "10 + 3",
+      "hint": "13 = 10 + 3"
+    },
+    {
+      "id": 116,
+      "type": "addition",
+      "question": "ما ناتج 8 + 5؟",
+      "answer": 13,
+      "hint": "اجمع 8 و 5 معاً"
+    },
+    {
+      "id": 117,
+      "type": "addition",
+      "question": "ما ناتج 9 + 5؟",
+      "answer": 14,
+      "hint": "اجمع 9 و 5 معاً"
+    },
+    {
+      "id": 118,
+      "type": "addition",
+      "question": "ما ناتج 10 + 4؟",
+      "answer": 14,
+      "hint": "اجمع 10 و 4 معاً"
+    },
+    {
+      "id": 119,
+      "type": "subtraction",
+      "question": "ما ناتج 14 - 4؟",
+      "answer": 10,
+      "hint": "اطرح 4 من 14"
+    },
+    {
+      "id": 120,
+      "type": "subtraction",
+      "question": "ما ناتج 14 - 5؟",
+      "answer": 9,
+      "hint": "اطرح 5 من 14"
+    },
+    {
+      "id": 121,
+      "type": "half",
+      "question": "ما نصف العدد 14؟",
+      "answer": 7,      "hint": "اقسم 14 على 2"
+    },
+    {
+      "id": 122,
+      "type": "double",
+      "question": "ما ضعف العدد 7؟",
+      "answer": 14,
+      "hint": "اضرب 7 في 2"
+    },
+    {
+      "id": 123,
+      "type": "decomposition",
+      "question": "فكك العدد 14 إلى عشرات ووحدات",
+      "answer": "10 + 4",
+      "hint": "14 = 10 + 4"
+    },
+    {
+      "id": 124,
+      "type": "addition",
+      "question": "ما ناتج 10 + 5؟",
+      "answer": 15,
+      "hint": "اجمع 10 و 5 معاً"
+    },
+    {
+      "id": 125,
+      "type": "subtraction",
+      "question": "ما ناتج 15 - 5؟",
+      "answer": 10,
+      "hint": "اطرح 5 من 15"
+    },
+    {
+      "id": 126,
+      "type": "decomposition",
+      "question": "فكك العدد 15 إلى عشرات ووحدات",
+      "answer": "10 + 5",
+      "hint": "15 = 10 + 5"
+    },
+    {
+      "id": 127,
+      "type": "addition",
+      "question": "ما ناتج 10 + 6؟",
+      "answer": 16,
+      "hint": "اجمع 10 و 6 معاً"
+    },
+    {
+      "id": 128,
+      "type": "subtraction",
+      "question": "ما ناتج 16 - 6؟",
+      "answer": 10,
+      "hint": "اطرح 6 من 16"    },
+    {
+      "id": 129,
+      "type": "half",
+      "question": "ما نصف العدد 16؟",
+      "answer": 8,
+      "hint": "اقسم 16 على 2"
+    },
+    {
+      "id": 130,
+      "type": "double",
+      "question": "ما ضعف العدد 8؟",
+      "answer": 16,
+      "hint": "اضرب 8 في 2"
+    },
+    {
+      "id": 131,
+      "type": "decomposition",
+      "question": "فكك العدد 16 إلى عشرات ووحدات",
+      "answer": "10 + 6",
+      "hint": "16 = 10 + 6"
+    },
+    {
+      "id": 132,
+      "type": "addition",
+      "question": "ما ناتج 10 + 7؟",
+      "answer": 17,
+      "hint": "اجمع 10 و 7 معاً"
+    },
+    {
+      "id": 133,
+      "type": "subtraction",
+      "question": "ما ناتج 17 - 7؟",
+      "answer": 10,
+      "hint": "اطرح 7 من 17"
+    },
+    {
+      "id": 134,
+      "type": "decomposition",
+      "question": "فكك العدد 17 إلى عشرات ووحدات",
+      "answer": "10 + 7",
+      "hint": "17 = 10 + 7"
+    },
+    {
+      "id": 135,
+      "type": "addition",
+      "question": "ما ناتج 10 + 8؟",
+      "answer": 18,
+      "hint": "اجمع 10 و 8 معاً"
+    },    {
+      "id": 136,
+      "type": "subtraction",
+      "question": "ما ناتج 18 - 8؟",
+      "answer": 10,
+      "hint": "اطرح 8 من 18"
+    },
+    {
+      "id": 137,
+      "type": "half",
+      "question": "ما نصف العدد 18؟",
+      "answer": 9,
+      "hint": "اقسم 18 على 2"
+    },
+    {
+      "id": 138,
+      "type": "double",
+      "question": "ما ضعف العدد 9؟",
+      "answer": 18,
+      "hint": "اضرب 9 في 2"
+    },
+    {
+      "id": 139,
+      "type": "decomposition",
+      "question": "فكك العدد 18 إلى عشرات ووحدات",
+      "answer": "10 + 8",
+      "hint": "18 = 10 + 8"
+    },
+    {
+      "id": 140,
+      "type": "addition",
+      "question": "ما ناتج 10 + 9؟",
+      "answer": 19,
+      "hint": "اجمع 10 و 9 معاً"
+    },
+    {
+      "id": 141,
+      "type": "subtraction",
+      "question": "ما ناتج 19 - 9؟",
+      "answer": 10,
+      "hint": "اطرح 9 من 19"
+    },
+    {
+      "id": 142,
+      "type": "decomposition",
+      "question": "فكك العدد 19 إلى عشرات ووحدات",
+      "answer": "10 + 9",
+      "hint": "19 = 10 + 9"
+    },
+    {      "id": 143,
+      "type": "addition",
+      "question": "ما ناتج 10 + 10؟",
+      "answer": 20,
+      "hint": "اجمع 10 و 10 معاً"
+    },
+    {
+      "id": 144,
+      "type": "subtraction",
+      "question": "ما ناتج 20 - 10؟",
+      "answer": 10,
+      "hint": "اطرح 10 من 20"
+    },
+    {
+      "id": 145,
+      "type": "half",
+      "question": "ما نصف العدد 20؟",
+      "answer": 10,
+      "hint": "اقسم 20 على 2"
+    },
+    {
+      "id": 146,
+      "type": "double",
+      "question": "ما ضعف العدد 10؟",
+      "answer": 20,
+      "hint": "اضرب 10 في 2"
+    },
+    {
+      "id": 147,
+      "type": "decomposition",
+      "question": "فكك العدد 20 إلى عشرات",
+      "answer": "2 عشرات",
+      "hint": "20 = 2 × 10"
+    },
+    {
+      "id": 148,
+      "type": "addition",
+      "question": "ما ناتج 11 + 5؟",
+      "answer": 16,
+      "hint": "اجمع 11 و 5 معاً"
+    },
+    {
+      "id": 149,
+      "type": "addition",
+      "question": "ما ناتج 12 + 4؟",
+      "answer": 16,
+      "hint": "اجمع 12 و 4 معاً"
+    },
+    {
+      "id": 150,      "type": "addition",
+      "question": "ما ناتج 13 + 3؟",
+      "answer": 16,
+      "hint": "اجمع 13 و 3 معاً"
+    },
+    {
+      "id": 151,
+      "type": "addition",
+      "question": "ما ناتج 14 + 2؟",
+      "answer": 16,
+      "hint": "اجمع 14 و 2 معاً"
+    },
+    {
+      "id": 152,
+      "type": "addition",
+      "question": "ما ناتج 15 + 1؟",
+      "answer": 16,
+      "hint": "اجمع 15 و 1 معاً"
+    },
+    {
+      "id": 153,
+      "type": "subtraction",
+      "question": "ما ناتج 16 - 1؟",
+      "answer": 15,
+      "hint": "اطرح 1 من 16"
+    },
+    {
+      "id": 154,
+      "type": "subtraction",
+      "question": "ما ناتج 16 - 2؟",
+      "answer": 14,
+      "hint": "اطرح 2 من 16"
+    },
+    {
+      "id": 155,
+      "type": "subtraction",
+      "question": "ما ناتج 16 - 3؟",
+      "answer": 13,
+      "hint": "اطرح 3 من 16"
+    },
+    {
+      "id": 156,
+      "type": "subtraction",
+      "question": "ما ناتج 16 - 4؟",
+      "answer": 12,
+      "hint": "اطرح 4 من 16"
+    },
+    {
+      "id": 157,
+      "type": "subtraction",      "question": "ما ناتج 16 - 5؟",
+      "answer": 11,
+      "hint": "اطرح 5 من 16"
+    },
+    {
+      "id": 158,
+      "type": "addition",
+      "question": "ما ناتج 12 + 5؟",
+      "answer": 17,
+      "hint": "اجمع 12 و 5 معاً"
+    },
+    {
+      "id": 159,
+      "type": "addition",
+      "question": "ما ناتج 13 + 4؟",
+      "answer": 17,
+      "hint": "اجمع 13 و 4 معاً"
+    },
+    {
+      "id": 160,
+      "type": "addition",
+      "question": "ما ناتج 14 + 3؟",
+      "answer": 17,
+      "hint": "اجمع 14 و 3 معاً"
+    },
+    {
+      "id": 161,
+      "type": "addition",
+      "question": "ما ناتج 15 + 2؟",
+      "answer": 17,
+      "hint": "اجمع 15 و 2 معاً"
+    },
+    {
+      "id": 162,
+      "type": "subtraction",
+      "question": "ما ناتج 17 - 1؟",
+      "answer": 16,
+      "hint": "اطرح 1 من 17"
+    },
+    {
+      "id": 163,
+      "type": "subtraction",
+      "question": "ما ناتج 17 - 2؟",
+      "answer": 15,
+      "hint": "اطرح 2 من 17"
+    },
+    {
+      "id": 164,
+      "type": "subtraction",
+      "question": "ما ناتج 17 - 3؟",      "answer": 14,
+      "hint": "اطرح 3 من 17"
+    },
+    {
+      "id": 165,
+      "type": "subtraction",
+      "question": "ما ناتج 17 - 4؟",
+      "answer": 13,
+      "hint": "اطرح 4 من 17"
+    },
+    {
+      "id": 166,
+      "type": "subtraction",
+      "question": "ما ناتج 17 - 5؟",
+      "answer": 12,
+      "hint": "اطرح 5 من 17"
+    },
+    {
+      "id": 167,
+      "type": "addition",
+      "question": "ما ناتج 13 + 5؟",
+      "answer": 18,
+      "hint": "اجمع 13 و 5 معاً"
+    },
+    {
+      "id": 168,
+      "type": "addition",
+      "question": "ما ناتج 14 + 4؟",
+      "answer": 18,
+      "hint": "اجمع 14 و 4 معاً"
+    },
+    {
+      "id": 169,
+      "type": "addition",
+      "question": "ما ناتج 15 + 3؟",
+      "answer": 18,
+      "hint": "اجمع 15 و 3 معاً"
+    },
+    {
+      "id": 170,
+      "type": "subtraction",
+      "question": "ما ناتج 18 - 1؟",
+      "answer": 17,
+      "hint": "اطرح 1 من 18"
+    },
+    {
+      "id": 171,
+      "type": "subtraction",
+      "question": "ما ناتج 18 - 2؟",
+      "answer": 16,      "hint": "اطرح 2 من 18"
+    },
+    {
+      "id": 172,
+      "type": "subtraction",
+      "question": "ما ناتج 18 - 3؟",
+      "answer": 15,
+      "hint": "اطرح 3 من 18"
+    },
+    {
+      "id": 173,
+      "type": "subtraction",
+      "question": "ما ناتج 18 - 4؟",
+      "answer": 14,
+      "hint": "اطرح 4 من 18"
+    },
+    {
+      "id": 174,
+      "type": "subtraction",
+      "question": "ما ناتج 18 - 5؟",
+      "answer": 13,
+      "hint": "اطرح 5 من 18"
+    },
+    {
+      "id": 175,
+      "type": "addition",
+      "question": "ما ناتج 14 + 5؟",
+      "answer": 19,
+      "hint": "اجمع 14 و 5 معاً"
+    },
+    {
+      "id": 176,
+      "type": "addition",
+      "question": "ما ناتج 15 + 4؟",
+      "answer": 19,
+      "hint": "اجمع 15 و 4 معاً"
+    },
+    {
+      "id": 177,
+      "type": "subtraction",
+      "question": "ما ناتج 19 - 1؟",
+      "answer": 18,
+      "hint": "اطرح 1 من 19"
+    },
+    {
+      "id": 178,
+      "type": "subtraction",
+      "question": "ما ناتج 19 - 2؟",
+      "answer": 17,
+      "hint": "اطرح 2 من 19"    },
+    {
+      "id": 179,
+      "type": "subtraction",
+      "question": "ما ناتج 19 - 3؟",
+      "answer": 16,
+      "hint": "اطرح 3 من 19"
+    },
+    {
+      "id": 180,
+      "type": "subtraction",
+      "question": "ما ناتج 19 - 4؟",
+      "answer": 15,
+      "hint": "اطرح 4 من 19"
+    },
+    {
+      "id": 181,
+      "type": "subtraction",
+      "question": "ما ناتج 19 - 5؟",
+      "answer": 14,
+      "hint": "اطرح 5 من 19"
+    },
+    {
+      "id": 182,
+      "type": "addition",
+      "question": "ما ناتج 15 + 5؟",
+      "answer": 20,
+      "hint": "اجمع 15 و 5 معاً"
+    },
+    {
+      "id": 183,
+      "type": "subtraction",
+      "question": "ما ناتج 20 - 1؟",
+      "answer": 19,
+      "hint": "اطرح 1 من 20"
+    },
+    {
+      "id": 184,
+      "type": "subtraction",
+      "question": "ما ناتج 20 - 2؟",
+      "answer": 18,
+      "hint": "اطرح 2 من 20"
+    },
+    {
+      "id": 185,
+      "type": "subtraction",
+      "question": "ما ناتج 20 - 3؟",
+      "answer": 17,
+      "hint": "اطرح 3 من 20"
+    },    {
+      "id": 186,
+      "type": "subtraction",
+      "question": "ما ناتج 20 - 4؟",
+      "answer": 16,
+      "hint": "اطرح 4 من 20"
+    },
+    {
+      "id": 187,
+      "type": "subtraction",
+      "question": "ما ناتج 20 - 5؟",
+      "answer": 15,
+      "hint": "اطرح 5 من 20"
+    },
+    {
+      "id": 188,
+      "type": "addition",
+      "question": "ما ناتج 16 + 4؟",
+      "answer": 20,
+      "hint": "اجمع 16 و 4 معاً"
+    },
+    {
+      "id": 189,
+      "type": "addition",
+      "question": "ما ناتج 17 + 3؟",
+      "answer": 20,
+      "hint": "اجمع 17 و 3 معاً"
+    },
+    {
+      "id": 190,
+      "type": "addition",
+      "question": "ما ناتج 18 + 2؟",
+      "answer": 20,
+      "hint": "اجمع 18 و 2 معاً"
+    },
+    {
+      "id": 191,
+      "type": "addition",
+      "question": "ما ناتج 19 + 1؟",
+      "answer": 20,
+      "hint": "اجمع 19 و 1 معاً"
+    },
+    {
+      "id": 192,
+      "type": "half",
+      "question": "ما نصف العدد 22؟",
+      "answer": 11,
+      "hint": "اقسم 22 على 2"
+    },
+    {      "id": 193,
+      "type": "half",
+      "question": "ما نصف العدد 24؟",
+      "answer": 12,
+      "hint": "اقسم 24 على 2"
+    },
+    {
+      "id": 194,
+      "type": "half",
+      "question": "ما نصف العدد 26؟",
+      "answer": 13,
+      "hint": "اقسم 26 على 2"
+    },
+    {
+      "id": 195,
+      "type": "half",
+      "question": "ما نصف العدد 28؟",
+      "answer": 14,
+      "hint": "اقسم 28 على 2"
+    },
+    {
+      "id": 196,
+      "type": "half",
+      "question": "ما نصف العدد 30؟",
+      "answer": 15,
+      "hint": "اقسم 30 على 2"
+    },
+    {
+      "id": 197,
+      "type": "double",
+      "question": "ما ضعف العدد 11؟",
+      "answer": 22,
+      "hint": "اضرب 11 في 2"
+    },
+    {
+      "id": 198,
+      "type": "double",
+      "question": "ما ضعف العدد 12؟",
+      "answer": 24,
+      "hint": "اضرب 12 في 2"
+    },
+    {
+      "id": 199,
+      "type": "double",
+      "question": "ما ضعف العدد 13؟",
+      "answer": 26,
+      "hint": "اضرب 13 في 2"
+    },
+    {
+      "id": 200,      "type": "double",
+      "question": "ما ضعف العدد 14؟",
+      "answer": 28,
+      "hint": "اضرب 14 في 2"
+    },
+    {
+      "id": 201,
+      "type": "double",
+      "question": "ما ضعف العدد 15؟",
+      "answer": 30,
+      "hint": "اضرب 15 في 2"
+    },
+    {
+      "id": 202,
+      "type": "decomposition",
+      "question": "فكك العدد 21 إلى عشرات ووحدات",
+      "answer": "20 + 1",
+      "hint": "21 = 20 + 1"
+    },
+    {
+      "id": 203,
+      "type": "decomposition",
+      "question": "فكك العدد 22 إلى عشرات ووحدات",
+      "answer": "20 + 2",
+      "hint": "22 = 20 + 2"
+    },
+    {
+      "id": 204,
+      "type": "decomposition",
+      "question": "فكك العدد 23 إلى عشرات ووحدات",
+      "answer": "20 + 3",
+      "hint": "23 = 20 + 3"
+    },
+    {
+      "id": 205,
+      "type": "decomposition",
+      "question": "فكك العدد 24 إلى عشرات ووحدات",
+      "answer": "20 + 4",
+      "hint": "24 = 20 + 4"
+    },
+    {
+      "id": 206,
+      "type": "decomposition",
+      "question": "فكك العدد 25 إلى عشرات ووحدات",
+      "answer": "20 + 5",
+      "hint": "25 = 20 + 5"
+    },
+    {
+      "id": 207,
+      "type": "addition",      "question": "ما ناتج 20 + 5؟",
+      "answer": 25,
+      "hint": "اجمع 20 و 5 معاً"
+    },
+    {
+      "id": 208,
+      "type": "addition",
+      "question": "ما ناتج 21 + 4؟",
+      "answer": 25,
+      "hint": "اجمع 21 و 4 معاً"
+    },
+    {
+      "id": 209,
+      "type": "addition",
+      "question": "ما ناتج 22 + 3؟",
+      "answer": 25,
+      "hint": "اجمع 22 و 3 معاً"
+    },
+    {
+      "id": 210,
+      "type": "addition",
+      "question": "ما ناتج 23 + 2؟",
+      "answer": 25,
+      "hint": "اجمع 23 و 2 معاً"
+    },
+    {
+      "id": 211,
+      "type": "addition",
+      "question": "ما ناتج 24 + 1؟",
+      "answer": 25,
+      "hint": "اجمع 24 و 1 معاً"
+    },
+    {
+      "id": 212,
+      "type": "subtraction",
+      "question": "ما ناتج 25 - 1؟",
+      "answer": 24,
+      "hint": "اطرح 1 من 25"
+    },
+    {
+      "id": 213,
+      "type": "subtraction",
+      "question": "ما ناتج 25 - 2؟",
+      "answer": 23,
+      "hint": "اطرح 2 من 25"
+    },
+    {
+      "id": 214,
+      "type": "subtraction",
+      "question": "ما ناتج 25 - 3؟",      "answer": 22,
+      "hint": "اطرح 3 من 25"
+    },
+    {
+      "id": 215,
+      "type": "subtraction",
+      "question": "ما ناتج 25 - 4؟",
+      "answer": 21,
+      "hint": "اطرح 4 من 25"
+    },
+    {
+      "id": 216,
+      "type": "subtraction",
+      "question": "ما ناتج 25 - 5؟",
+      "answer": 20,
+      "hint": "اطرح 5 من 25"
+    },
+    {
+      "id": 217,
+      "type": "addition",
+      "question": "ما ناتج 20 + 6؟",
+      "answer": 26,
+      "hint": "اجمع 20 و 6 معاً"
+    },
+    {
+      "id": 218,
+      "type": "addition",
+      "question": "ما ناتج 21 + 5؟",
+      "answer": 26,
+      "hint": "اجمع 21 و 5 معاً"
+    },
+    {
+      "id": 219,
+      "type": "addition",
+      "question": "ما ناتج 22 + 4؟",
+      "answer": 26,
+      "hint": "اجمع 22 و 4 معاً"
+    },
+    {
+      "id": 220,
+      "type": "addition",
+      "question": "ما ناتج 23 + 3؟",
+      "answer": 26,
+      "hint": "اجمع 23 و 3 معاً"
+    },
+    {
+      "id": 221,
+      "type": "subtraction",
+      "question": "ما ناتج 26 - 1؟",
+      "answer": 25,      "hint": "اطرح 1 من 26"
+    },
+    {
+      "id": 222,
+      "type": "subtraction",
+      "question": "ما ناتج 26 - 2؟",
+      "answer": 24,
+      "hint": "اطرح 2 من 26"
+    },
+    {
+      "id": 223,
+      "type": "subtraction",
+      "question": "ما ناتج 26 - 3؟",
+      "answer": 23,
+      "hint": "اطرح 3 من 26"
+    },
+    {
+      "id": 224,
+      "type": "subtraction",
+      "question": "ما ناتج 26 - 4؟",
+      "answer": 22,
+      "hint": "اطرح 4 من 26"
+    },
+    {
+      "id": 225,
+      "type": "subtraction",
+      "question": "ما ناتج 26 - 5؟",
+      "answer": 21,
+      "hint": "اطرح 5 من 26"
+    },
+    {
+      "id": 226,
+      "type": "addition",
+      "question": "ما ناتج 20 + 7؟",
+      "answer": 27,
+      "hint": "اجمع 20 و 7 معاً"
+    },
+    {
+      "id": 227,
+      "type": "addition",
+      "question": "ما ناتج 21 + 6؟",
+      "answer": 27,
+      "hint": "اجمع 21 و 6 معاً"
+    },
+    {
+      "id": 228,
+      "type": "addition",
+      "question": "ما ناتج 22 + 5؟",
+      "answer": 27,
+      "hint": "اجمع 22 و 5 معاً"    },
+    {
+      "id": 229,
+      "type": "subtraction",
+      "question": "ما ناتج 27 - 1؟",
+      "answer": 26,
+      "hint": "اطرح 1 من 27"
+    },
+    {
+      "id": 230,
+      "type": "subtraction",
+      "question": "ما ناتج 27 - 2؟",
+      "answer": 25,
+      "hint": "اطرح 2 من 27"
+    },
+    {
+      "id": 231,
+      "type": "subtraction",
+      "question": "ما ناتج 27 - 3؟",
+      "answer": 24,
+      "hint": "اطرح 3 من 27"
+    },
+    {
+      "id": 232,
+      "type": "subtraction",
+      "question": "ما ناتج 27 - 4؟",
+      "answer": 23,
+      "hint": "اطرح 4 من 27"
+    },
+    {
+      "id": 233,
+      "type": "subtraction",
+      "question": "ما ناتج 27 - 5؟",
+      "answer": 22,
+      "hint": "اطرح 5 من 27"
+    },
+    {
+      "id": 234,
+      "type": "addition",
+      "question": "ما ناتج 20 + 8؟",
+      "answer": 28,
+      "hint": "اجمع 20 و 8 معاً"
+    },
+    {
+      "id": 235,
+      "type": "addition",
+      "question": "ما ناتج 21 + 7؟",
+      "answer": 28,
+      "hint": "اجمع 21 و 7 معاً"
+    },    {
+      "id": 236,
+      "type": "subtraction",
+      "question": "ما ناتج 28 - 1؟",
+      "answer": 27,
+      "hint": "اطرح 1 من 28"
+    },
+    {
+      "id": 237,
+      "type": "subtraction",
+      "question": "ما ناتج 28 - 2؟",
+      "answer": 26,
+      "hint": "اطرح 2 من 28"
+    },
+    {
+      "id": 238,
+      "type": "subtraction",
+      "question": "ما ناتج 28 - 3؟",
+      "answer": 25,
+      "hint": "اطرح 3 من 28"
+    },
+    {
+      "id": 239,
+      "type": "subtraction",
+      "question": "ما ناتج 28 - 4؟",
+      "answer": 24,
+      "hint": "اطرح 4 من 28"
+    },
+    {
+      "id": 240,
+      "type": "subtraction",
+      "question": "ما ناتج 28 - 5؟",
+      "answer": 23,
+      "hint": "اطرح 5 من 28"
+    },
+    {
+      "id": 241,
+      "type": "addition",
+      "question": "ما ناتج 20 + 9؟",
+      "answer": 29,
+      "hint": "اجمع 20 و 9 معاً"
+    },
+    {
+      "id": 242,
+      "type": "subtraction",
+      "question": "ما ناتج 29 - 1؟",
+      "answer": 28,
+      "hint": "اطرح 1 من 29"
+    },
+    {      "id": 243,
+      "type": "subtraction",
+      "question": "ما ناتج 29 - 2؟",
+      "answer": 27,
+      "hint": "اطرح 2 من 29"
+    },
+    {
+      "id": 244,
+      "type": "subtraction",
+      "question": "ما ناتج 29 - 3؟",
+      "answer": 26,
+      "hint": "اطرح 3 من 29"
+    },
+    {
+      "id": 245,
+      "type": "subtraction",
+      "question": "ما ناتج 29 - 4؟",
+      "answer": 25,
+      "hint": "اطرح 4 من 29"
+    },
+    {
+      "id": 246,
+      "type": "subtraction",
+      "question": "ما ناتج 29 - 5؟",
+      "answer": 24,
+      "hint": "اطرح 5 من 29"
+    },
+    {
+      "id": 247,
+      "type": "addition",
+      "question": "ما ناتج 20 + 10؟",
+      "answer": 30,
+      "hint": "اجمع 20 و 10 معاً"
+    },
+    {
+      "id": 248,
+      "type": "subtraction",
+      "question": "ما ناتج 30 - 1؟",
+      "answer": 29,
+      "hint": "اطرح 1 من 30"
+    },
+    {
+      "id": 249,
+      "type": "subtraction",
+      "question": "ما ناتج 30 - 2؟",
+      "answer": 28,
+      "hint": "اطرح 2 من 30"
+    },
+    {
+      "id": 250,      "type": "subtraction",
+      "question": "ما ناتج 30 - 3؟",
+      "answer": 27,
+      "hint": "اطرح 3 من 30"
+    },
+    {
+      "id": 251,
+      "type": "subtraction",
+      "question": "ما ناتج 30 - 4؟",
+      "answer": 26,
+      "hint": "اطرح 4 من 30"
+    },
+    {
+      "id": 252,
+      "type": "subtraction",
+      "question": "ما ناتج 30 - 5؟",
+      "answer": 25,
+      "hint": "اطرح 5 من 30"
+    },
+    {
+      "id": 253,
+      "type": "addition",
+      "question": "ما ناتج 25 + 5؟",
+      "answer": 30,
+      "hint": "اجمع 25 و 5 معاً"
+    },
+    {
+      "id": 254,
+      "type": "addition",
+      "question": "ما ناتج 26 + 4؟",
+      "answer": 30,
+      "hint": "اجمع 26 و 4 معاً"
+    },
+    {
+      "id": 255,
+      "type": "addition",
+      "question": "ما ناتج 27 + 3؟",
+      "answer": 30,
+      "hint": "اجمع 27 و 3 معاً"
+    },
+    {
+      "id": 256,
+      "type": "addition",
+      "question": "ما ناتج 28 + 2؟",
+      "answer": 30,
+      "hint": "اجمع 28 و 2 معاً"
+    },
+    {
+      "id": 257,
+      "type": "addition",      "question": "ما ناتج 29 + 1؟",
+      "answer": 30,
+      "hint": "اجمع 29 و 1 معاً"
+    },
+    {
+      "id": 258,
+      "type": "half",
+      "question": "ما نصف العدد 32؟",
+      "answer": 16,
+      "hint": "اقسم 32 على 2"
+    },
+    {
+      "id": 259,
+      "type": "half",
+      "question": "ما نصف العدد 34؟",
+      "answer": 17,
+      "hint": "اقسم 34 على 2"
+    },
+    {
+      "id": 260,
+      "type": "half",
+      "question": "ما نصف العدد 36؟",
+      "answer": 18,
+      "hint": "اقسم 36 على 2"
+    },
+    {
+      "id": 261,
+      "type": "half",
+      "question": "ما نصف العدد 38؟",
+      "answer": 19,
+      "hint": "اقسم 38 على 2"
+    },
+    {
+      "id": 262,
+      "type": "half",
+      "question": "ما نصف العدد 40؟",
+      "answer": 20,
+      "hint": "اقسم 40 على 2"
+    },
+    {
+      "id": 263,
+      "type": "double",
+      "question": "ما ضعف العدد 16؟",
+      "answer": 32,
+      "hint": "اضرب 16 في 2"
+    },
+    {
+      "id": 264,
+      "type": "double",
+      "question": "ما ضعف العدد 17؟",      "answer": 34,
+      "hint": "اضرب 17 في 2"
+    },
+    {
+      "id": 265,
+      "type": "double",
+      "question": "ما ضعف العدد 18؟",
+      "answer": 36,
+      "hint": "اضرب 18 في 2"
+    },
+    {
+      "id": 266,
+      "type": "double",
+      "question": "ما ضعف العدد 19؟",
+      "answer": 38,
+      "hint": "اضرب 19 في 2"
+    },
+    {
+      "id": 267,
+      "type": "double",
+      "question": "ما ضعف العدد 20؟",
+      "answer": 40,
+      "hint": "اضرب 20 في 2"
+    },
+    {
+      "id": 268,
+      "type": "decomposition",
+      "question": "فكك العدد 30 إلى عشرات",
+      "answer": "3 عشرات",
+      "hint": "30 = 3 × 10"
+    },
+    {
+      "id": 269,
+      "type": "decomposition",
+      "question": "فكك العدد 31 إلى عشرات ووحدات",
+      "answer": "30 + 1",
+      "hint": "31 = 30 + 1"
+    },
+    {
+      "id": 270,
+      "type": "decomposition",
+      "question": "فكك العدد 32 إلى عشرات ووحدات",
+      "answer": "30 + 2",
+      "hint": "32 = 30 + 2"
+    },
+    {
+      "id": 271,
+      "type": "decomposition",
+      "question": "فكك العدد 33 إلى عشرات ووحدات",
+      "answer": "30 + 3",      "hint": "33 = 30 + 3"
+    },
+    {
+      "id": 272,
+      "type": "decomposition",
+      "question": "فكك العدد 34 إلى عشرات ووحدات",
+      "answer": "30 + 4",
+      "hint": "34 = 30 + 4"
+    },
+    {
+      "id": 273,
+      "type": "decomposition",
+      "question": "فكك العدد 35 إلى عشرات ووحدات",
+      "answer": "30 + 5",
+      "hint": "35 = 30 + 5"
+    },
+    {
+      "id": 274,
+      "type": "addition",
+      "question": "ما ناتج 30 + 5؟",
+      "answer": 35,
+      "hint": "اجمع 30 و 5 معاً"
+    },
+    {
+      "id": 275,
+      "type": "addition",
+      "question": "ما ناتج 31 + 4؟",
+      "answer": 35,
+      "hint": "اجمع 31 و 4 معاً"
+    },
+    {
+      "id": 276,
+      "type": "addition",
+      "question": "ما ناتج 32 + 3؟",
+      "answer": 35,
+      "hint": "اجمع 32 و 3 معاً"
+    },
+    {
+      "id": 277,
+      "type": "addition",
+      "question": "ما ناتج 33 + 2؟",
+      "answer": 35,
+      "hint": "اجمع 33 و 2 معاً"
+    },
+    {
+      "id": 278,
+      "type": "addition",
+      "question": "ما ناتج 34 + 1؟",
+      "answer": 35,
+      "hint": "اجمع 34 و 1 معاً"    },
+    {
+      "id": 279,
+      "type": "subtraction",
+      "question": "ما ناتج 35 - 1؟",
+      "answer": 34,
+      "hint": "اطرح 1 من 35"
+    },
+    {
+      "id": 280,
+      "type": "subtraction",
+      "question": "ما ناتج 35 - 2؟",
+      "answer": 33,
+      "hint": "اطرح 2 من 35"
+    },
+    {
+      "id": 281,
+      "type": "subtraction",
+      "question": "ما ناتج 35 - 3؟",
+      "answer": 32,
+      "hint": "اطرح 3 من 35"
+    },
+    {
+      "id": 282,
+      "type": "subtraction",
+      "question": "ما ناتج 35 - 4؟",
+      "answer": 31,
+      "hint": "اطرح 4 من 35"
+    },
+    {
+      "id": 283,
+      "type": "subtraction",
+      "question": "ما ناتج 35 - 5؟",
+      "answer": 30,
+      "hint": "اطرح 5 من 35"
+    },
+    {
+      "id": 284,
+      "type": "addition",
+      "question": "ما ناتج 30 + 6؟",
+      "answer": 36,
+      "hint": "اجمع 30 و 6 معاً"
+    },
+    {
+      "id": 285,
+      "type": "addition",
+      "question": "ما ناتج 31 + 5؟",
+      "answer": 36,
+      "hint": "اجمع 31 و 5 معاً"
+    },    {
+      "id": 286,
+      "type": "addition",
+      "question": "ما ناتج 32 + 4؟",
+      "answer": 36,
+      "hint": "اجمع 32 و 4 معاً"
+    },
+    {
+      "id": 287,
+      "type": "addition",
+      "question": "ما ناتج 33 + 3؟",
+      "answer": 36,
+      "hint": "اجمع 33 و 3 معاً"
+    },
+    {
+      "id": 288,
+      "type": "subtraction",
+      "question": "ما ناتج 36 - 1؟",
+      "answer": 35,
+      "hint": "اطرح 1 من 36"
+    },
+    {
+      "id": 289,
+      "type": "subtraction",
+      "question": "ما ناتج 36 - 2؟",
+      "answer": 34,
+      "hint": "اطرح 2 من 36"
+    },
+    {
+      "id": 290,
+      "type": "subtraction",
+      "question": "ما ناتج 36 - 3؟",
+      "answer": 33,
+      "hint": "اطرح 3 من 36"
+    },
+    {
+      "id": 291,
+      "type": "subtraction",
+      "question": "ما ناتج 36 - 4؟",
+      "answer": 32,
+      "hint": "اطرح 4 من 36"
+    },
+    {
+      "id": 292,
+      "type": "subtraction",
+      "question": "ما ناتج 36 - 5؟",
+      "answer": 31,
+      "hint": "اطرح 5 من 36"
+    },
+    {      "id": 293,
+      "type": "addition",
+      "question": "ما ناتج 30 + 7؟",
+      "answer": 37,
+      "hint": "اجمع 30 و 7 معاً"
+    },
+    {
+      "id": 294,
+      "type": "addition",
+      "question": "ما ناتج 31 + 6؟",
+      "answer": 37,
+      "hint": "اجمع 31 و 6 معاً"
+    },
+    {
+      "id": 295,
+      "type": "addition",
+      "question": "ما ناتج 32 + 5؟",
+      "answer": 37,
+      "hint": "اجمع 32 و 5 معاً"
+    },
+    {
+      "id": 296,
+      "type": "subtraction",
+      "question": "ما ناتج 37 - 1؟",
+      "answer": 36,
+      "hint": "اطرح 1 من 37"
+    },
+    {
+      "id": 297,
+      "type": "subtraction",
+      "question": "ما ناتج 37 - 2؟",
+      "answer": 35,
+      "hint": "اطرح 2 من 37"
+    },
+    {
+      "id": 298,
+      "type": "subtraction",
+      "question": "ما ناتج 37 - 3؟",
+      "answer": 34,
+      "hint": "اطرح 3 من 37"
+    },
+    {
+      "id": 299,
+      "type": "subtraction",
+      "question": "ما ناتج 37 - 4؟",
+      "answer": 33,
+      "hint": "اطرح 4 من 37"
+    },
+    {
+      "id": 300,      "type": "subtraction",
+      "question": "ما ناتج 37 - 5؟",
+      "answer": 32,
+      "hint": "اطرح 5 من 37"
+    },
+    {
+      "id": 301,
+      "type": "addition",
+      "question": "ما ناتج 30 + 8؟",
+      "answer": 38,
+      "hint": "اجمع 30 و 8 معاً"
+    },
+    {
+      "id": 302,
+      "type": "addition",
+      "question": "ما ناتج 31 + 7؟",
+      "answer": 38,
+      "hint": "اجمع 31 و 7 معاً"
+    },
+    {
+      "id": 303,
+      "type": "subtraction",
+      "question": "ما ناتج 38 - 1؟",
+      "answer": 37,
+      "hint": "اطرح 1 من 38"
+    },
+    {
+      "id": 304,
+      "type": "subtraction",
+      "question": "ما ناتج 38 - 2؟",
+      "answer": 36,
+      "hint": "اطرح 2 من 38"
+    },
+    {
+      "id": 305,
+      "type": "subtraction",
+      "question": "ما ناتج 38 - 3؟",
+      "answer": 35,
+      "hint": "اطرح 3 من 38"
+    },
+    {
+      "id": 306,
+      "type": "subtraction",
+      "question": "ما ناتج 38 - 4؟",
+      "answer": 34,
+      "hint": "اطرح 4 من 38"
+    },
+    {
+      "id": 307,
+      "type": "subtraction",      "question": "ما ناتج 38 - 5؟",
+      "answer": 33,
+      "hint": "اطرح 5 من 38"
+    },
+    {
+      "id": 308,
+      "type": "addition",
+      "question": "ما ناتج 30 + 9؟",
+      "answer": 39,
+      "hint": "اجمع 30 و 9 معاً"
+    },
+    {
+      "id": 309,
+      "type": "subtraction",
+      "question": "ما ناتج 39 - 1؟",
+      "answer": 38,
+      "hint": "اطرح 1 من 39"
+    },
+    {
+      "id": 310,
+      "type": "subtraction",
+      "question": "ما ناتج 39 - 2؟",
+      "answer": 37,
+      "hint": "اطرح 2 من 39"
+    },
+    {
+      "id": 311,
+      "type": "subtraction",
+      "question": "ما ناتج 39 - 3؟",
+      "answer": 36,
+      "hint": "اطرح 3 من 39"
+    },
+    {
+      "id": 312,
+      "type": "subtraction",
+      "question": "ما ناتج 39 - 4؟",
+      "answer": 35,
+      "hint": "اطرح 4 من 39"
+    },
+    {
+      "id": 313,
+      "type": "subtraction",
+      "question": "ما ناتج 39 - 5؟",
+      "answer": 34,
+      "hint": "اطرح 5 من 39"
+    },
+    {
+      "id": 314,
+      "type": "addition",
+      "question": "ما ناتج 30 + 10؟",      "answer": 40,
+      "hint": "اجمع 30 و 10 معاً"
+    },
+    {
+      "id": 315,
+      "type": "subtraction",
+      "question": "ما ناتج 40 - 1؟",
+      "answer": 39,
+      "hint": "اطرح 1 من 40"
+    },
+    {
+      "id": 316,
+      "type": "subtraction",
+      "question": "ما ناتج 40 - 2؟",
+      "answer": 38,
+      "hint": "اطرح 2 من 40"
+    },
+    {
+      "id": 317,
+      "type": "subtraction",
+      "question": "ما ناتج 40 - 3؟",
+      "answer": 37,
+      "hint": "اطرح 3 من 40"
+    },
+    {
+      "id": 318,
+      "type": "subtraction",
+      "question": "ما ناتج 40 - 4؟",
+      "answer": 36,
+      "hint": "اطرح 4 من 40"
+    },
+    {
+      "id": 319,
+      "type": "subtraction",
+      "question": "ما ناتج 40 - 5؟",
+      "answer": 35,
+      "hint": "اطرح 5 من 40"
+    },
+    {
+      "id": 320,
+      "type": "addition",
+      "question": "ما ناتج 35 + 5؟",
+      "answer": 40,
+      "hint": "اجمع 35 و 5 معاً"
+    },
+    {
+      "id": 321,
+      "type": "addition",
+      "question": "ما ناتج 36 + 4؟",
+      "answer": 40,      "hint": "اجمع 36 و 4 معاً"
+    },
+    {
+      "id": 322,
+      "type": "addition",
+      "question": "ما ناتج 37 + 3؟",
+      "answer": 40,
+      "hint": "اجمع 37 و 3 معاً"
+    },
+    {
+      "id": 323,
+      "type": "addition",
+      "question": "ما ناتج 38 + 2؟",
+      "answer": 40,
+      "hint": "اجمع 38 و 2 معاً"
+    },
+    {
+      "id": 324,
+      "type": "addition",
+      "question": "ما ناتج 39 + 1؟",
+      "answer": 40,
+      "hint": "اجمع 39 و 1 معاً"
+    },
+    {
+      "id": 325,
+      "type": "half",
+      "question": "ما نصف العدد 42؟",
+      "answer": 21,
+      "hint": "اقسم 42 على 2"
+    },
+    {
+      "id": 326,
+      "type": "half",
+      "question": "ما نصف العدد 44؟",
+      "answer": 22,
+      "hint": "اقسم 44 على 2"
+    },
+    {
+      "id": 327,
+      "type": "half",
+      "question": "ما نصف العدد 46؟",
+      "answer": 23,
+      "hint": "اقسم 46 على 2"
+    },
+    {
+      "id": 328,
+      "type": "half",
+      "question": "ما نصف العدد 48؟",
+      "answer": 24,
+      "hint": "اقسم 48 على 2"    },
+    {
+      "id": 329,
+      "type": "half",
+      "question": "ما نصف العدد 50؟",
+      "answer": 25,
+      "hint": "اقسم 50 على 2"
+    },
+    {
+      "id": 330,
+      "type": "double",
+      "question": "ما ضعف العدد 21؟",
+      "answer": 42,
+      "hint": "اضرب 21 في 2"
+    },
+    {
+      "id": 331,
+      "type": "double",
+      "question": "ما ضعف العدد 22؟",
+      "answer": 44,
+      "hint": "اضرب 22 في 2"
+    },
+    {
+      "id": 332,
+      "type": "double",
+      "question": "ما ضعف العدد 23؟",
+      "answer": 46,
+      "hint": "اضرب 23 في 2"
+    },
+    {
+      "id": 333,
+      "type": "double",
+      "question": "ما ضعف العدد 24؟",
+      "answer": 48,
+      "hint": "اضرب 24 في 2"
+    },
+    {
+      "id": 334,
+      "type": "double",
+      "question": "ما ضعف العدد 25؟",
+      "answer": 50,
+      "hint": "اضرب 25 في 2"
+    },
+    {
+      "id": 335,
+      "type": "decomposition",
+      "question": "فكك العدد 40 إلى عشرات",
+      "answer": "4 عشرات",
+      "hint": "40 = 4 × 10"
+    },    {
+      "id": 336,
+      "type": "decomposition",
+      "question": "فكك العدد 41 إلى عشرات ووحدات",
+      "answer": "40 + 1",
+      "hint": "41 = 40 + 1"
+    },
+    {
+      "id": 337,
+      "type": "decomposition",
+      "question": "فكك العدد 42 إلى عشرات ووحدات",
+      "answer": "40 + 2",
+      "hint": "42 = 40 + 2"
+    },
+    {
+      "id": 338,
+      "type": "decomposition",
+      "question": "فكك العدد 43 إلى عشرات ووحدات",
+      "answer": "40 + 3",
+      "hint": "43 = 40 + 3"
+    },
+    {
+      "id": 339,
+      "type": "decomposition",
+      "question": "فكك العدد 44 إلى عشرات ووحدات",
+      "answer": "40 + 4",
+      "hint": "44 = 40 + 4"
+    },
+    {
+      "id": 340,
+      "type": "decomposition",
+      "question": "فكك العدد 45 إلى عشرات ووحدات",
+      "answer": "40 + 5",
+      "hint": "45 = 40 + 5"
+    },
+    {
+      "id": 341,
+      "type": "addition",
+      "question": "ما ناتج 40 + 5؟",
+      "answer": 45,
+      "hint": "اجمع 40 و 5 معاً"
+    },
+    {
+      "id": 342,
+      "type": "addition",
+      "question": "ما ناتج 41 + 4؟",
+      "answer": 45,
+      "hint": "اجمع 41 و 4 معاً"
+    },
+    {      "id": 343,
+      "type": "addition",
+      "question": "ما ناتج 42 + 3؟",
+      "answer": 45,
+      "hint": "اجمع 42 و 3 معاً"
+    },
+    {
+      "id": 344,
+      "type": "addition",
+      "question": "ما ناتج 43 + 2؟",
+      "answer": 45,
+      "hint": "اجمع 43 و 2 معاً"
+    },
+    {
+      "id": 345,
+      "type": "addition",
+      "question": "ما ناتج 44 + 1؟",
+      "answer": 45,
+      "hint": "اجمع 44 و 1 معاً"
+    },
+    {
+      "id": 346,
+      "type": "subtraction",
+      "question": "ما ناتج 45 - 1؟",
+      "answer": 44,
+      "hint": "اطرح 1 من 45"
+    },
+    {
+      "id": 347,
+      "type": "subtraction",
+      "question": "ما ناتج 45 - 2؟",
+      "answer": 43,
+      "hint": "اطرح 2 من 45"
+    },
+    {
+      "id": 348,
+      "type": "subtraction",
+      "question": "ما ناتج 45 - 3؟",
+      "answer": 42,
+      "hint": "اطرح 3 من 45"
+    },
+    {
+      "id": 349,
+      "type": "subtraction",
+      "question": "ما ناتج 45 - 4؟",
+      "answer": 41,
+      "hint": "اطرح 4 من 45"
+    },
+    {
+      "id": 350,      "type": "subtraction",
+      "question": "ما ناتج 45 - 5؟",
+      "answer": 40,
+      "hint": "اطرح 5 من 45"
+    },
+    {
+      "id": 351,
+      "type": "addition",
+      "question": "ما ناتج 40 + 6؟",
+      "answer": 46,
+      "hint": "اجمع 40 و 6 معاً"
+    },
+    {
+      "id": 352,
+      "type": "addition",
+      "question": "ما ناتج 41 + 5؟",
+      "answer": 46,
+      "hint": "اجمع 41 و 5 معاً"
+    },
+    {
+      "id": 353,
+      "type": "addition",
+      "question": "ما ناتج 42 + 4؟",
+      "answer": 46,
+      "hint": "اجمع 42 و 4 معاً"
+    },
+    {
+      "id": 354,
+      "type": "addition",
+      "question": "ما ناتج 43 + 3؟",
+      "answer": 46,
+      "hint": "اجمع 43 و 3 معاً"
+    },
+    {
+      "id": 355,
+      "type": "subtraction",
+      "question": "ما ناتج 46 - 1؟",
+      "answer": 45,
+      "hint": "اطرح 1 من 46"
+    },
+    {
+      "id": 356,
+      "type": "subtraction",
+      "question": "ما ناتج 46 - 2؟",
+      "answer": 44,
+      "hint": "اطرح 2 من 46"
+    },
+    {
+      "id": 357,
+      "type": "subtraction",      "question": "ما ناتج 46 - 3؟",
+      "answer": 43,
+      "hint": "اطرح 3 من 46"
+    },
+    {
+      "id": 358,
+      "type": "subtraction",
+      "question": "ما ناتج 46 - 4؟",
+      "answer": 42,
+      "hint": "اطرح 4 من 46"
+    },
+    {
+      "id": 359,
+      "type": "subtraction",
+      "question": "ما ناتج 46 - 5؟",
+      "answer": 41,
+      "hint": "اطرح 5 من 46"
+    },
+    {
+      "id": 360,
+      "type": "addition",
+      "question": "ما ناتج 40 + 7؟",
+      "answer": 47,
+      "hint": "اجمع 40 و 7 معاً"
+    },
+    {
+      "id": 361,
+      "type": "addition",
+      "question": "ما ناتج 41 + 6؟",
+      "answer": 47,
+      "hint": "اجمع 41 و 6 معاً"
+    },
+    {
+      "id": 362,
+      "type": "addition",
+      "question": "ما ناتج 42 + 5؟",
+      "answer": 47,
+      "hint": "اجمع 42 و 5 معاً"
+    },
+    {
+      "id": 363,
+      "type": "subtraction",
+      "question": "ما ناتج 47 - 1؟",
+      "answer": 46,
+      "hint": "اطرح 1 من 47"
+    },
+    {
+      "id": 364,
+      "type": "subtraction",
+      "question": "ما ناتج 47 - 2؟",      "answer": 45,
+      "hint": "اطرح 2 من 47"
+    },
+    {
+      "id": 365,
+      "type": "subtraction",
+      "question": "ما ناتج 47 - 3؟",
+      "answer": 44,
+      "hint": "اطرح 3 من 47"
+    },
+    {
+      "id": 366,
+      "type": "subtraction",
+      "question": "ما ناتج 47 - 4؟",
+      "answer": 43,
+      "hint": "اطرح 4 من 47"
+    },
+    {
+      "id": 367,
+      "type": "subtraction",
+      "question": "ما ناتج 47 - 5؟",
+      "answer": 42,
+      "hint": "اطرح 5 من 47"
+    },
+    {
+      "id": 368,
+      "type": "addition",
+      "question": "ما ناتج 40 + 8؟",
+      "answer": 48,
+      "hint": "اجمع 40 و 8 معاً"
+    },
+    {
+      "id": 369,
+      "type": "addition",
+      "question": "ما ناتج 41 + 7؟",
+      "answer": 48,
+      "hint": "اجمع 41 و 7 معاً"
+    },
+    {
+      "id": 370,
+      "type": "subtraction",
+      "question": "ما ناتج 48 - 1؟",
+      "answer": 47,
+      "hint": "اطرح 1 من 48"
+    },
+    {
+      "id": 371,
+      "type": "subtraction",
+      "question": "ما ناتج 48 - 2؟",
+      "answer": 46,      "hint": "اطرح 2 من 48"
+    },
+    {
+      "id": 372,
+      "type": "subtraction",
+      "question": "ما ناتج 48 - 3؟",
+      "answer": 45,
+      "hint": "اطرح 3 من 48"
+    },
+    {
+      "id": 373,
+      "type": "subtraction",
+      "question": "ما ناتج 48 - 4؟",
+      "answer": 44,
+      "hint": "اطرح 4 من 48"
+    },
+    {
+      "id": 374,
+      "type": "subtraction",
+      "question": "ما ناتج 48 - 5؟",
+      "answer": 43,
+      "hint": "اطرح 5 من 48"
+    },
+    {
+      "id": 375,
+      "type": "addition",
+      "question": "ما ناتج 40 + 9؟",
+      "answer": 49,
+      "hint": "اجمع 40 و 9 معاً"
+    },
+    {
+      "id": 376,
+      "type": "subtraction",
+      "question": "ما ناتج 49 - 1؟",
+      "answer": 48,
+      "hint": "اطرح 1 من 49"
+    },
+    {
+      "id": 377,
+      "type": "subtraction",
+      "question": "ما ناتج 49 - 2؟",
+      "answer": 47,
+      "hint": "اطرح 2 من 49"
+    },
+    {
+      "id": 378,
+      "type": "subtraction",
+      "question": "ما ناتج 49 - 3؟",
+      "answer": 46,
+      "hint": "اطرح 3 من 49"    },
+    {
+      "id": 379,
+      "type": "subtraction",
+      "question": "ما ناتج 49 - 4؟",
+      "answer": 45,
+      "hint": "اطرح 4 من 49"
+    },
+    {
+      "id": 380,
+      "type": "subtraction",
+      "question": "ما ناتج 49 - 5؟",
+      "answer": 44,
+      "hint": "اطرح 5 من 49"
+    },
+    {
+      "id": 381,
+      "type": "addition",
+      "question": "ما ناتج 40 + 10؟",
+      "answer": 50,
+      "hint": "اجمع 40 و 10 معاً"
+    },
+    {
+      "id": 382,
+      "type": "subtraction",
+      "question": "ما ناتج 50 - 1؟",
+      "answer": 49,
+      "hint": "اطرح 1 من 50"
+    },
+    {
+      "id": 383,
+      "type": "subtraction",
+      "question": "ما ناتج 50 - 2؟",
+      "answer": 48,
+      "hint": "اطرح 2 من 50"
+    },
+    {
+      "id": 384,
+      "type": "subtraction",
+      "question": "ما ناتج 50 - 3؟",
+      "answer": 47,
+      "hint": "اطرح 3 من 50"
+    },
+    {
+      "id": 385,
+      "type": "subtraction",
+      "question": "ما ناتج 50 - 4؟",
+      "answer": 46,
+      "hint": "اطرح 4 من 50"
+    },    {
+      "id": 386,
+      "type": "subtraction",
+      "question": "ما ناتج 50 - 5؟",
+      "answer": 45,
+      "hint": "اطرح 5 من 50"
+    },
+    {
+      "id": 387,
+      "type": "addition",
+      "question": "ما ناتج 45 + 5؟",
+      "answer": 50,
+      "hint": "اجمع 45 و 5 معاً"
+    },
+    {
+      "id": 388,
+      "type": "addition",
+      "question": "ما ناتج 46 + 4؟",
+      "answer": 50,
+      "hint": "اجمع 46 و 4 معاً"
+    },
+    {
+      "id": 389,
+      "type": "addition",
+      "question": "ما ناتج 47 + 3؟",
+      "answer": 50,
+      "hint": "اجمع 47 و 3 معاً"
+    },
+    {
+      "id": 390,
+      "type": "addition",
+      "question": "ما ناتج 48 + 2؟",
+      "answer": 50,
+      "hint": "اجمع 48 و 2 معاً"
+    },
+    {
+      "id": 391,
+      "type": "addition",
+      "question": "ما ناتج 49 + 1؟",
+      "answer": 50,
+      "hint": "اجمع 49 و 1 معاً"
+    },
+    {
+      "id": 392,
+      "type": "half",
+      "question": "ما نصف العدد 52؟",
+      "answer": 26,
+      "hint": "اقسم 52 على 2"
+    },
+    {      "id": 393,
+      "type": "half",
+      "question": "ما نصف العدد 54؟",
+      "answer": 27,
+      "hint": "اقسم 54 على 2"
+    },
+    {
+      "id": 394,
+      "type": "half",
+      "question": "ما نصف العدد 56؟",
+      "answer": 28,
+      "hint": "اقسم 56 على 2"
+    },
+    {
+      "id": 395,
+      "type": "half",
+      "question": "ما نصف العدد 58؟",
+      "answer": 29,
+      "hint": "اقسم 58 على 2"
+    },
+    {
+      "id": 396,
+      "type": "half",
+      "question": "ما نصف العدد 60؟",
+      "answer": 30,
+      "hint": "اقسم 60 على 2"
+    },
+    {
+      "id": 397,
+      "type": "double",
+      "question": "ما ضعف العدد 26؟",
+      "answer": 52,
+      "hint": "اضرب 26 في 2"
+    },
+    {
+      "id": 398,
+      "type": "double",
+      "question": "ما ضعف العدد 27؟",
+      "answer": 54,
+      "hint": "اضرب 27 في 2"
+    },
+    {
+      "id": 399,
+      "type": "double",
+      "question": "ما ضعف العدد 28؟",
+      "answer": 56,
+      "hint": "اضرب 28 في 2"
+    },
+    {
+      "id": 400,      "type": "double",
+      "question": "ما ضعف العدد 29؟",
+      "answer": 58,
+      "hint": "اضرب 29 في 2"
+    },
+    {
+      "id": 401,
+      "type": "double",
+      "question": "ما ضعف العدد 30؟",
+      "answer": 60,
+      "hint": "اضرب 30 في 2"
+    },
+    {
+      "id": 402,
+      "type": "decomposition",
+      "question": "فكك العدد 50 إلى عشرات",
+      "answer": "5 عشرات",
+      "hint": "50 = 5 × 10"
+    },
+    {
+      "id": 403,
+      "type": "decomposition",
+      "question": "فكك العدد 51 إلى عشرات ووحدات",
+      "answer": "50 + 1",
+      "hint": "51 = 50 + 1"
+    },
+    {
+      "id": 404,
+      "type": "decomposition",
+      "question": "فكك العدد 52 إلى عشرات ووحدات",
+      "answer": "50 + 2",
+      "hint": "52 = 50 + 2"
+    },
+    {
+      "id": 405,
+      "type": "decomposition",
+      "question": "فكك العدد 53 إلى عشرات ووحدات",
+      "answer": "50 + 3",
+      "hint": "53 = 50 + 3"
+    },
+    {
+      "id": 406,
+      "type": "decomposition",
+      "question": "فكك العدد 54 إلى عشرات ووحدات",
+      "answer": "50 + 4",
+      "hint": "54 = 50 + 4"
+    },
+    {
+      "id": 407,
+      "type": "decomposition",      "question": "فكك العدد 55 إلى عشرات ووحدات",
+      "answer": "50 + 5",
+      "hint": "55 = 50 + 5"
+    },
+    {
+      "id": 408,
+      "type": "addition",
+      "question": "ما ناتج 50 + 5؟",
+      "answer": 55,
+      "hint": "اجمع 50 و 5 معاً"
+    },
+    {
+      "id": 409,
+      "type": "addition",
+      "question": "ما ناتج 51 + 4؟",
+      "answer": 55,
+      "hint": "اجمع 51 و 4 معاً"
+    },
+    {
+      "id": 410,
+      "type": "addition",
+      "question": "ما ناتج 52 + 3؟",
+      "answer": 55,
+      "hint": "اجمع 52 و 3 معاً"
+    },
+    {
+      "id": 411,
+      "type": "addition",
+      "question": "ما ناتج 53 + 2؟",
+      "answer": 55,
+      "hint": "اجمع 53 و 2 معاً"
+    },
+    {
+      "id": 412,
+      "type": "addition",
+      "question": "ما ناتج 54 + 1؟",
+      "answer": 55,
+      "hint": "اجمع 54 و 1 معاً"
+    },
+    {
+      "id": 413,
+      "type": "subtraction",
+      "question": "ما ناتج 55 - 1؟",
+      "answer": 54,
+      "hint": "اطرح 1 من 55"
+    },
+    {
+      "id": 414,
+      "type": "subtraction",
+      "question": "ما ناتج 55 - 2؟",      "answer": 53,
+      "hint": "اطرح 2 من 55"
+    },
+    {
+      "id": 415,
+      "type": "subtraction",
+      "question": "ما ناتج 55 - 3؟",
+      "answer": 52,
+      "hint": "اطرح 3 من 55"
+    },
+    {
+      "id": 416,
+      "type": "subtraction",
+      "question": "ما ناتج 55 - 4؟",
+      "answer": 51,
+      "hint": "اطرح 4 من 55"
+    },
+    {
+      "id": 417,
+      "type": "subtraction",
+      "question": "ما ناتج 55 - 5؟",
+      "answer": 50,
+      "hint": "اطرح 5 من 55"
+    },
+    {
+      "id": 418,
+      "type": "addition",
+      "question": "ما ناتج 50 + 6؟",
+      "answer": 56,
+      "hint": "اجمع 50 و 6 معاً"
+    },
+    {
+      "id": 419,
+      "type": "addition",
+      "question": "ما ناتج 51 + 5؟",
+      "answer": 56,
+      "hint": "اجمع 51 و 5 معاً"
+    },
+    {
+      "id": 420,
+      "type": "addition",
+      "question": "ما ناتج 52 + 4؟",
+      "answer": 56,
+      "hint": "اجمع 52 و 4 معاً"
+    },
+    {
+      "id": 421,
+      "type": "addition",
+      "question": "ما ناتج 53 + 3؟",
+      "answer": 56,      "hint": "اجمع 53 و 3 معاً"
+    },
+    {
+      "id": 422,
+      "type": "subtraction",
+      "question": "ما ناتج 56 - 1؟",
+      "answer": 55,
+      "hint": "اطرح 1 من 56"
+    },
+    {
+      "id": 423,
+      "type": "subtraction",
+      "question": "ما ناتج 56 - 2؟",
+      "answer": 54,
+      "hint": "اطرح 2 من 56"
+    },
+    {
+      "id": 424,
+      "type": "subtraction",
+      "question": "ما ناتج 56 - 3؟",
+      "answer": 53,
+      "hint": "اطرح 3 من 56"
+    },
+    {
+      "id": 425,
+      "type": "subtraction",
+      "question": "ما ناتج 56 - 4؟",
+      "answer": 52,
+      "hint": "اطرح 4 من 56"
+    },
+    {
+      "id": 426,
+      "type": "subtraction",
+      "question": "ما ناتج 56 - 5؟",
+      "answer": 51,
+      "hint": "اطرح 5 من 56"
+    },
+    {
+      "id": 427,
+      "type": "addition",
+      "question": "ما ناتج 50 + 7؟",
+      "answer": 57,
+      "hint": "اجمع 50 و 7 معاً"
+    },
+    {
+      "id": 428,
+      "type": "addition",
+      "question": "ما ناتج 51 + 6؟",
+      "answer": 57,
+      "hint": "اجمع 51 و 6 معاً"    },
+    {
+      "id": 429,
+      "type": "addition",
+      "question": "ما ناتج 52 + 5؟",
+      "answer": 57,
+      "hint": "اجمع 52 و 5 معاً"
+    },
+    {
+      "id": 430,
+      "type": "subtraction",
+      "question": "ما ناتج 57 - 1؟",
+      "answer": 56,
+      "hint": "اطرح 1 من 57"
+    },
+    {
+      "id": 431,
+      "type": "subtraction",
+      "question": "ما ناتج 57 - 2؟",
+      "answer": 55,
+      "hint": "اطرح 2 من 57"
+    },
+    {
+      "id": 432,
+      "type": "subtraction",
+      "question": "ما ناتج 57 - 3؟",
+      "answer": 54,
+      "hint": "اطرح 3 من 57"
+    },
+    {
+      "id": 433,
+      "type": "subtraction",
+      "question": "ما ناتج 57 - 4؟",
+      "answer": 53,
+      "hint": "اطرح 4 من 57"
+    },
+    {
+      "id": 434,
+      "type": "subtraction",
+      "question": "ما ناتج 57 - 5؟",
+      "answer": 52,
+      "hint": "اطرح 5 من 57"
+    },
+    {
+      "id": 435,
+      "type": "addition",
+      "question": "ما ناتج 50 + 8؟",
+      "answer": 58,
+      "hint": "اجمع 50 و 8 معاً"
+    },    {
+      "id": 436,
+      "type": "addition",
+      "question": "ما ناتج 51 + 7؟",
+      "answer": 58,
+      "hint": "اجمع 51 و 7 معاً"
+    },
+    {
+      "id": 437,
+      "type": "subtraction",
+      "question": "ما ناتج 58 - 1؟",
+      "answer": 57,
+      "hint": "اطرح 1 من 58"
+    },
+    {
+      "id": 438,
+      "type": "subtraction",
+      "question": "ما ناتج 58 - 2؟",
+      "answer": 56,
+      "hint": "اطرح 2 من 58"
+    },
+    {
+      "id": 439,
+      "type": "subtraction",
+      "question": "ما ناتج 58 - 3؟",
+      "answer": 55,
+      "hint": "اطرح 3 من 58"
+    },
+    {
+      "id": 440,
+      "type": "subtraction",
+      "question": "ما ناتج 58 - 4؟",
+      "answer": 54,
+      "hint": "اطرح 4 من 58"
+    },
+    {
+      "id": 441,
+      "type": "subtraction",
+      "question": "ما ناتج 58 - 5؟",
+      "answer": 53,
+      "hint": "اطرح 5 من 58"
+    },
+    {
+      "id": 442,
+      "type": "addition",
+      "question": "ما ناتج 50 + 9؟",
+      "answer": 59,
+      "hint": "اجمع 50 و 9 معاً"
+    },
+    {      "id": 443,
+      "type": "subtraction",
+      "question": "ما ناتج 59 - 1؟",
+      "answer": 58,
+      "hint": "اطرح 1 من 59"
+    },
+    {
+      "id": 444,
+      "type": "subtraction",
+      "question": "ما ناتج 59 - 2؟",
+      "answer": 57,
+      "hint": "اطرح 2 من 59"
+    },
+    {
+      "id": 445,
+      "type": "subtraction",
+      "question": "ما ناتج 59 - 3؟",
+      "answer": 56,
+      "hint": "اطرح 3 من 59"
+    },
+    {
+      "id": 446,
+      "type": "subtraction",
+      "question": "ما ناتج 59 - 4؟",
+      "answer": 55,
+      "hint": "اطرح 4 من 59"
+    },
+    {
+      "id": 447,
+      "type": "subtraction",
+      "question": "ما ناتج 59 - 5؟",
+      "answer": 54,
+      "hint": "اطرح 5 من 59"
+    },
+    {
+      "id": 448,
+      "type": "addition",
+      "question": "ما ناتج 50 + 10؟",
+      "answer": 60,
+      "hint": "اجمع 50 و 10 معاً"
+    },
+    {
+      "id": 449,
+      "type": "subtraction",
+      "question": "ما ناتج 60 - 1؟",
+      "answer": 59,
+      "hint": "اطرح 1 من 60"
+    },
+    {
+      "id": 450,      "type": "subtraction",
+      "question": "ما ناتج 60 - 2؟",
+      "answer": 58,
+      "hint": "اطرح 2 من 60"
+    },
+    {
+      "id": 451,
+      "type": "subtraction",
+      "question": "ما ناتج 60 - 3؟",
+      "answer": 57,
+      "hint": "اطرح 3 من 60"
+    },
+    {
+      "id": 452,
+      "type": "subtraction",
+      "question": "ما ناتج 60 - 4؟",
+      "answer": 56,
+      "hint": "اطرح 4 من 60"
+    },
+    {
+      "id": 453,
+      "type": "subtraction",
+      "question": "ما ناتج 60 - 5؟",
+      "answer": 55,
+      "hint": "اطرح 5 من 60"
+    },
+    {
+      "id": 454,
+      "type": "addition",
+      "question": "ما ناتج 55 + 5؟",
+      "answer": 60,
+      "hint": "اجمع 55 و 5 معاً"
+    },
+    {
+      "id": 455,
+      "type": "addition",
+      "question": "ما ناتج 56 + 4؟",
+      "answer": 60,
+      "hint": "اجمع 56 و 4 معاً"
+    },
+    {
+      "id": 456,
+      "type": "addition",
+      "question": "ما ناتج 57 + 3؟",
+      "answer": 60,
+      "hint": "اجمع 57 و 3 معاً"
+    },
+    {
+      "id": 457,
+      "type": "addition",      "question": "ما ناتج 58 + 2؟",
+      "answer": 60,
+      "hint": "اجمع 58 و 2 معاً"
+    },
+    {
+      "id": 458,
+      "type": "addition",
+      "question": "ما ناتج 59 + 1؟",
+      "answer": 60,
+      "hint": "اجمع 59 و 1 معاً"
+    },
+    {
+      "id": 459,
+      "type": "half",
+      "question": "ما نصف العدد 62؟",
+      "answer": 31,
+      "hint": "اقسم 62 على 2"
+    },
+    {
+      "id": 460,
+      "type": "half",
+      "question": "ما نصف العدد 64؟",
+      "answer": 32,
+      "hint": "اقسم 64 على 2"
+    },
+    {
+      "id": 461,
+      "type": "half",
+      "question": "ما نصف العدد 66؟",
+      "answer": 33,
+      "hint": "اقسم 66 على 2"
+    },
+    {
+      "id": 462,
+      "type": "half",
+      "question": "ما نصف العدد 68؟",
+      "answer": 34,
+      "hint": "اقسم 68 على 2"
+    },
+    {
+      "id": 463,
+      "type": "half",
+      "question": "ما نصف العدد 70؟",
+      "answer": 35,
+      "hint": "اقسم 70 على 2"
+    },
+    {
+      "id": 464,
+      "type": "double",
+      "question": "ما ضعف العدد 31؟",      "answer": 62,
+      "hint": "اضرب 31 في 2"
+    },
+    {
+      "id": 465,
+      "type": "double",
+      "question": "ما ضعف العدد 32؟",
+      "answer": 64,
+      "hint": "اضرب 32 في 2"
+    },
+    {
+      "id": 466,
+      "type": "double",
+      "question": "ما ضعف العدد 33؟",
+      "answer": 66,
+      "hint": "اضرب 33 في 2"
+    },
+    {
+      "id": 467,
+      "type": "double",
+      "question": "ما ضعف العدد 34؟",
+      "answer": 68,
+      "hint": "اضرب 34 في 2"
+    },
+    {
+      "id": 468,
+      "type": "double",
+      "question": "ما ضعف العدد 35؟",
+      "answer": 70,
+      "hint": "اضرب 35 في 2"
+    },
+    {
+      "id": 469,
+      "type": "decomposition",
+      "question": "فكك العدد 60 إلى عشرات",
+      "answer": "6 عشرات",
+      "hint": "60 = 6 × 10"
+    },
+    {
+      "id": 470,
+      "type": "decomposition",
+      "question": "فكك العدد 61 إلى عشرات ووحدات",
+      "answer": "60 + 1",
+      "hint": "61 = 60 + 1"
+    },
+    {
+      "id": 471,
+      "type": "decomposition",
+      "question": "فكك العدد 62 إلى عشرات ووحدات",
+      "answer": "60 + 2",      "hint": "62 = 60 + 2"
+    },
+    {
+      "id": 472,
+      "type": "decomposition",
+      "question": "فكك العدد 63 إلى عشرات ووحدات",
+      "answer": "60 + 3",
+      "hint": "63 = 60 + 3"
+    },
+    {
+      "id": 473,
+      "type": "decomposition",
+      "question": "فكك العدد 64 إلى عشرات ووحدات",
+      "answer": "60 + 4",
+      "hint": "64 = 60 + 4"
+    },
+    {
+      "id": 474,
+      "type": "decomposition",
+      "question": "فكك العدد 65 إلى عشرات ووحدات",
+      "answer": "60 + 5",
+      "hint": "65 = 60 + 5"
+    },
+    {
+      "id": 475,
+      "type": "addition",
+      "question": "ما ناتج 60 + 5؟",
+      "answer": 65,
+      "hint": "اجمع 60 و 5 معاً"
+    },
+    {
+      "id": 476,
+      "type": "addition",
+      "question": "ما ناتج 61 + 4؟",
+      "answer": 65,
+      "hint": "اجمع 61 و 4 معاً"
+    },
+    {
+      "id": 477,
+      "type": "addition",
+      "question": "ما ناتج 62 + 3؟",
+      "answer": 65,
+      "hint": "اجمع 62 و 3 معاً"
+    },
+    {
+      "id": 478,
+      "type": "addition",
+      "question": "ما ناتج 63 + 2؟",
+      "answer": 65,
+      "hint": "اجمع 63 و 2 معاً"    },
+    {
+      "id": 479,
+      "type": "addition",
+      "question": "ما ناتج 64 + 1؟",
+      "answer": 65,
+      "hint": "اجمع 64 و 1 معاً"
+    },
+    {
+      "id": 480,
+      "type": "subtraction",
+      "question": "ما ناتج 65 - 1؟",
+      "answer": 64,
+      "hint": "اطرح 1 من 65"
+    },
+    {
+      "id": 481,
+      "type": "subtraction",
+      "question": "ما ناتج 65 - 2؟",
+      "answer": 63,
+      "hint": "اطرح 2 من 65"
+    },
+    {
+      "id": 482,
+      "type": "subtraction",
+      "question": "ما ناتج 65 - 3؟",
+      "answer": 62,
+      "hint": "اطرح 3 من 65"
+    },
+    {
+      "id": 483,
+      "type": "subtraction",
+      "question": "ما ناتج 65 - 4؟",
+      "answer": 61,
+      "hint": "اطرح 4 من 65"
+    },
+    {
+      "id": 484,
+      "type": "subtraction",
+      "question": "ما ناتج 65 - 5؟",
+      "answer": 60,
+      "hint": "اطرح 5 من 65"
+    },
+    {
+      "id": 485,
+      "type": "addition",
+      "question": "ما ناتج 60 + 6؟",
+      "answer": 66,
+      "hint": "اجمع 60 و 6 معاً"
+    },    {
+      "id": 486,
+      "type": "addition",
+      "question": "ما ناتج 61 + 5؟",
+      "answer": 66,
+      "hint": "اجمع 61 و 5 معاً"
+    },
+    {
+      "id": 487,
+      "type": "addition",
+      "question": "ما ناتج 62 + 4؟",
+      "answer": 66,
+      "hint": "اجمع 62 و 4 معاً"
+    },
+    {
+      "id": 488,
+      "type": "addition",
+      "question": "ما ناتج 63 + 3؟",
+      "answer": 66,
+      "hint": "اجمع 63 و 3 معاً"
+    },
+    {
+      "id": 489,
+      "type": "subtraction",
+      "question": "ما ناتج 66 - 1؟",
+      "answer": 65,
+      "hint": "اطرح 1 من 66"
+    },
+    {
+      "id": 490,
+      "type": "subtraction",
+      "question": "ما ناتج 66 - 2؟",
+      "answer": 64,
+      "hint": "اطرح 2 من 66"
+    },
+    {
+      "id": 491,
+      "type": "subtraction",
+      "question": "ما ناتج 66 - 3؟",
+      "answer": 63,
+      "hint": "اطرح 3 من 66"
+    },
+    {
+      "id": 492,
+      "type": "subtraction",
+      "question": "ما ناتج 66 - 4؟",
+      "answer": 62,
+      "hint": "اطرح 4 من 66"
+    },
+    {      "id": 493,
+      "type": "subtraction",
+      "question": "ما ناتج 66 - 5؟",
+      "answer": 61,
+      "hint": "اطرح 5 من 66"
+    },
+    {
+      "id": 494,
+      "type": "addition",
+      "question": "ما ناتج 60 + 7؟",
+      "answer": 67,
+      "hint": "اجمع 60 و 7 معاً"
+    },
+    {
+      "id": 495,
+      "type": "addition",
+      "question": "ما ناتج 61 + 6؟",
+      "answer": 67,
+      "hint": "اجمع 61 و 6 معاً"
+    },
+    {
+      "id": 496,
+      "type": "addition",
+      "question": "ما ناتج 62 + 5؟",
+      "answer": 67,
+      "hint": "اجمع 62 و 5 معاً"
+    },
+    {
+      "id": 497,
+      "type": "subtraction",
+      "question": "ما ناتج 67 - 1؟",
+      "answer": 66,
+      "hint": "اطرح 1 من 67"
+    },
+    {
+      "id": 498,
+      "type": "subtraction",
+      "question": "ما ناتج 67 - 2؟",
+      "answer": 65,
+      "hint": "اطرح 2 من 67"
+    },
+    {
+      "id": 499,
+      "type": "subtraction",
+      "question": "ما ناتج 67 - 3؟",
+      "answer": 64,
+      "hint": "اطرح 3 من 67"
+    },
+    {
+      "id": 500,      "type": "subtraction",
+      "question": "ما ناتج 67 - 4؟",
+      "answer": 63,
+      "hint": "اطرح 4 من 67"
+    }
+  ]
+}

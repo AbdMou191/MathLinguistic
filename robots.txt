@@ -1,0 +1,12 @@
+# robots.txt for MathLinguistic on GitHub Pages
+# https://abdmou191.github.io/MathLinguistic/
+
+User-agent: *
+Disallow: /scripts/
+Disallow: /data/
+Disallow: /styles/font-awesome/
+Disallow: /icons/
+
+Allow: /
+
+Sitemap: https://abdmou191.github.io/MathLinguistic/sitemap.xml

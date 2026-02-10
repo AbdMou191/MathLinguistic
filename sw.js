@@ -1,40 +1,49 @@
-// sw.js
-const CACHE_NAME = 'mathlinguistic-v1';
-const urlsToCache = [
-  '/',
+// sw.js - Service Worker مخصص لمشروع MathLinguistic
+
+const CACHE_NAME = 'mathlinguistic-v2';
+const CORE_FILES = [
   '/index.html',
+  '/manifest.json',
+  '/sw.js',
   '/styles/main.css',
-  '/styles/levels.css',
+  '/font-awesome/css/all.min.css',
   '/scripts/main.js',
-  '/scripts/navigation.js',
+  '/scripts/achievements.js',
   '/scripts/levels/beginner.js',
   '/scripts/levels/intermediate.js',
   '/scripts/levels/advanced.js',
   '/scripts/levels/complex.js',
-  '/data/beginner.json',
-  '/data/intermediate.json',
-  '/data/advanced.json',
-  '/data/complex.json',
-  '/icons/icon-48.png',
-  '/icons/icon-72.png',
-  '/icons/icon-96.png',
-  '/icons/icon-144.png',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
-  '/screenshots/home.png',
-  '/screenshots/level.png'
+  '/scripts/levels/speed-test.js',
+  '/scripts/levels/mental-math.js',
+  '/scripts/levels/mixed-ops.js'
 ];
 
-self.addEventListener('install', event => {
+self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
+      .then(cache => cache.addAll(CORE_FILES))
+      .catch(err => console.error('Cache failed:', err))
   );
 });
 
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
       .then(response => response || fetch(event.request))
+  );
+});
+
+self.addEventListener('activate', (event) => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (!cacheWhitelist.includes(cacheName)) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
   );
 });

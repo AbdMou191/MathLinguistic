@@ -1,0 +1,247 @@
+[
+  {
+    "id": "speed_level_10",
+    "name": "سريع المستوى 10",
+    "description": "أكمل أول 10 مستويات في لعبة الحساب السريع",
+    "category": "speed",
+    "condition": "speed_max_level >= 10",
+    "icon": "speed-10.svg"
+  },
+  {
+    "id": "speed_level_20",
+    "name": "سريع المستوى 20",
+    "description": "أكمل 20 مستوى في الحساب السريع",
+    "category": "speed",
+    "condition": "speed_max_level >= 20",
+    "icon": "speed-20.svg"
+  },
+  {
+    "id": "speed_level_30",
+    "name": "سريع المستوى 30",
+    "description": "أكمل 30 مستوى في الحساب السريع",
+    "category": "speed",
+    "condition": "speed_max_level >= 30",
+    "icon": "speed-30.svg"
+  },
+  {
+    "id": "speed_level_40",
+    "name": "سريع المستوى 40",
+    "description": "أكمل 40 مستوى في الحساب السريع",
+    "category": "speed",
+    "condition": "speed_max_level >= 40",
+    "icon": "speed-40.svg"
+  },
+  {
+    "id": "speed_master",
+    "name": "ماجستير السرعة",
+    "description": "أكمل جميع مستويات الحساب السريع (50 مستوى)",
+    "category": "speed",
+    "condition": "speed_max_level >= 50",
+    "icon": "speed-master.svg"
+  },
+
+  {
+    "id": "mental_beginner_complete",
+    "name": "خبير الجمع والطرح",
+    "description": "أكمل جميع مستويات الحساب الذهني الابتدائي",
+    "category": "mental_beginner",
+    "condition": "mental_beginner_max_level >= 5",
+    "icon": "addsub-complete.svg"
+  },  {
+    "id": "mental_advanced_complete",
+    "name": "عبقري العمليات المختلطة",
+    "description": "أكمل جميع مستويات الحساب الذهني المتقدم",
+    "category": "mental_advanced",
+    "condition": "mental_advanced_max_level >= 5",
+    "icon": "mixed-ops-master.svg"
+  },
+
+  {
+    "id": "beginner_50",
+    "name": "مبتدئ نشيط",
+    "description": "حل 50 تمرينًا في المستوى المبتدئ",
+    "category": "beginner",
+    "condition": "beginner_solved >= 50",
+    "icon": "beginner-50.svg"
+  },
+  {
+    "id": "beginner_complete",
+    "name": "خريج المبتدئين",
+    "description": "أكمل جميع تمارين المستوى المبتدئ",
+    "category": "beginner",
+    "condition": "beginner_solved >= total_beginner",
+    "icon": "beginner-grad.svg"
+  },
+
+  {
+    "id": "intermediate_100",
+    "name": "متوسط متمكن",
+    "description": "حل 100 تمرين في المستوى المتوسط",
+    "category": "intermediate",
+    "condition": "intermediate_solved >= 100",
+    "icon": "intermediate-100.svg"
+  },
+  {
+    "id": "intermediate_complete",
+    "name": "خريج المتوسطين",
+    "description": "أكمل جميع تمارين المستوى المتوسط",
+    "category": "intermediate",
+    "condition": "intermediate_solved >= total_intermediate",
+    "icon": "intermediate-grad.svg"
+  },
+
+  {
+    "id": "advanced_200",
+    "name": "متقدم ماهر",
+    "description": "حل 200 تمرين في المستوى المتقدم",
+    "category": "advanced",
+    "condition": "advanced_solved >= 200",
+    "icon": "advanced-200.svg"  },
+  {
+    "id": "advanced_complete",
+    "name": "خريج المتقدمين",
+    "description": "أكمل جميع تمارين المستوى المتقدم",
+    "category": "advanced",
+    "condition": "advanced_solved >= total_advanced",
+    "icon": "advanced-grad.svg"
+  },
+
+  {
+    "id": "complex_100",
+    "name": "معقد ومبدع",
+    "description": "حل 100 تمرين في المستوى المعقد",
+    "category": "complex",
+    "condition": "complex_solved >= 100",
+    "icon": "complex-100.svg"
+  },
+  {
+    "id": "complex_complete",
+    "name": "عبقري الرياضيات",
+    "description": "أكمل جميع تمارين المستوى المعقد",
+    "category": "complex",
+    "condition": "complex_solved >= total_complex",
+    "icon": "complex-master.svg"
+  },
+
+  {
+    "id": "points_500",
+    "name": "صائد النقاط",
+    "description": "اجمع 500 نقطة",
+    "category": "general",
+    "condition": "total_points >= 500",
+    "icon": "points-500.svg"
+  },
+  {
+    "id": "points_1000",
+    "name": "بطل النقاط",
+    "description": "اجمع 1000 نقطة",
+    "category": "general",
+    "condition": "total_points >= 1000",
+    "icon": "points-1000.svg"
+  },
+  {
+    "id": "points_2000",
+    "name": "أسطورة النقاط",
+    "description": "اجمع 2000 نقطة",
+    "category": "general",
+    "condition": "total_points >= 2000",
+    "icon": "points-2000.svg"  },
+
+  {
+    "id": "no_hint_speed",
+    "name": "بدون مساعدة!",
+    "description": "أكمل مستوى في الحساب السريع دون استخدام تلميحات",
+    "category": "speed",
+    "condition": "speed_level_no_hint == true",
+    "icon": "no-hint.svg"
+  },
+  {
+    "id": "perfect_speed_10",
+    "name": "دقة عالية",
+    "description": "أكمل المستوى 10 في الحساب السريع دون أخطاء",
+    "category": "speed",
+    "condition": "speed_level_10_perfect == true",
+    "icon": "perfect-10.svg"
+  },
+
+  {
+    "id": "all_levels_beginner",
+    "name": "الرباعي الأول",
+    "description": "أكمل المستوى المبتدئ والمتوسط والمتقدم والمعقد",
+    "category": "general",
+    "condition": "beginner_complete && intermediate_complete && advanced_complete && complex_complete",
+    "icon": "quad-complete.svg"
+  },
+  {
+    "id": "all_games_complete",
+    "name": "البطل الشامل",
+    "description": "أكمل جميع الألعاب السبع بنجاح",
+    "category": "general",
+    "condition": "speed_master && mental_beginner_complete && mental_advanced_complete && all_levels_beginner",
+    "icon": "ultimate-hero.svg"
+  },
+
+  {
+    "id": "first_answer",
+    "name": "الخطوة الأولى",
+    "description": "أجب عن أول سؤال في أي لعبة",
+    "category": "general",
+    "condition": "first_answer_submitted == true",
+    "icon": "first-step.svg"
+  },
+  {
+    "id": "daily_player_7",
+    "name": "لاعب يومي",
+    "description": "مارس اللعبة لمدة 7 أيام متتالية",
+    "category": "general",
+    "condition": "consecutive_days >= 7",    "icon": "streak-7.svg"
+  },
+  {
+    "id": "hint_saver",
+    "name": "موفر التلميحات",
+    "description": "استخدم أقل من 10 تلميحات في جميع الألعاب",
+    "category": "general",
+    "condition": "total_hints_used <= 10",
+    "icon": "saver.svg"
+  },
+
+  {
+    "id": "speed_test_played",
+    "name": "اختبر سرعتك!",
+    "description": "لعبت لعبة اختبار السرعة",
+    "category": "special",
+    "condition": "speed_test_played == true",
+    "icon": "speed-test-badge.svg"
+  },
+  {
+    "id": "theme_switcher",
+    "name": "عاشق التصميم",
+    "description": "غيّر الوضع بين النهاري والليلي",
+    "category": "general",
+    "condition": "theme_switched == true",
+    "icon": "theme-lover.svg"
+  },
+  {
+    "id": "pwa_installed",
+    "name": "مستخدم ذكي",
+    "description": "ثبّت التطبيق على جهازك",
+    "category": "general",
+    "condition": "pwa_installed == true",
+    "icon": "pwa-badge.svg"
+  },
+  {
+    "id": "achievement_viewer",
+    "name": "باحث عن التميز",
+    "description": "فتح صفحة الإنجازات لأول مرة",
+    "category": "general",
+    "condition": "achievements_viewed == true",
+    "icon": "explorer.svg"
+  },
+  {
+    "id": "math_hero_10",
+    "name": "بطل الرياضيات (10)",
+    "description": "حقق 10 إنجازات على الأقل",
+    "category": "general",
+    "condition": "earned_achievements_count >= 10",
+    "icon": "hero-10.svg"  }
+]

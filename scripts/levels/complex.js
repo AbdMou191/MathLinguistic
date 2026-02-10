@@ -1,357 +1,240 @@
 /**
- * المستوى المعقد - مع تلميحات من حقل explanation (بدون فرض إجابة نموذجية)
+ * المستوى المعقد (Complex) - MathLinguistic
+ * التحديث: ربط كامل بنظام الإنجازات، دعم الثيمات، ونظام النقاط الموحد (15 نقطة للمسألة).
  */
 
 let complexProblems = [];
-let userComplexAnswers = [];
+let userComplexAnswers = []; 
 let currentComplexPage = 1;
-var COMPLEX_PER_PAGE = 5;
+const CMP_PER_PAGE = 5;
 
-async function loadComplexLevel() {
-    window.currentLevel = 'complex';
+/**
+ * الدالة الرئيسية لتحميل الصفحة
+ */
+window.loadComplexPage = async function() {
+    // استدعاء دالة التنظيف من main.js لمنع تداخل الأحداث والمؤقتات
+    if (typeof cleanupCurrentPage === 'function') cleanupCurrentPage();
     
-    try {
-        const response = await fetch('data/complex.json');
-        const data = await response.json();
-        // دعم الهيكل الذي يحتوي على "problems" داخل كائن
-        complexProblems = data.problems || data;
-    } catch (e) {
-        console.error('فشل تحميل complex.json:', e);
-        if (complexProblems.length === 0) {
-            // بيانات افتراضية للطوارئ
-            complexProblems = [
-                {
-                    id: 1,
-                    question: "إذا كانت الدالة س² تتكامل بالنسبة لـ ص، فما هو التفسير الهندسي للنتيجة؟",
-                    explanation: "تذكّر أن التكامل المزدوج يُعطي الحجم تحت السطح. هنا، س² ثابت بالنسبة لـ ص، لذا النتيجة تمثل حجم أسطوانة."
-                }
-            ];
-        }
-    }
-
-    if (userComplexAnswers.length === 0) {
-        const saved = localStorage.getItem('mathlinguistic_complex_progress');
-        if (saved) {
-            try {
-                const data = JSON.parse(saved);
-                if (data.answers && data.answers.length === complexProblems.length) {
-                    userComplexAnswers = data.answers;
-                } else {
-                    throw new Error('Mismatched problem count');
-                }
-            } catch (e) {
-                userComplexAnswers = new Array(complexProblems.length).fill("");
-            }
-        } else {
-            userComplexAnswers = new Array(complexProblems.length).fill("");
-        }
-    }
-
-    renderComplexUI();}
-
-function renderComplexUI() {
     const mainContent = document.getElementById('main-content');
-    if (!mainContent) return;
+    mainContent.innerHTML = `<div class="cmp-loader-msg" style="text-align:center; padding:50px;">جارٍ استدعاء الخوارزميات المعقدة... 🧪</div>`;
+
+    try {
+        const response = await fetch('data/levels/complex.json');
+        if (!response.ok) throw new Error("File not found");
+        const data = await response.json();
+        complexProblems = data.problems || data;
+
+        // استعادة التقدم من التخزين المحلي بمفتاح المعقد
+        const saved = localStorage.getItem('math_complex_achievements');
+        userComplexAnswers = saved ? JSON.parse(saved) : new Array(complexProblems.length).fill("");
+
+        renderComplexLayout();
+    } catch (error) {
+        console.error("Complex Level Error:", error);
+        mainContent.innerHTML = `<p style="text-align:center; color:#e74c3c; padding:40px;">❌ عذراً، تعذر تحميل المسائل المعقدة حالياً.</p>`;
+    }
+};
+
+/**
+ * بناء الهيكل العام للمستوى وحقن التنسيقات
+ */
+function renderComplexLayout() {
+    const mainContent = document.getElementById('main-content');
     
-    const totalPages = Math.ceil(complexProblems.length / COMPLEX_PER_PAGE);
-    const start = (currentComplexPage - 1) * COMPLEX_PER_PAGE;
-    const pageProblems = complexProblems.slice(start, start + COMPLEX_PER_PAGE);
+    // حقن الأنماط لدعم الوضع الليلي والنهاري (بألوان كربونية وذهبية للمستوى المعقد)
+    const styleId = 'cmp-scoped-styles';
+    if (!document.getElementById(styleId)) {
+        const styleSheet = document.createElement("style");
+        styleSheet.id = styleId;
+        styleSheet.innerText = `
+            [data-theme="light"] { --cmp-card: #ffffff; --cmp-txt: #2c3e50; --cmp-brd: #dcdde1; --cmp-h-bg: #f5f6fa; }
+            [data-theme="dark"] { --cmp-card: #1e272e; --cmp-txt: #f5f6fa; --cmp-brd: #485460; --cmp-h-bg: #2f3640; }
+
+            .cmp-wrapper { direction: rtl; max-width: 750px; margin: auto; padding: 10px; color: var(--cmp-txt); }
+            .cmp-header { background: linear-gradient(135deg, #2c3e50, #000000); color: white; padding: 5px; border-radius: 20px; text-align: center; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); border-bottom: 4px solid #e1b12c; }
+            .cmp-stats-row { display: flex; justify-content: space-around; font-size: 0.95rem; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 12px; }
+            
+            .cmp-problem-card { background: var(--cmp-card); padding: 25px; margin-bottom: 25px; border-radius: 15px; border: 1px solid var(--cmp-brd); box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; }
+            .cmp-question-text { font-size: 1.15rem; line-height: 1.7; margin-bottom: 15px; display: block; font-weight: bold; }
+            
+            .cmp-answer-area {
+                width: 100%; border: none; border-bottom: 2px solid #e1b12c; background: transparent;
+                font-size: 1.1rem; padding: 10px 5px; outline: none; color: var(--cmp-txt);
+                transition: border-color 0.3s; font-family: 'Cairo', sans-serif;
+            }
+            .cmp-answer-area:focus { border-bottom-color: #f1c40f; }
+            
+            .cmp-hint-link { color: #e1b12c; cursor: pointer; font-size: 0.85rem; display: inline-block; margin-top: 12px; font-weight: bold; text-decoration: underline; }
+            .cmp-hint-box { 
+                max-height: 0; overflow: hidden; opacity: 0; background: var(--cmp-h-bg); 
+                border-radius: 8px; border-right: 4px solid #e1b12c; transition: all 0.4s ease;
+            }
+            .cmp-hint-box.show { max-height: 250px; opacity: 1; margin-top: 10px; padding: 15px; }
+            
+            .cmp-footer { padding: 30px 0; text-align: center; }
+            .cmp-verify-btn { background: linear-gradient(to left, #e1b12c, #f39c12); color: #2c3e50; border: none; padding: 14px 60px; border-radius: 35px; font-size: 1.1rem; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(225, 177, 44, 0.3); }
+            .cmp-verify-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(225, 177, 44, 0.4); }
+            
+            .cmp-pagination { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+            .cmp-page-node { width: 35px; height: 35px; border: 1px solid #e1b12c; border-radius: 5px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #e1b12c; font-weight: bold; }
+            .cmp-page-node.active { background: #e1b12c; color: #2c3e50; }
+            
+            .cmp-feedback { margin-top: 10px; font-weight: bold; }
+            .cmp-correct { color: #27ae60; animation: pulse 0.5s; }
+            .cmp-wrong { color: #e74c3c; }
+            @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        `;
+        document.head.appendChild(styleSheet);
+    }
 
     mainContent.innerHTML = `
-    <div class="level-wrapper">
-        <div class="row-header">
-            <h2 class="title-text">المستوى المعقد</h2>
-            <button class="btn-home" onclick="navigateToPage('home')">الرئيسية</button>
-        </div>
-
-        <div class="problems-list">
-            ${pageProblems.map((p, i) => `
-                <div class="complex-card">
-                    <div class="problem-number-tag">تمرين ${p.id}</div>
-                    <p class="q-text">${p.question}</p>
-                    <div class="input-container">
-                        <textarea class="auto-expand-input" 
-                                  placeholder="اكتب خطوات التفكير والحل النهائي..."
-                                  oninput="handleComplexInput(this, ${start + i})">${userComplexAnswers[start + i] || ''}</textarea>
-                        <div class="growing-underline"></div>
-                    </div>
-                    <!-- استخدام explanation كتلميح -->
-                    ${p.explanation ? `<button class="btn-hint" onclick="showComplexHint(${p.id}, \`${escapeHtml(p.explanation)}\`)">💡 تلميح</button>` : ''}
-                    <div id="hint-complex-${p.id}" class="hint-box" style="display:none;"></div>
+        <div class="cmp-wrapper">
+            <header class="cmp-header">
+                <h3 style="margin:0;">🧪 المختبر الرياضي (المعقد)</h3>
+                <div class="cmp-stats-row">
+                    <span>المنجز: <span id="cmp-count">0</span> / ${complexProblems.length}</span>
+                    <span>النقاط: 🏆 <span id="cmp-points">0</span></span>
+                    <span>الأوسمة: ⭐ <span id="cmp-stars">0</span></span>
                 </div>
-            `).join('')}
+            </header>
+
+            <div id="cmp-questions-list"></div>
+
+            <footer class="cmp-footer">
+                <div id="cmp-pages" class="cmp-pagination"></div>
+                <button onclick="checkAllComplexAnswers()" class="cmp-verify-btn">تحليل الإجابات</button>
+                <div style="margin-top:20px;">
+                   <a href="#" onclick="loadHomePage(); return false;" style="color:#888; font-size:0.9rem; text-decoration: none;">🏠 العودة للرئيسية</a>
+                </div>
+            </footer>
         </div>
+    `;
 
-        <div id="verification-message-complex" class="verification-result" style="display:none;"></div>
+    updateComplexStats();
+    displayComplexProblems(currentComplexPage);
+}
 
-        <button class="btn-verify-full" onclick="saveComplexProgressWithMessage()">حفظ التقدم</button>
+/**
+ * عرض المسائل حسب الصفحة
+ */
+window.displayComplexProblems = function(page) {
+    currentComplexPage = page;
+    const listDiv = document.getElementById('cmp-questions-list');
+    const start = (page - 1) * CMP_PER_PAGE;
+    const items = complexProblems.slice(start, start + CMP_PER_PAGE);
 
-        <div class="row-navigation-btns">
-            <button class="nav-arrow" onclick="changeComplexPage(${currentComplexPage - 1})">السابق</button>
-            <button class="nav-arrow" onclick="changeComplexPage(${currentComplexPage + 1})">التالي</button>
-        </div>
-
-        <div class="row-pagination-numbers">
-            <div class="pagination-flex">
-                ${renderComplexPagination(currentComplexPage, totalPages)}
+    listDiv.innerHTML = items.map((prob, index) => {
+        const globalIdx = start + index;
+        const isSolved = userComplexAnswers[globalIdx] !== "" && userComplexAnswers[globalIdx] !== null;
+        
+        return `
+            <div class="cmp-problem-card">
+                <span class="cmp-question-text"><strong>اللغز ${globalIdx + 1}:</strong> ${prob.question}</span>
+                <input type="text" 
+                    id="cmp-text-${globalIdx}" 
+                    class="cmp-answer-area" 
+                    placeholder="فك شفرة الحل هنا..." 
+                    value="${userComplexAnswers[globalIdx] || ""}"
+                    ${isSolved ? 'disabled' : ''}>
+                <div id="cmp-feed-${globalIdx}" class="cmp-feedback">
+                    ${isSolved ? '<span class="cmp-correct">✅ تم فك التشفير بنجاح</span>' : ''}
+                </div>
+                
+                <span class="cmp-hint-link" onclick="toggleCmpHint(${globalIdx})">🔍 كشف البيانات المساعدة</span>
+                <div id="cmp-h-${globalIdx}" class="cmp-hint-box">
+                    ${prob.explanation || prob.hint || "يتطلب هذا اللغز تفكيراً تحليلياً عميقاً، لا تلميحات مباشرة."}
+                </div>
             </div>
-        </div>
-    </div>    <style>${getComplexStyles()}</style>
-    `;
-}
+        `;
+    }).join('');
 
-// دالة لتجنب مشاكل الاقتباس في JavaScript
-function escapeHtml(text) {
-    if (!text) return '';
-    return text
-        .replace(/\\/g, '\\\\')
-        .replace(/`/g, '\\`')
-        .replace(/\$/g, '\\$')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-}
+    renderComplexPagination();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
 
-// دالة الترقيم المختصر
-function renderComplexPagination(current, total) {
-    let html = "";
-    for (let i = 1; i <= total; i++) {
-        if (i === 1 || i === total || (i >= current - 2 && i <= current + 2)) {
-            html += `<span class="page-node ${i === current ? 'active' : ''}" onclick="changeComplexPage(${i})">${i}</span>`;
-        } else if (i === current - 3 || i === current + 3) {
-            html += `<span class="page-sep">...</span>`;
+/**
+ * تبديل ظهور التلميح
+ */
+window.toggleCmpHint = function(idx) {
+    const hintBox = document.getElementById(`cmp-h-${idx}`);
+    hintBox.classList.toggle('show');
+};
+
+/**
+ * التحقق من إجابات الصفحة الحالية وربطها بالنقاط والإنجازات
+ */
+window.checkAllComplexAnswers = function() {
+    const start = (currentComplexPage - 1) * CMP_PER_PAGE;
+    let newlyCorrectCount = 0;
+
+    for (let i = start; i < start + CMP_PER_PAGE; i++) {
+        const txtInput = document.getElementById(`cmp-text-${i}`);
+        const feed = document.getElementById(`cmp-feed-${i}`);
+        if (!txtInput || txtInput.disabled) continue;
+
+        const userVal = txtInput.value.trim();
+        if (userVal === "") { feed.innerHTML = ""; continue; }
+
+        // التحقق من الإجابة (بناءً على ملف JSON الخاص بك)
+        const isCorrect = userVal == (complexProblems[i].correct_answer || complexProblems[i].answer);
+
+        if (isCorrect) {
+            feed.innerHTML = `<span class="cmp-correct">✅ تحليل عبقري! إجابة صحيحة</span>`;
+            userComplexAnswers[i] = userVal;
+            txtInput.disabled = true;
+            newlyCorrectCount++;
+            
+            // إضافة نقاط (المستوى المعقد يعطي 15 نقطة لكل مسألة)
+            let currentPoints = parseInt(localStorage.getItem('math_user_points') || "0");
+            localStorage.setItem('math_user_points', (currentPoints + 15).toString());
+        } else {
+            feed.innerHTML = `<span class="cmp-wrong">❌ خطأ في التحليل، أعد فحص البيانات</span>`;
         }
     }
-    return html;
-}
 
-function handleComplexInput(el, index) {
-    el.style.height = 'auto';
-    el.style.height = el.scrollHeight + 'px';
-    const line = el.nextElementSibling;
-    const progress = Math.min((el.value.length / 80) * 100, 100);
-    line.style.width = progress + '%';
-    userComplexAnswers[index] = el.value;
-}
+    if (newlyCorrectCount > 0) {
+        localStorage.setItem('math_complex_achievements', JSON.stringify(userComplexAnswers));
+        
+        if (typeof window.showToast === 'function') {
+            window.showToast(`تحليل موفق! ربحت ${newlyCorrectCount * 15} نقطة 🔬`, 'success');
+        }
 
-function showComplexHint(id, hint) {
-    const hintEl = document.getElementById(`hint-complex-${id}`);
-    if (hintEl) {
-        hintEl.innerHTML = `<strong>تلميح:</strong> ${hint}`;
-        hintEl.style.display = 'block';
+        // --- زناد نظام الإنجازات الذكي ---
+        if (typeof window.checkAndUnlockAchievements === 'function') {
+            window.checkAndUnlockAchievements();
+        }
+        
+        updateComplexStats();
     }
-}
+};
 
-function saveComplexProgressWithMessage() {
-    const hasNonEmpty = userComplexAnswers.some(ans => ans.trim() !== "");
+/**
+ * تحديث الإحصائيات في الهيدر
+ */
+function updateComplexStats() {
+    const solved = userComplexAnswers.filter(a => a !== "" && a !== null).length;
+    const points = localStorage.getItem('math_user_points') || "0";
     
-    if (hasNonEmpty) {
-        saveComplexProgress();        const msgEl = document.getElementById('verification-message-complex');
-        if (msgEl) {
-            msgEl.textContent = "تم حفظ تقدمك بنجاح.";
-            msgEl.className = "verification-result result-success";
-            msgEl.style.display = "block";
-            setTimeout(() => { msgEl.style.display = "none"; }, 3000);
-        }
-    } else {
-        const msgEl = document.getElementById('verification-message-complex');
-        if (msgEl) {
-            msgEl.textContent = "اكتب إجابة واحدة على الأقل ثم احفظ.";
-            msgEl.className = "verification-result result-error";
-            msgEl.style.display = "block";
-            setTimeout(() => { msgEl.style.display = "none"; }, 3000);
-        }
-    }
+    if (document.getElementById('cmp-count')) document.getElementById('cmp-count').innerText = solved;
+    if (document.getElementById('cmp-points')) document.getElementById('cmp-points').innerText = points;
+    if (document.getElementById('cmp-stars')) document.getElementById('cmp-stars').innerText = Math.floor(solved / 5);
 }
 
-function saveComplexProgress() {
-    try {
-        const data = {
-            answers: userComplexAnswers,
-            timestamp: Date.now()
-        };
-        localStorage.setItem('mathlinguistic_complex_progress', JSON.stringify(data));
-    } catch (e) {
-        console.warn('فشل حفظ تقدم المستوى المعقد:', e);
+/**
+ * بناء أزرار التنقل
+ */
+function renderComplexPagination() {
+    const total = Math.ceil(complexProblems.length / CMP_PER_PAGE);
+    const container = document.getElementById('cmp-pages');
+    if (!container) return;
+    
+    let html = '';
+    for (let i = 1; i <= total; i++) {
+        if (i === 1 || i === total || (i >= currentComplexPage - 2 && i <= currentComplexPage + 2)) {
+            html += `<div class="cmp-page-node ${i === currentComplexPage ? 'active' : ''}" onclick="displayComplexProblems(${i})">${i}</div>`;
+        } else if (i === currentComplexPage - 3 || i === currentComplexPage + 3) {
+            html += `<span style="color:var(--cmp-txt)">...</span>`;
+        }
     }
-}
-
-function changeComplexPage(p) {
-    const totalPages = Math.ceil(complexProblems.length / COMPLEX_PER_PAGE);
-    if (p >= 1 && p <= totalPages) {
-        currentComplexPage = p;
-        renderComplexUI();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-}
-
-function getComplexStyles() {
-    return `
-        .level-wrapper { direction: rtl; font-family: 'Cairo', sans-serif; max-width: 800px; margin: auto; padding: 20px; }
-        .row-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #8e44ad; padding-bottom: 10px; }
-        .btn-home { background: #34495e; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
-        
-        /* عنوان تمرين X */
-        .problem-number-tag {
-            position: absolute;
-            top: -12px;
-            right: 15px;            background: white;
-            padding: 2px 10px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: #2c3e50;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            z-index: 2;
-        }
-        
-        .complex-card { 
-            background: #fff; 
-            padding: 25px; 
-            border: 1px solid #ddd; 
-            border-right: 5px solid #8e44ad; 
-            border-radius: 10px; 
-            margin-bottom: 20px; 
-            position: relative;
-        }
-        .q-text { 
-            font-weight: bold; 
-            font-size: 1.15rem; 
-            color: #2c3e50; 
-            margin-bottom: 15px; 
-        }
-        
-        .input-container { 
-            width: 100%; 
-            position: relative; 
-        }
-        .auto-expand-input { 
-            width: 100%; 
-            min-height: 50px; 
-            border: none; 
-            border-bottom: 1px solid #eee; 
-            font-size: 1.1rem; 
-            resize: none; 
-            overflow: hidden; 
-            font-family: 'Cairo'; 
-            padding: 10px 0; 
-            background: transparent; 
-            transition: 0.3s; 
-        }
-        .auto-expand-input:focus { 
-            outline: none; 
-        }
-        .growing-underline { 
-            height: 3px; 
-            background: #8e44ad;             width: 0; 
-            transition: width 0.4s ease; 
-            margin-top: -3px; 
-        }
-
-        .btn-verify-full { 
-            width: 100%; 
-            padding: 18px; 
-            background: #8e44ad; 
-            color: white; 
-            border: none; 
-            border-radius: 8px; 
-            font-size: 1.2rem; 
-            font-weight: bold; 
-            cursor: pointer; 
-        }
-        
-        /* زر التلميح */
-        .btn-hint {
-            margin-top: 12px;
-            background: #f39c12;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: bold;
-        }
-        .btn-hint:hover {
-            background: #e67e22;
-        }
-        
-        /* صندوق التلميح */
-        .hint-box {
-            margin-top: 12px;
-            padding: 12px;
-            background: #fff8e1;
-            border-left: 3px solid #f39c12;
-            border-radius: 0 8px 8px 0;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: #8a6d3b;
-        }
-
-        .row-navigation-btns { 
-            display: flex; 
-            justify-content: center; 
-            gap: 20px; 
-            margin: 25px 0;         }
-        .nav-arrow { 
-            padding: 10px 45px; 
-            background: #fff; 
-            border: 2px solid #8e44ad; 
-            color: #8e44ad; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            transition: 0.2s; 
-        }
-        .nav-arrow:hover { 
-            background: #8e44ad; 
-            color: white; 
-        }
-
-        .row-pagination-numbers { 
-            display: flex; 
-            justify-content: center; 
-            border-top: 1px solid #eee; 
-            padding-top: 20px; 
-        }
-        .pagination-flex { 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-        }
-        .page-node { 
-            width: 35px; 
-            height: 35px; 
-            border-radius: 50%; 
-            border: 1px solid #8e44ad; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            cursor: pointer; 
-            font-size: 14px; 
-        }
-        .page-node.active { 
-            background: #8e44ad; 
-            color: white; 
-        }
-        .page-sep { 
-            color: #999; 
-        }
-        
-        /* رسائل التحقق */
-        .verification-result { 
-            padding: 12px; 
-            margin: 15px 0;             border-radius: 8px; 
-            text-align: center; 
-            font-weight: bold; 
-        }
-        .result-success { 
-            background: #d4edda; 
-            color: #155724; 
-        }
-        .result-error { 
-            background: #f8d7da; 
-            color: #721c24; 
-        }
-    `;
+    container.innerHTML = html;
 }

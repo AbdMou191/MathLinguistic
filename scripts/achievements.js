@@ -137,3 +137,4 @@ window.checkAndUnlockAchievements = checkAndUnlockAchievements;
 window.loadAchievementDefinitions = loadAchievementDefinitions;
 window.getEarnedAchievements = getEarnedAchievements;
 window.checkAndUnlockAchievements = checkAndUnlockAchievements;
+window.loadAchievementsPage = loadAchievementsPage;

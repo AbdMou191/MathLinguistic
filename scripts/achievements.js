@@ -1,10 +1,9 @@
 // =============== //
-// نظام الإنجازات الذكي
+// نظام الإنجازات الذكي - نسخة متوافقة مع window
 // =============== //
 
 let ALL_ACHIEVEMENTS = null;
 
-// تحميل تعريفات الإنجازات من JSON
 async function loadAchievementDefinitions() {
     if (ALL_ACHIEVEMENTS) return ALL_ACHIEVEMENTS;
     try {
@@ -18,31 +17,20 @@ async function loadAchievementDefinitions() {
     }
 }
 
-// الحصول على الإنجازات المحققة حاليًا
 function getEarnedAchievements() {
     return JSON.parse(localStorage.getItem('earned_achievements') || '[]');
 }
 
-// حفظ الإنجازات المحققة
 function saveEarnedAchievements(list) {
     localStorage.setItem('earned_achievements', JSON.stringify(list));
 }
 
-// === جمع الإحصائيات من localStorage ===
 function collectStats() {
-    // 1. النقاط
     const totalPoints = parseInt(localStorage.getItem('math_user_points') || '0');
-
-    // 2. الحساب السريع
     const speedMaxLevel = window.speedTestData?.currentLevel || 1;
-    
-    // 3. الحساب الذهني الابتدائي
-    const mentalBeginnerMax = window.mentalMathData?.currentLevel || 1;
-    
-    // 4. الحساب الذهني المتقدم
+    const mentalBeginnerMax = window.mentalMathData?.currentLevel || parseInt(localStorage.getItem('math_mental_beginner_level') || '1');
     const mentalAdvancedMax = window.mixedOpsData?.currentLevel || 1;
 
-    // 5. التمارين المحققة في المستويات الثابتة
     const countCompleted = (key, totalExpected = Infinity) => {
         const answers = JSON.parse(localStorage.getItem(key) || '[]');
         const solved = answers.filter(a => a?.status === 'correct' || (typeof a === 'string' && a.trim() !== "")).length;
@@ -55,12 +43,11 @@ function collectStats() {
 
     return {
         total_points: totalPoints,
-        speed_max_level: speedMaxLevel - 1, // لأن currentLevel يشير للمستوى التالي
+        speed_max_level: speedMaxLevel - 1,
         mental_beginner_max_level: mentalBeginnerMax - 1,
         mental_advanced_max_level: mentalAdvancedMax - 1,
         beginner_solved: beginner.solved,
-        total_beginner: beginner.total,
-        intermediate_solved: intermediate.solved,
+        total_beginner: beginner.total,        intermediate_solved: intermediate.solved,
         total_intermediate: intermediate.total,
         advanced_solved: advanced.solved,
         total_advanced: advanced.total,
@@ -74,10 +61,8 @@ function collectStats() {
     };
 }
 
-// === تقييم شرط إنجاز واحد ===
 function evaluateCondition(condition, stats) {
     try {
-        // تحويل الشروط إلى تعبيرات قابلة للتقييم بأمان
         let expr = condition
             .replace(/speed_max_level/g, stats.speed_max_level)
             .replace(/mental_beginner_max_level/g, stats.mental_beginner_max_level)
@@ -91,49 +76,78 @@ function evaluateCondition(condition, stats) {
             .replace(/total_intermediate/g, stats.total_intermediate)
             .replace(/total_advanced/g, stats.total_advanced)
             .replace(/total_complex/g, stats.total_complex)
-            .replace(/==/g, '===') // لتجنب المشاكل
+            .replace(/==/g, '===')
             .replace(/&&/g, ' && ')
             .replace(/\|\|/g, ' || ');
 
-        // تنفيذ آمن (بدون eval خطر)
-        return Function('"use strict"; return (' + expr + ')')();    } catch (e) {
+        return Function('"use strict"; return (' + expr + ')')();
+    } catch (e) {
         console.warn("خطأ في تقييم شرط:", condition, e);
         return false;
     }
 }
 
-// === التحقق من جميع الإنجازات ===
-export async function checkAndUnlockAchievements() {
+async function checkAndUnlockAchievements() {
     const definitions = await loadAchievementDefinitions();
     const earned = getEarnedAchievements();
     const stats = collectStats();
-
     let newUnlocks = [];
 
     for (const ach of definitions) {
-        if (earned.includes(ach.id)) continue; // سبق تحقيقه
-
+        if (earned.includes(ach.id)) continue;
         if (evaluateCondition(ach.condition, stats)) {
-            earned.push(ach.id);
-            newUnlocks.push(ach);
+            earned.push(ach.id);            newUnlocks.push(ach);
         }
     }
 
     if (newUnlocks.length > 0) {
         saveEarnedAchievements(earned);
-        // عرض إشعار لكل إنجاز جديد (اختياري)
         newUnlocks.forEach(ach => {
             showToast(`🏆 ${ach.name}\n${ach.description}`, 'success');
         });
     }
-
     return newUnlocks;
 }
 
-// === استخدام عام: استدعاء عند الحاجة ===
-window.checkAndUnlockAchievements = checkAndUnlockAchievements;
+async function loadAchievementsPage() {
+    const mainContent = document.getElementById('main-content');
+    mainContent.innerHTML = `<div style="text-align:center; padding:50px;">جاري تحميل إنجازاتك... 🏆</div>`;
 
-// جعل الدوال متاحة عالمياً لاستخدامها في main.js
+    const allAchievements = await loadAchievementDefinitions();
+    const earnedIds = getEarnedAchievements();
+    const stats = collectStats();
+
+    let html = `
+        <div class="achievements-page">
+            <header class="ach-header">
+                <h2>🏆 لوحة الإنجازات</h2>
+                <p>لقد حققت ${earnedIds.length} من أصل ${allAchievements.length} إنجازاً</p>
+            </header>
+            <div class="achievements-grid">
+    `;
+
+    allAchievements.forEach(ach => {
+        const isEarned = earnedIds.includes(ach.id);
+        html += `
+            <div class="achievement-card ${isEarned ? 'earned' : 'locked'}">
+                <div class="ach-icon">
+                    ${isEarned ? `<img src="icons/${ach.icon}" alt="icon">` : '🔒'}
+                </div>
+                <div class="ach-info">
+                    <h3>${ach.name}</h3>
+                    <p>${ach.description}</p>
+                </div>
+            </div>
+        `;
+    });
+
+    html += `</div></div>`;
+    mainContent.innerHTML = html;
+
+    localStorage.setItem('achievements_viewed', 'true');
+    checkAndUnlockAchievements(); }
+
+// === جعل الدوال عالمية ===
 window.loadAchievementDefinitions = loadAchievementDefinitions;
 window.getEarnedAchievements = getEarnedAchievements;
 window.checkAndUnlockAchievements = checkAndUnlockAchievements;

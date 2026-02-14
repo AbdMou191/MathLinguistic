@@ -18,7 +18,12 @@ const CORE_FILES = [
   '/scripts/levels/speed-test.js',
   '/scripts/levels/mental-math.js',
   '/scripts/levels/mixed-ops.js',
-  '/icons/icon-192.png', // أيقونات مهمة
+  '/scripts/levels/loudoukou.js',
+  '/scripts/levels/crossmath.js',
+  '/scripts/levels/calculator.js',
+  '/scripts/levels/sliding_puzzle.js',
+  '/icons/icon-192.png', 
+  // أيقونات مهمة
   '/icons/icon-512.png'
 ];
 
@@ -176,16 +181,4 @@ self.addEventListener('notificationclick', (event) => {
       clients.openWindow('/')
     );
   }
-});  const cacheWhitelist = [CACHE_NAME];
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (!cacheWhitelist.includes(cacheName)) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
 });

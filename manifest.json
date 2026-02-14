@@ -51,25 +51,18 @@
   ],
   "screenshots": [
     {
-      "src": "/screenshots/desktop.jpg",
+      "src": "/screenshots/home.png",
       "sizes": "1280x720",
-      "type": "image/jpeg",
+      "type": "image/png",
       "form_factor": "wide",
       "label": "الشاشة الرئيسية للتطبيق"
     },
     {
-      "src": "/screenshots/mobile.jpg",
+      "src": "/screenshots/home.png",
       "sizes": "720x1280",
-      "type": "image/jpeg",
+      "type": "image/png",
       "form_factor": "narrow",
       "label": "واجهة التمارين"
-    }
-  ]
-}    },
-    {
-      "src": "/icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
     }
   ]
 }

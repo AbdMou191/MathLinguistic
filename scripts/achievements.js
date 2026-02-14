@@ -1,5 +1,5 @@
 // =============== //
-// نظام الإنجازات الذكي - نسخة متوافقة مع window
+// نظام الإنجازات الموحد - النسخة المصححة لـ Font Awesome
 // =============== //
 
 let ALL_ACHIEVEMENTS = null;
@@ -12,7 +12,6 @@ async function loadAchievementDefinitions() {
         return ALL_ACHIEVEMENTS;
     } catch (err) {
         console.error("فشل تحميل achievements.json", err);
-        ALL_ACHIEVEMENTS = [];
         return [];
     }
 }
@@ -26,84 +25,87 @@ function saveEarnedAchievements(list) {
 }
 
 function collectStats() {
-    const totalPoints = parseInt(localStorage.getItem('math_user_points') || '0');
-    const speedMaxLevel = window.speedTestData?.currentLevel || 1;
-    const mentalBeginnerMax = window.mentalMathData?.currentLevel || parseInt(localStorage.getItem('math_mental_beginner_level') || '1');
-    const mentalAdvancedMax = window.mixedOpsData?.currentLevel || 1;
+    const getNum = (key) => parseInt(localStorage.getItem(key) || '0');
+    const getBool = (key) => localStorage.getItem(key) === 'true';
 
-    const countCompleted = (key, totalExpected = Infinity) => {
-        const answers = JSON.parse(localStorage.getItem(key) || '[]');
-        const solved = answers.filter(a => a?.status === 'correct' || (typeof a === 'string' && a.trim() !== "")).length;
-        return { solved, total: totalExpected };
+    const countSolved = (key) => {
+        const data = JSON.parse(localStorage.getItem(key) || '[]');
+        return data.filter(a => a?.status === 'correct' || (typeof a === 'string' && a.trim() !== "")).length;
     };
-    const beginner = countCompleted('math_beg_answers');
-    const intermediate = countCompleted('math_int_answers');
-    const advanced = countCompleted('math_adv_achievements', 200);
-    const complex = countCompleted('math_complex_achievements');
 
-    return {
-        total_points: totalPoints,
-        speed_max_level: speedMaxLevel - 1,
-        mental_beginner_max_level: mentalBeginnerMax - 1,
-        mental_advanced_max_level: mentalAdvancedMax - 1,
-        beginner_solved: beginner.solved,
-        total_beginner: beginner.total,        intermediate_solved: intermediate.solved,
-        total_intermediate: intermediate.total,
-        advanced_solved: advanced.solved,
-        total_advanced: advanced.total,
-        complex_solved: complex.solved,
-        total_complex: complex.total,
-        first_answer_submitted: localStorage.getItem('first_answer_done') === 'true',
-        speed_test_played: localStorage.getItem('speed_test_played') === 'true',
-        achievements_viewed: localStorage.getItem('achievements_viewed') === 'true',
-        theme_switched: localStorage.getItem('theme_switched') === 'true',
-        pwa_installed: localStorage.getItem('pwa_installed') === 'true'
+    const stats = {
+        total_points: getNum('math_user_points'),
+        speed_max_level: (window.speedTestData?.currentLevel || 1) - 1,
+        mental_beginner_max_level: (window.mentalMathData?.currentLevel || getNum('math_mental_beginner_level') || 1) - 1,
+        mental_advanced_max_level: (window.mixedOpsData?.currentLevel || 1) - 1,
+        
+        beginner_solved: countSolved('math_beg_answers'),
+        intermediate_solved: countSolved('math_int_answers'),
+        advanced_solved: countSolved('math_adv_achievements'),
+        complex_solved: countSolved('math_complex_achievements'),
+        
+        total_beginner: 50, 
+        total_intermediate: 100,
+        total_advanced: 200,
+        total_complex: 100,
+
+        // المتغيرات التي كانت تسبب ReferenceError في صورك
+        consecutive_days: getNum('consecutive_days'),
+        total_hints_used: getNum('total_hints_used'),
+        first_answer_submitted: getBool('first_answer_done'),
+        speed_test_played: getBool('speed_test_played'),
+        theme_switched: getBool('theme_switched'),
+        pwa_installed: getBool('pwa_installed'),
+        achievements_viewed: getBool('achievements_viewed'),
+        speed_level_no_hint: getBool('speed_level_no_hint'),
+        speed_level_10_perfect: getBool('speed_level_10_perfect'),
+        earned_achievements_count: getEarnedAchievements().length
     };
+
+    // حساب الحالات المنطقية المركبة (Flags)
+    stats.beginner_complete = stats.beginner_solved >= stats.total_beginner;
+    stats.intermediate_complete = stats.intermediate_solved >= stats.total_intermediate;
+    stats.advanced_complete = stats.advanced_solved >= stats.total_advanced;
+    stats.complex_complete = stats.complex_solved >= stats.total_complex;
+    stats.speed_master = stats.speed_max_level >= 50;
+    stats.mental_beginner_complete = stats.mental_beginner_max_level >= 5;
+    stats.mental_advanced_complete = stats.mental_advanced_max_level >= 5;
+    stats.all_levels_beginner = stats.beginner_complete && stats.intermediate_complete && stats.advanced_complete && stats.complex_complete;
+
+    return stats;
 }
 
 function evaluateCondition(condition, stats) {
     try {
-        let expr = condition
-            .replace(/speed_max_level/g, stats.speed_max_level)
-            .replace(/mental_beginner_max_level/g, stats.mental_beginner_max_level)
-            .replace(/mental_advanced_max_level/g, stats.mental_advanced_max_level)
-            .replace(/beginner_solved/g, stats.beginner_solved)
-            .replace(/intermediate_solved/g, stats.intermediate_solved)
-            .replace(/advanced_solved/g, stats.advanced_solved)
-            .replace(/complex_solved/g, stats.complex_solved)
-            .replace(/total_points/g, stats.total_points)
-            .replace(/total_beginner/g, stats.total_beginner)
-            .replace(/total_intermediate/g, stats.total_intermediate)
-            .replace(/total_advanced/g, stats.total_advanced)
-            .replace(/total_complex/g, stats.total_complex)
-            .replace(/==/g, '===')
-            .replace(/&&/g, ' && ')
-            .replace(/\|\|/g, ' || ');
-
-        return Function('"use strict"; return (' + expr + ')')();
+        const keys = Object.keys(stats);
+        const values = Object.values(stats);
+        // تمرير القيم كبارامترات يمنع ReferenceError تماماً
+        return new Function(...keys, `"use strict"; return (${condition})`)(...values);
     } catch (e) {
-        console.warn("خطأ في تقييم شرط:", condition, e);
         return false;
     }
 }
 
 async function checkAndUnlockAchievements() {
     const definitions = await loadAchievementDefinitions();
-    const earned = getEarnedAchievements();
+    let earned = getEarnedAchievements();
     const stats = collectStats();
     let newUnlocks = [];
 
     for (const ach of definitions) {
         if (earned.includes(ach.id)) continue;
         if (evaluateCondition(ach.condition, stats)) {
-            earned.push(ach.id);            newUnlocks.push(ach);
+            earned.push(ach.id);
+            newUnlocks.push(ach);
         }
     }
 
     if (newUnlocks.length > 0) {
         saveEarnedAchievements(earned);
         newUnlocks.forEach(ach => {
-            showToast(`🏆 ${ach.name}\n${ach.description}`, 'success');
+            if (typeof showToast === 'function') {
+                showToast(`🏆 ${ach.name}\n${ach.description}`, 'success');
+            }
         });
     }
     return newUnlocks;
@@ -111,31 +113,33 @@ async function checkAndUnlockAchievements() {
 
 async function loadAchievementsPage() {
     const mainContent = document.getElementById('main-content');
+    if(!mainContent) return;
+
     mainContent.innerHTML = `<div style="text-align:center; padding:50px;">جاري تحميل إنجازاتك... 🏆</div>`;
 
     const allAchievements = await loadAchievementDefinitions();
     const earnedIds = getEarnedAchievements();
-    const stats = collectStats();
 
     let html = `
-        <div class="achievements-page">
-            <header class="ach-header">
+        <div class="achievements-page" style="direction: rtl;">
+            <header class="ach-header" style="text-align:center; margin-bottom:20px;">
                 <h2>🏆 لوحة الإنجازات</h2>
-                <p>لقد حققت ${earnedIds.length} من أصل ${allAchievements.length} إنجازاً</p>
+                <p>لقد حققت ${earnedIds.length} من أصل ${allAchievements.length}</p>
             </header>
-            <div class="achievements-grid">
+            <div class="achievements-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:15px; padding:10px;">
     `;
 
     allAchievements.forEach(ach => {
         const isEarned = earnedIds.includes(ach.id);
         html += `
-            <div class="achievement-card ${isEarned ? 'earned' : 'locked'}">
-                <div class="ach-icon">
-                    ${isEarned ? `<img src="icons/${ach.icon}" alt="icon">` : '🔒'}
+            <div class="achievement-card ${isEarned ? 'earned' : 'locked'}" 
+                 style="background:#fff; border:2px solid ${isEarned ? '#4CAF50' : '#ddd'}; padding:15px; border-radius:12px; text-align:center; opacity: ${isEarned ? '1' : '0.6'}">
+                <div class="ach-icon" style="font-size:35px; margin-bottom:10px; color: ${isEarned ? '#4CAF50' : '#999'}">
+                    ${isEarned ? `<i class="${ach.icon}"></i>` : '<i class="fas fa-lock"></i>'}
                 </div>
                 <div class="ach-info">
-                    <h3>${ach.name}</h3>
-                    <p>${ach.description}</p>
+                    <h3 style="font-size:16px; margin:5px 0;">${ach.name}</h3>
+                    <p style="font-size:11px; color:#666; margin:0;">${ach.description}</p>
                 </div>
             </div>
         `;
@@ -143,12 +147,8 @@ async function loadAchievementsPage() {
 
     html += `</div></div>`;
     mainContent.innerHTML = html;
+}
 
-    localStorage.setItem('achievements_viewed', 'true');
-    checkAndUnlockAchievements(); }
-
-// === جعل الدوال عالمية ===
-window.loadAchievementDefinitions = loadAchievementDefinitions;
-window.getEarnedAchievements = getEarnedAchievements;
+// التصدير للنافذة العالمية لضمان العمل بدون Export
 window.checkAndUnlockAchievements = checkAndUnlockAchievements;
 window.loadAchievementsPage = loadAchievementsPage;

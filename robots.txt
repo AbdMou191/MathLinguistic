@@ -1,0 +1,35 @@
+# ===========================================
+# robots.txt for MathLinguistic
+# الموقع: https://abdmou191.github.io/MathLinguistic/
+# التاريخ: 2026-03-03
+# ===========================================
+
+# ✅ السماح لجميع محركات البحث
+User-agent: *
+Allow: /
+
+# ❌ منع فهرسة المجلدات التقنية (لا تحتوي محتوى للمستخدم)
+Disallow: /scripts/
+Disallow: /data/
+Disallow: /styles/
+Disallow: /icons/
+Disallow: /*.json$
+Disallow: /*.js$
+Disallow: /*.css$
+
+# ✅ السماح بملفات SEO المهمة
+Allow: /sitemap.xml
+Allow: /manifest.json
+
+# ✅ إعدادات الزحف (اختياري - مفيد لـ GitHub Pages)
+Crawl-delay: 1
+
+# ✅ تحديد موقع خريطة الموقع
+Sitemap: https://abdmou191.github.io/MathLinguistic/sitemap.xml
+
+# ===========================================
+# ملاحظات للمطور:
+# - GitHub Pages يخدم الملفات ثابتة، لذا لا داعي لـ Disallow للبارامترات
+# - ملفات JSON و JS مخفية لأنها ليست محتوى للمستخدم النهائي
+# - تم إضافة Crawl-delay لتقليل الحمل على الخادم المجاني
+# ===========================================

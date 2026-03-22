@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathLinguistic - بدون إنترنت</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .offline-box {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+        }
+        
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+        
+        p {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .offline-features {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .offline-features h3 {
+            color: #27ae60;
+            margin-bottom: 15px;
+        }
+        
+        .feature-item {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin: 8px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            color: #2c3e50;
+            text-align: right;
+        }
+        
+        .feature-item i {
+            margin-left: 10px;
+            color: #3498db;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            flex: 1;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        button.secondary {
+            background: #95a5a6;
+        }
+        
+        .connection-status {
+            margin-top: 25px;
+            padding: 10px;
+            background: #f1c40f;
+            border-radius: 50px;
+            color: #2c3e50;
+            animation: pulse 2s infinite;
+            font-size: 14px;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+    </style>
+    <!-- ربط Font Awesome إذا كان متاحاً -->
+    <link rel="stylesheet" href="font-awesome/css/all.min.css">
+</head>
+<body>
+    <div class="offline-box">
+        <div class="icon">📱</div>
+        <h1>لا يوجد اتصال بالإنترنت</h1>
+        <p>لا تقلق! يمكنك الاستمرار في التدرب على التمارين المحفوظة</p>
+        
+        <div class="offline-features">
+            <h3>📚 التمارين المتاحة حالياً:</h3>
+            <div class="feature-item"><i class="fas fa-star"></i> المبتدئ - الجمع والطرح</div>
+            <div class="feature-item"><i class="fas fa-star"></i> المتوسط - الضرب والقسمة</div>
+            <div class="feature-item"><i class="fas fa-star"></i> المتقدم - الجبر والنسب المئوية</div>
+            <div class="feature-item"><i class="fas fa-star"></i> المعقد - التحديات المنطقية</div>
+            <div class="feature-item"><i class="fas fa-bolt"></i> Speed Test - اختبار السرعة</div>
+            <div class="feature-item"><i class="fas fa-brain"></i> Mental Math - الحساب الذهني</div>
+        </div>
+        
+        <div class="buttons">
+            <button onclick="window.location.href='/'">العودة للرئيسية</button>
+            <button class="secondary" onclick="window.location.reload()">إعادة المحاولة</button>
+        </div>
+        
+        <div class="connection-status">
+            ⚡ سيتم حفظ تقدمك تلقائياً عند عودة الاتصال
+        </div>
+    </div>
+</body>
+</html>

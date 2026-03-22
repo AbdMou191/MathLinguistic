@@ -1,0 +1,27 @@
+{
+  "name": "MathLinguistic - الحساب الذهني",
+  "short_name": "MathLing",
+  "description": "تطبيق تعليمي ذكي للحساب الذهني والتحديات الرياضية.",
+  "start_url": "/MathLinguistic/?source=pwa",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3498db",
+  "orientation": "portrait-primary",
+  "lang": "ar",
+  "dir": "rtl",
+  "scope": "/MathLinguistic/",
+  "icons": [
+    {
+      "src": "icons/icon-192.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    }
+  ]
+}

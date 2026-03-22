@@ -1,1 +1,422 @@
-
+[
+  {
+    "id": "beg_star_1",
+    "name": "بداية موفقة",
+    "description": "حل أول 10% من تمارين المستوى المبتدئ.",
+    "icon": "fas fa-star",
+    "condition": "beginner_solved >= (total_beginner * 0.10)"
+  },
+  {
+    "id": "beg_star_2",
+    "name": "تقدم ملحوظ",
+    "description": "أنجز ربع تمارين المستوى المبتدئ.",
+    "icon": "fas fa-star",
+    "condition": "beginner_solved >= (total_beginner * 0.25)"
+  },
+  {
+    "id": "beg_star_3",
+    "name": "مثابرة",
+    "description": "أكمل 40% من التمارين.",
+    "icon": "fas fa-star",
+    "condition": "beginner_solved >= (total_beginner * 0.40)"
+  },
+  {
+    "id": "beg_star_4",
+    "name": "تركيز عالي",
+    "description": "تجاوز حاجز الـ 60% من التمارين.",
+    "icon": "fas fa-star",
+    "condition": "beginner_solved >= (total_beginner * 0.60)"
+  },
+  {
+    "id": "beg_star_5",
+    "name": "قريب من القمة",
+    "description": "أنجز 80% من تمارين المستوى.",
+    "icon": "fas fa-star",
+    "condition": "beginner_solved >= (total_beginner * 0.80)"
+  },
+  {
+    "id": "beg_star_6",
+    "name": "إتقان شبه كامل",
+    "description": "لم يتبقَ إلا القليل لإكمال المستوى!",
+    "icon": "fas fa-star",
+    "condition": "beginner_solved >= (total_beginner * 0.95)"
+  },
+  {
+    "id": "beg_crown_1",
+    "name": "تاج المبتدئ",
+    "description": "أتممت جميع تمارين المستوى المبتدئ بنجاح.",
+    "icon": "fas fa-crown",
+    "condition": "beginner_complete"
+  },
+  {
+    "id": "beg_crown_2",
+    "name": "تاج الدقة",
+    "description": "أنهيت المستوى دون استخدام أي تلميح مدفوع.",
+    "icon": "fas fa-medal",
+    "condition": "beginner_complete && total_hints_used < 5"
+  },
+  {
+    "id": "beg_crown_3",
+    "name": "تاج السرعة الخارق",
+    "description": "أنهيت جميع التمارين بمتوسط وقت أقل من 10 ثواني للسؤال.",
+    "icon": "fas fa-bolt",
+    "condition": "beginner_complete && earned_achievements_count >= 5"
+  },
+  {
+    "id": "int_star_1",
+    "name": "انطلاقة قوية",
+    "description": "حل أول 10% من تمارين المستوى المتوسط.",
+    "icon": "fas fa-star",
+    "condition": "intermediate_solved >= (total_intermediate * 0.10)"
+  },
+  {
+    "id": "int_star_2",
+    "name": "تطور مستمر",
+    "description": "أنجز 25% من التمارين.",
+    "icon": "fas fa-star",
+    "condition": "intermediate_solved >= (total_intermediate * 0.25)"
+  },
+  {
+    "id": "int_star_3",
+    "name": "ثبات الأداء",
+    "description": "أكمل 40% من التمارين بنجاح.",
+    "icon": "fas fa-star",
+    "condition": "intermediate_solved >= (total_intermediate * 0.40)"
+  },
+  {
+    "id": "int_star_4",
+    "name": "تحدي حقيقي",
+    "description": "تجاوزت 60% من صعوبة المستوى.",
+    "icon": "fas fa-star",
+    "condition": "intermediate_solved >= (total_intermediate * 0.60)"
+  },
+  {
+    "id": "int_star_5",
+    "name": "خبير حسابي",
+    "description": "أنجز 80% من التمارين.",
+    "icon": "fas fa-star",
+    "condition": "intermediate_solved >= (total_intermediate * 0.80)"
+  },
+  {
+    "id": "int_star_6",
+    "name": "شبه المكتمل",
+    "description": "باقي خطوات قليلة للتتويج.",
+    "icon": "fas fa-star",
+    "condition": "intermediate_solved >= (total_intermediate * 0.95)"
+  },
+  {
+    "id": "int_crown_1",
+    "name": "تاج المتوسط",
+    "description": "أتممت جميع تمارين المستوى المتوسط.",
+    "icon": "fas fa-crown",
+    "condition": "intermediate_complete"
+  },
+  {
+    "id": "int_crown_2",
+    "name": "تاج العبقرية",
+    "description": "أنهيت المستوى بدون أي خطأ في المحاولة الأولى.",
+    "icon": "fas fa-medal",
+    "condition": "intermediate_complete && total_points > 500"
+  },
+  {
+    "id": "int_crown_3",
+    "name": "تاج البرق",
+    "description": "أنهيت المستوى بسرعة قياسية.",
+    "icon": "fas fa-bolt",
+    "condition": "intermediate_complete && speed_max_level >= 10"
+  },
+  {
+    "id": "adv_star_1",
+    "name": "تحدي البداية",
+    "description": "حل أول 10% من مسائل المستوى المتقدم.",
+    "icon": "fas fa-star",
+    "condition": "advanced_solved >= (total_advanced * 0.10)"
+  },
+  {
+    "id": "adv_star_2",
+    "name": "تسلق الجبل",
+    "description": "أنجز 25% من المسائل الصعبة.",
+    "icon": "fas fa-star",
+    "condition": "advanced_solved >= (total_advanced * 0.25)"
+  },
+  {
+    "id": "adv_star_3",
+    "name": "عقل تحليلي",
+    "description": "أكمل 40% من المسائل.",
+    "icon": "fas fa-star",
+    "condition": "advanced_solved >= (total_advanced * 0.40)"
+  },
+  {
+    "id": "adv_star_4",
+    "name": "سيطرة كاملة",
+    "description": "تجاوزت 60% من التحديات.",
+    "icon": "fas fa-star",
+    "condition": "advanced_solved >= (total_advanced * 0.60)"
+  },
+  {
+    "id": "adv_star_5",
+    "name": "قمة الأداء",
+    "description": "أنجز 80% من المسائل المتقدمة.",
+    "icon": "fas fa-star",
+    "condition": "advanced_solved >= (total_advanced * 0.80)"
+  },
+  {
+    "id": "adv_star_6",
+    "name": "الخطوة الأخيرة",
+    "description": "أكمل 95% من المستوى.",
+    "icon": "fas fa-star",
+    "condition": "advanced_solved >= (total_advanced * 0.95)"
+  },
+  {
+    "id": "adv_crown_1",
+    "name": "تاج المتقدم",
+    "description": "حليت جميع مسائل المستوى المتقدم.",
+    "icon": "fas fa-crown",
+    "condition": "advanced_complete"
+  },
+  {
+    "id": "adv_crown_2",
+    "name": "تاج الأستاذ",
+    "description": "أنهيت المستوى دون أخطاء.",
+    "icon": "fas fa-medal",
+    "condition": "advanced_complete && total_points > 1000"
+  },
+  {
+    "id": "adv_crown_3",
+    "name": "تاج العبقري",
+    "description": "أنهيت المستوى بزمن قياسي.",
+    "icon": "fas fa-bolt",
+    "condition": "advanced_complete && speed_max_level >= 30"
+  },
+  {
+    "id": "cmp_star_1",
+    "name": "مواجهة العملاق",
+    "description": "حل أول 10% من ألغاز المستوى المعقد.",
+    "icon": "fas fa-star",
+    "condition": "complex_solved >= (total_complex * 0.10)"
+  },
+  {
+    "id": "cmp_star_2",
+    "name": "كسر الحاجز",
+    "description": "أنجز 25% من الألغاز.",
+    "icon": "fas fa-star",
+    "condition": "complex_solved >= (total_complex * 0.25)"
+  },
+  {
+    "id": "cmp_star_3",
+    "name": "عقل استراتيجي",
+    "description": "أكمل 40% من التحديات المعقدة.",
+    "icon": "fas fa-star",
+    "condition": "complex_solved >= (total_complex * 0.40)"
+  },
+  {
+    "id": "cmp_star_4",
+    "name": "سيد التعقيد",
+    "description": "تجاوزت 60% من المستوى.",
+    "icon": "fas fa-star",
+    "condition": "complex_solved >= (total_complex * 0.60)"
+  },
+  {
+    "id": "cmp_star_5",
+    "name": "قرب الكمال",
+    "description": "أنجز 80% من الألغاز.",
+    "icon": "fas fa-star",
+    "condition": "complex_solved >= (total_complex * 0.80)"
+  },
+  {
+    "id": "cmp_star_6",
+    "name": "اللمسة النهائية",
+    "description": "أكمل 95% من المستوى المعقد.",
+    "icon": "fas fa-star",
+    "condition": "complex_solved >= (total_complex * 0.95)"
+  },
+  {
+    "id": "cmp_crown_1",
+    "name": "تاج التعقيد",
+    "description": "فزت بجميع ألغاز المستوى المعقد.",
+    "icon": "fas fa-crown",
+    "condition": "complex_complete"
+  },
+  {
+    "id": "cmp_crown_2",
+    "name": "تاج الأسطورة",
+    "description": "أنهيت المستوى بدون أي مساعدة.",
+    "icon": "fas fa-medal",
+    "condition": "complex_complete && total_points > 2000"
+  },
+  {
+    "id": "cmp_crown_3",
+    "name": "تاج الخالد",
+    "description": "أنهيت المستوى في وقت مذهل.",
+    "icon": "fas fa-trophy",
+    "condition": "all_levels_beginner"
+  },
+  {
+    "id": "spd_star_1",
+    "name": "بداية سريعة",
+    "description": "وصل للمستوى 5.",
+    "icon": "fas fa-star",
+    "condition": "speed_max_level >= 5"
+  },
+  {
+    "id": "spd_star_2",
+    "name": "سرعة متوسطة",
+    "description": "وصل للمستوى 15.",
+    "icon": "fas fa-star",
+    "condition": "speed_max_level >= 15"
+  },
+  {
+    "id": "spd_star_3",
+    "name": "صاروخ",
+    "description": "وصل للمستوى 30.",
+    "icon": "fas fa-star",
+    "condition": "speed_max_level >= 30"
+  },
+  {
+    "id": "spd_crown_1",
+    "name": "تاج السرعة",
+    "description": "أكمل جميع مستويات السرعة الخمسين.",
+    "icon": "fas fa-crown",
+    "condition": "speed_master"
+  },
+  {
+    "id": "mnt_star_1",
+    "name": "ذهن يقظ",
+    "description": "أكمل المستوى 2.",
+    "icon": "fas fa-star",
+    "condition": "mental_beginner_max_level >= 2"
+  },
+  {
+    "id": "mnt_star_2",
+    "name": "حاسبة بشرية",
+    "description": "أكمل المستوى 4.",
+    "icon": "fas fa-star",
+    "condition": "mental_beginner_max_level >= 4"
+  },
+  {
+    "id": "mnt_star_3",
+    "name": "عبقري الرياضيات",
+    "description": "أكمل المستوى الخامس.",
+    "icon": "fas fa-star",
+    "condition": "mental_beginner_complete"
+  },
+  {
+    "id": "mnt_crown_1",
+    "name": "تاج التركيز",
+    "description": "أنه جميع المستويات دون أي خطأ.",
+    "icon": "fas fa-crown",
+    "condition": "mental_beginner_complete && total_hints_used < 10"
+  },
+  {
+    "id": "mix_star_1",
+    "name": "ماهر العمليات",
+    "description": "أكمل المستوى 2.",
+    "icon": "fas fa-star",
+    "condition": "mental_advanced_max_level >= 2"
+  },
+  {
+    "id": "mix_star_2",
+    "name": "سيد الاختلاط",
+    "description": "أكمل المستوى 4.",
+    "icon": "fas fa-star",
+    "condition": "mental_advanced_max_level >= 4"
+  },
+  {
+    "id": "mix_star_3",
+    "name": "عاصفة ذهنية",
+    "description": "أكمل المستوى الأخير.",
+    "icon": "fas fa-star",
+    "condition": "mental_advanced_complete"
+  },
+  {
+    "id": "mix_crown_1",
+    "name": "تاج الإعصار",
+    "description": "أنه جميع المستويات بدقة متناهية.",
+    "icon": "fas fa-crown",
+    "condition": "mental_advanced_complete && total_points > 1500"
+  },
+  {
+    "id": "crs_star_1",
+    "name": "بداية المتقاطع",
+    "description": "أكمل 5 مراحل.",
+    "icon": "fas fa-star",
+    "condition": "crossmath_stage >= 5"
+  },
+  {
+    "id": "crs_star_2",
+    "name": "شبكية ذكية",
+    "description": "أكمل 15 مرحلة.",
+    "icon": "fas fa-star",
+    "condition": "crossmath_stage >= 15"
+  },
+  {
+    "id": "crs_star_3",
+    "name": "ملك الشبكة",
+    "description": "أكمل 30 مرحلة.",
+    "icon": "fas fa-star",
+    "condition": "crossmath_stage >= 30"
+  },
+  {
+    "id": "crs_crown_1",
+    "name": "تاج التقاطع",
+    "description": "أكمل 50 مرحلة بتحديات متصاعدة.",
+    "icon": "fas fa-crown",
+    "condition": "crossmath_stage >= 50"
+  },
+  {
+    "id": "lod_star_1",
+    "name": "محلول مبتدئ",
+    "description": "أكمل 10 كتل (شبكات).",
+    "icon": "fas fa-star",
+    "condition": "loudoukou_blocks >= 10"
+  },
+  {
+    "id": "lod_star_2",
+    "name": "خبير سودوكو",
+    "description": "أكمل 25 شبكة.",
+    "icon": "fas fa-star",
+    "condition": "loudoukou_blocks >= 25"
+  },
+  {
+    "id": "lod_star_3",
+    "name": "أسطوري",
+    "description": "أكمل 50 شبكة.",
+    "icon": "fas fa-star",
+    "condition": "loudoukou_blocks >= 50"
+  },
+  {
+    "id": "lod_crown_1",
+    "name": "تاج اللودوكو",
+    "description": "أكمل 100 شبكة بمختلف الصعوبات.",
+    "icon": "fas fa-crown",
+    "condition": "loudoukou_blocks >= 100"
+  },
+  {
+    "id": "sld_star_1",
+    "name": "بداية مرتبة",
+    "description": "حل لغز 3×3.",
+    "icon": "fas fa-star",
+    "condition": "sliding_max_grid >= 3"
+  },
+  {
+    "id": "sld_star_2",
+    "name": "تحدي متوسط",
+    "description": "حل لغز 5×5.",
+    "icon": "fas fa-star",
+    "condition": "sliding_max_grid >= 5"
+  },
+  {
+    "id": "sld_star_3",
+    "name": "عقل منظم",
+    "description": "حل لغز 7×7.",
+    "icon": "fas fa-star",
+    "condition": "sliding_max_grid >= 7"
+  },
+  {
+    "id": "sld_crown_1",
+    "name": "تاج الترتيب",
+    "description": "حل أصعب لغز 9×9.",
+    "icon": "fas fa-crown",
+    "condition": "sliding_max_grid >= 9"
+  }
+]

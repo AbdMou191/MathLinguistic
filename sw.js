@@ -1,8 +1,8 @@
 // sw.js - MathLinguistic Service Worker (v8.0.0-OFFLINE-FIRST)
 // متوافق مع الهيكلية الجديدة - يدعم العمل الكامل بدون إنترنت
 
-const CACHE_NAME = 'mathlinguistic-v8.0.1-OFFLINE';
-const CORE_CACHE = 'mathlinguistic-core-v8.0.1';
+const CACHE_NAME = 'mathlinguistic-v8.0.2-OFFLINE';
+const CORE_CACHE = 'mathlinguistic-core-v8.0.2';
 const DYNAMIC_CACHE = 'mathlinguistic-dynamic-v8';
 
 // ✅ 1. الملفات الأساسية (تُخزّن فوراً عند التثبيت - ضرورية للتشغيل)

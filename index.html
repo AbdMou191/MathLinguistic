@@ -43,7 +43,7 @@
   
   <!-- ✅ الأيقونات والمانيفست -->
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/ebp" sizes="192x192" href="icons/icon-192.webp" />
+  <link rel="icon" type="image/webp" sizes="192x192" href="icons/icon-192.webp" />
   <link rel="icon" type="image/webp" sizes="512x512" href="icons/icon-512.webp" />
   <link rel="canonical" href="https://abdmou191.github.io/MathLinguistic/" />
   
@@ -74,9 +74,7 @@
   <link rel="stylesheet" href="styles/font-awesome/css/all.min.css" />
   <link rel="stylesheet" href="styles/main.css" />
   
-  <!-- ✅ MathJax Library (مرة واحدة فقط) -->
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- ✅ MathJax Library (تهيئة قبل التحميل - مهم جداً لـ Chrome) -->
   <script>
   window.MathJax = {
     tex: {
@@ -88,12 +86,17 @@
     options: {
       skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
       ignoreHtmlClass: 'tex2jax_ignore'
+    },
+    startup: {
+      pageReady: () => {
+        console.log('✅ MathJax جاهز');
+      }
     }
   };
   </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
-<body>
-  <header>
+<body>  <header>
     <button id="menu-toggle" aria-label="فتح القائمة">
       <i class="fas fa-bars"></i>
     </button>
@@ -101,6 +104,11 @@
       <i class="fas fa-calculator"></i>
       <span>MathLinguistic</span>
     </div>
+
+    <!-- ✅ أيقونة البحث في الهيدر -->
+    <button id="search-toggle" aria-label="بحث" onclick="toggleSearchModal()">
+      <i class="fas fa-search"></i>
+    </button>
 
     <button id="theme-toggle" aria-label="تبديل الوضع">
       <i class="fas fa-moon"></i>
@@ -137,15 +145,15 @@
         </li>
 
         <li>
-          <button class="menu-item dropdown-toggle" id="lessons-dropdown-btn">
-            <i class="fas fa-book-open"></i> الدروس والقواعد
+          <button class="menu-item dropdown-toggle" id="lessons-dropdown-btn">            <i class="fas fa-book-open"></i> الدروس والقواعد
             <i class="fas fa-chevron-down dropdown-arrow"></i>
           </button>
           <ul id="lessons-submenu" class="submenu">
             <li>
               <button class="menu-item sub-item" data-target="learn-beginner">
                 <i class="fas fa-chalkboard"></i> شرح المبتدئ
-              </button>            </li>
+              </button>
+            </li>
             <li>
               <button class="menu-item sub-item" data-target="learn-intermediate">
                 <i class="fas fa-chalkboard"></i> شرح المتوسط
@@ -168,6 +176,12 @@
             <i class="fas fa-trophy"></i> الإنجازات
           </button>
         </li>
+        <!-- ✅ زر المشاركة في القائمة الجانبية -->
+        <li>
+          <button class="menu-item" onclick="shareWebsite()">
+            <i class="fas fa-share-alt"></i> مشاركة الموقع
+          </button>
+        </li>
       </ul>
     </nav>
   </aside>
@@ -176,22 +190,21 @@
     <p>مرحباً بك في MathLinguistic! سيتم عرض المحتوى هنا ديناميكياً.</p>
     
     <!-- ✅ محتوى نصي لتحسين SEO (مخفي بصرياً لكن مقروء للزواحف) -->
-<div itemscope itemtype="https://schema.org/EducationalApplication" style="position:absolute; left:-9999px; top:-9999px;">
-  <h1 itemprop="name">MathLinguistic - منصة تعليم الحساب الذهني</h1>
-  <p itemprop="description">تعلّم الرياضيات والحساب الذهني عبر مستويات تفاعلية: مبتدئ، متوسط، متقدم، معقد. تمارين، تحديات سرعة، ألعاب تعليمية مثل السودوكو والأرقام المتقاطعة، ونظام إنجازات يحفز على التعلم.</p>
-  <div itemprop="hasPart" itemscope itemtype="https://schema.org/Course">
-    <span itemprop="name">المستوى المبتدئ</span>
-  </div>
-  <div itemprop="hasPart" itemscope itemtype="https://schema.org/Course">
-    <span itemprop="name">المستوى المتوسط</span>
-  </div>
-  <div itemprop="hasPart" itemscope itemtype="https://schema.org/Course">
-    <span itemprop="name">المستوى المتقدم</span>
-  </div>
-  <div itemprop="hasPart" itemscope itemtype="https://schema.org/Course">
-    <span itemprop="name">المستوى المعقد</span>
-  </div>
-</div>
+    <div itemscope itemtype="https://schema.org/EducationalApplication" style="position:absolute; left:-9999px; top:-9999px;">
+      <h1 itemprop="name">MathLinguistic - منصة تعليم الحساب الذهني</h1>
+      <p itemprop="description">تعلّم الرياضيات والحساب الذهني عبر مستويات تفاعلية: مبتدئ، متوسط، متقدم، معقد. تمارين، تحديات سرعة، ألعاب تعليمية مثل السودوكو والأرقام المتقاطعة، ونظام إنجازات يحفز على التعلم.</p>
+      <div itemprop="hasPart" itemscope itemtype="https://schema.org/Course">
+        <span itemprop="name">المستوى المبتدئ</span>      </div>
+      <div itemprop="hasPart" itemscope itemtype="https://schema.org/Course">
+        <span itemprop="name">المستوى المتوسط</span>
+      </div>
+      <div itemprop="hasPart" itemscope itemtype="https://schema.org/Course">
+        <span itemprop="name">المستوى المتقدم</span>
+      </div>
+      <div itemprop="hasPart" itemscope itemtype="https://schema.org/Course">
+        <span itemprop="name">المستوى المعقد</span>
+      </div>
+    </div>
   </main>
 
   <footer>
@@ -209,10 +222,20 @@
       <a href="https://youtube.com/@mathlinguistic?si=sOWAVL4xWQM65VwY" target="_blank" aria-label="يوتيوب">
         <i class="fab fa-youtube"></i>
       </a>
+      <!-- ✅ إضافة أيقونة Gmail -->
+      <a href="mailto:moussa.abderrezagui191@gmail.com" aria-label="Gmail">
+        <i class="fas fa-envelope"></i>
+      </a>
+      <!-- ✅ إضافة أيقونة TikTok -->
+      <a href="https://tiktok.com/@mathlinguistic" target="_blank" aria-label="TikTok">
+        <i class="fab fa-tiktok"></i>
+      </a>
       <a href="https://wa.me/213781263021" target="_blank" aria-label="واتساب">
         <i class="fab fa-whatsapp"></i>
       </a>
-      <button id="install-pwa-btn" onclick="installPWA()" aria-label="تثبيت التطبيق">        <i class="fas fa-download"></i>
+      <!-- ✅ زر التثبيت يُخفى تلقائياً عند تثبيت التطبيق -->
+      <button id="install-pwa-btn" onclick="installPWA()" aria-label="تثبيت التطبيق" style="display: none;">
+        <i class="fas fa-download"></i>
       </button>
     </div>
 
@@ -220,7 +243,6 @@
       <p>البريد الإلكتروني: <a href="mailto:moussa.abderrezagui191@gmail.com">moussa.abderrezagui191@gmail.com</a></p>
       <p>واتساب: <a href="https://wa.me/213781263021">+213 781 263 021</a></p>
     </div>
-
     <div id="copyright">
       &copy; 2026 MathLinguistic. جميع الحقوق محفوظة.
     </div>
@@ -230,16 +252,25 @@
     </button>
   </footer>
 
+  <!-- ✅ نافذة البحث المنبثقة -->
+  <div id="search-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close-modal" onclick="toggleSearchModal()">&times;</span>
+      <h2><i class="fas fa-search"></i> البحث في الموقع</h2>
+      <input type="text" id="search-input" placeholder="اكتب للبحث عن درس أو تمرين..." onkeyup="performSearch()" />
+      <div id="search-results"></div>
+    </div>
+  </div>
+
   <!-- ✅ منطقة السكربتات - الترتيب مهم جداً -->
   
-  <!-- 1️⃣ أولاً: الأدوات المشتركة والوظائف الأساسية -->
-  <script src="scripts/utils.js" defer></script>
+  <!-- 1️⃣ أولاً: الملف الرئيسي (يحتوي على منطق PWA) -->
+  <script src="scripts/main.js" defer></script>
   
   <!-- 2️⃣ ثانياً: Meta Manager (يجب أن يكون قبل أي ملف يستخدم updatePageMeta) -->
   <script src="scripts/meta-manager.js" defer></script>
   
   <!-- 3️⃣ ثالثاً: الملف الرئيسي والمنطق العام -->
-  <script src="scripts/main.js" defer></script>
   <script src="scripts/achievements.js" defer></script>
   
   <!-- 4️⃣ رابعاً: ملفات المستويات والتمارين -->
@@ -261,7 +292,7 @@
   <script src="scripts/levels/sliding_puzzle.js" defer></script>
   <script src="scripts/levels/loudoukou.js" defer></script>
   <script src="scripts/levels/crossmath.js" defer></script>
-  <script src="scripts/levels/calculator.js" defer></script>
+  <script src="scripts/levels/calculator.js" defer></script>  
   <!-- ✅ تنسيقات القائمة المنسدلة والعناصر الخاصة -->
   <style>
     /* تنسيق القائمة المنسدلة */
@@ -316,9 +347,85 @@
     [data-theme="dark"] #install-pwa-btn:hover {
       background: #1a252f;
     }
+
+    /* ✅ تنسيق أيقونة البحث في الهيدر */
+    #search-toggle {
+      background: transparent;
+      border: none;
+      color: var(--text-primary, #2c3e50);
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 8px;
+      margin-left: 10px;
+      transition: all 0.3s;
+    }
+    #search-toggle:hover {
+      color: var(--accent-color, #3498db);
+      transform: scale(1.1);
+    }
+
+    /* ✅ تنسيق نافذة البحث */
+    .modal {
+      position: fixed;
+      z-index: 10000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: var(--card-bg, white);
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .close-modal {
+      position: absolute;
+      left: 20px;
+      top: 15px;      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      color: var(--text-secondary, #888);
+    }
+    .close-modal:hover {
+      color: var(--text-primary, #000);
+    }
+    #search-input {
+      width: 100%;
+      padding: 12px;
+      margin: 20px 0;
+      border: 2px solid var(--border-color, #ddd);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Cairo', sans-serif;
+    }
+    #search-results {
+      margin-top: 20px;
+    }
+    .search-result-item {
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 8px;
+      background: var(--bg-secondary, #f5f5f5);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .search-result-item:hover {
+      background: var(--accent-color, #3498db);
+      color: white;
+      transform: translateX(-5px);
+    }
   </style>
 
-  <!-- ✅ كود التهيئة والتعامل مع القائمة -->
+  <!-- ✅ كود التهيئة والتعامل مع القائمة والبحث -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // منطق فتح وإغلاق القائمة المنسدلة
@@ -332,7 +439,6 @@
           arrow.classList.toggle('rotate-arrow');
         });
       }
-
       // منع السحب للتحديث (Pull-to-Refresh) فقط داخل التطبيق
       let touchStartY = 0;
       document.addEventListener('touchstart', (e) => {
@@ -347,7 +453,137 @@
           }
         }
       }, { passive: false });
+
+      // ✅ التحقق من تثبيت التطبيق وإخفاء زر التثبيت
+      checkIfAppInstalled();
     });
+
+    // ✅ دالة التحقق مما إذا كان التطبيق مثبتاً
+    function checkIfAppInstalled() {
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+      const isInstalled = localStorage.getItem('pwa_was_installed') === 'true';
+      
+      if (isStandalone || isInstalled) {
+        const installBtn = document.getElementById('install-pwa-btn');
+        if (installBtn) {
+          installBtn.style.display = 'none';
+        }
+      }
+    }
+
+    // ✅ دالة تثبيت PWA (متغيرات global لتجنب التكرار)
+    window.deferredInstallPrompt = window.deferredInstallPrompt || null;
+    window.installBanner = window.installBanner || null;
+    window.pwaCheckInterval = window.pwaCheckInterval || null;
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      window.deferredInstallPrompt = e;
+      
+      const installBtn = document.getElementById('install-pwa-btn');
+      if (installBtn && !isAppInstalled()) {
+        installBtn.style.display = 'flex';
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      localStorage.setItem('pwa_was_installed', 'true');
+      const installBtn = document.getElementById('install-pwa-btn');      if (installBtn) {
+        installBtn.style.display = 'none';
+      }
+    });
+
+    function isAppInstalled() {
+      return window.matchMedia('(display-mode: standalone)').matches || 
+             localStorage.getItem('pwa_was_installed') === 'true';
+    }
+
+    window.installPWA = async function() {
+      if (window.deferredInstallPrompt) {
+        window.deferredInstallPrompt.prompt();
+        const { outcome } = await window.deferredInstallPrompt.userChoice;
+        console.log(`📥 نتيجة التثبيت: ${outcome}`);
+        if (outcome === 'accepted') {
+          localStorage.setItem('pwa_was_installed', 'true');
+        }
+        window.deferredInstallPrompt = null;
+        const installBtn = document.getElementById('install-pwa-btn');
+        if (installBtn) {
+          installBtn.style.display = 'none';
+        }
+      }
+    };
+
+    // ✅ دالة نافذة البحث
+    window.toggleSearchModal = function() {
+      const modal = document.getElementById('search-modal');
+      if (modal) {
+        if (modal.style.display === 'none' || modal.style.display === '') {
+          modal.style.display = 'flex';
+          document.getElementById('search-input')?.focus();
+        } else {
+          modal.style.display = 'none';
+        }
+      }
+    };
+
+    // ✅ دالة البحث
+    window.performSearch = function() {
+      const query = document.getElementById('search-input')?.value.toLowerCase().trim();
+      const resultsDiv = document.getElementById('search-results');
+      
+      if (!query || query.length < 2) {
+        if (resultsDiv) resultsDiv.innerHTML = '';
+        return;
+      }
+
+      // هنا يمكنك إضافة منطق البحث الفعلي في المحتوى      // مثال بسيط:
+      if (resultsDiv) {
+        resultsDiv.innerHTML = `
+          <div class="search-result-item">
+            <strong>نتيجة بحث عن:</strong> "${query}"<br>
+            <small>جاري تطوير نظام البحث الشامل...</small>
+          </div>
+        `;
+      }
+    };
+
+    // ✅ دالة مشاركة الموقع
+    window.shareWebsite = async function() {
+      const shareData = {
+        title: 'MathLinguistic - تعلّم الحساب الذهني',
+        text: 'اكتشف منصة MathLinguistic لتعلم الحساب الذهني بطريقة ممتعة وتفاعلية!',
+        url: window.location.href
+      };
+
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+          console.log('✅ تمت المشاركة بنجاح');
+        } else {
+          // نسخ الرابط للحافظة
+          await navigator.clipboard.writeText(window.location.href);
+          alert('✅ تم نسخ رابط الموقع! يمكنك مشاركته الآن');
+        }
+      } catch (err) {
+        console.error('❌ خطأ في المشاركة:', err);
+        // نسخ الرابط كاحتياط
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          alert('✅ تم نسخ رابط الموقع!');
+        } catch (e) {
+          alert('رابط الموقع: ' + window.location.href);
+        }
+      }
+    };
+
+    // إغلاق النافذة عند النقر خارجها
+    window.onclick = function(event) {
+      const modal = document.getElementById('search-modal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    };
   </script>
 </body>
-</html>
+  </html>

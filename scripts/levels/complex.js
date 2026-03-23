@@ -272,4 +272,4 @@ function renderComplexPagination() {
     
     // ✅ إعادة معالجة المعادلات بعد بناء أزرار التنقل (لضمان تحديث أي محتوى ديناميكي)
     renderComplexMath();
-    }
+}

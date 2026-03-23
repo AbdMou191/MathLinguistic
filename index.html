@@ -43,7 +43,7 @@
   
   <!-- ✅ الأيقونات والمانيفست -->
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/webp" sizes="192x192" href="icons/icon-192.webp" />
+  <link rel="icon" type="image/ebp" sizes="192x192" href="icons/icon-192.webp" />
   <link rel="icon" type="image/webp" sizes="512x512" href="icons/icon-512.webp" />
   <link rel="canonical" href="https://abdmou191.github.io/MathLinguistic/" />
   
@@ -75,7 +75,7 @@
   <link rel="stylesheet" href="styles/main.css" />
   
   <!-- ✅ MathJax Library (مرة واحدة فقط) -->
-  
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script>
   window.MathJax = {
@@ -232,12 +232,14 @@
 
   <!-- ✅ منطقة السكربتات - الترتيب مهم جداً -->
   
-
+  <!-- 1️⃣ أولاً: الأدوات المشتركة والوظائف الأساسية -->
+  <script src="scripts/utils.js" defer></script>
+  
   <!-- 2️⃣ ثانياً: Meta Manager (يجب أن يكون قبل أي ملف يستخدم updatePageMeta) -->
   <script src="scripts/meta-manager.js" defer></script>
   
   <!-- 3️⃣ ثالثاً: الملف الرئيسي والمنطق العام -->
-
+  <script src="scripts/main.js" defer></script>
   <script src="scripts/achievements.js" defer></script>
   
   <!-- 4️⃣ رابعاً: ملفات المستويات والتمارين -->
@@ -260,7 +262,6 @@
   <script src="scripts/levels/loudoukou.js" defer></script>
   <script src="scripts/levels/crossmath.js" defer></script>
   <script src="scripts/levels/calculator.js" defer></script>
-    <script src="scripts/main.js" defer></script>
   <!-- ✅ تنسيقات القائمة المنسدلة والعناصر الخاصة -->
   <style>
     /* تنسيق القائمة المنسدلة */

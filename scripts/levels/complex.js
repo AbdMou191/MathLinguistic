@@ -1,28 +1,12 @@
 /**
  * المستوى المعقد (Complex) - MathLinguistic
- * التحديث: دعم MathJax للمعادلات الرياضية + ربط كامل بنظام الإنجازات، دعم الثيمات، ونظام النقاط الموحد (15 نقطة للمسألة).
+ * التحديث: ربط كامل بنظام الإنجازات، دعم الثيمات، ونظام النقاط الموحد (15 نقطة للمسألة).
  */
 
 let complexProblems = [];
 let userComplexAnswers = []; 
 let currentComplexPage = 1;
 const CMP_PER_PAGE = 5;
-
-/**
- * ✅ دالة جديدة: تهيئة وعرض معادلات MathJax
- */
-function renderComplexMath() {
-    if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
-        const container = document.getElementById('cmp-questions-list');
-        if (container) {
-            // تأخير بسيط لضمان اكتمال حقن المحتوى في DOM
-            setTimeout(() => {
-                MathJax.typesetPromise([container])
-                    .catch(err => console.error('⚠️ MathJax Error in Complex:', err));
-            }, 100);
-        }
-    }
-}
 
 /**
  * الدالة الرئيسية لتحميل الصفحة
@@ -46,18 +30,19 @@ window.loadComplexPage = async function() {
 
         renderComplexLayout();
         
-        // ✅ 4. تحديث الميتا بعد نجاح التحميل والعرض
-        if (typeof updatePageMeta === 'function') {            updatePageMeta('complex');
+        // ✅ 4. تحديث الميتا بعد نجاح التحميل والعرض (هذا هو المكان الصحيح!)
+        if (typeof updatePageMeta === 'function') {
+            updatePageMeta('complex'); // ✅ المفتاح مطابق لما في meta-manager.js
         }
     } catch (error) {
         console.error("Complex Level Error:", error);
         mainContent.innerHTML = `<p style="text-align:center; color:#e74c3c; padding:40px;">❌ عذراً، تعذر تحميل المسائل المعقدة حالياً.</p>`;
     }
     
-    // ✅ تحديث الميتا حتى في حالة الخطأ
-    if (typeof updatePageMeta === 'function') {
-        updatePageMeta('complex');
-    }
+        // ✅ تحديث الميتا حتى في حالة الخطأ (اختياري لكن مفضل)
+        if (typeof updatePageMeta === 'function') {
+            updatePageMeta('complex');
+        }
 };
 
 /**
@@ -96,7 +81,8 @@ function renderComplexLayout() {
             }
             .cmp-hint-box.show { max-height: 250px; opacity: 1; margin-top: 10px; padding: 15px; }
             
-            .cmp-footer { padding: 30px 0; text-align: center; }            .cmp-verify-btn { background: linear-gradient(to left, #e1b12c, #f39c12); color: #2c3e50; border: none; padding: 14px 60px; border-radius: 35px; font-size: 1.1rem; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(225, 177, 44, 0.3); }
+            .cmp-footer { padding: 30px 0; text-align: center; }
+            .cmp-verify-btn { background: linear-gradient(to left, #e1b12c, #f39c12); color: #2c3e50; border: none; padding: 14px 60px; border-radius: 35px; font-size: 1.1rem; font-weight: 900; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(225, 177, 44, 0.3); }
             .cmp-verify-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(225, 177, 44, 0.4); }
             
             .cmp-pagination { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
@@ -136,16 +122,14 @@ function renderComplexLayout() {
 
     updateComplexStats();
     displayComplexProblems(currentComplexPage);
-    
-    // ✅ استدعاء MathJax بعد عرض المحتوى لأول مرة
-    renderComplexMath();
 }
 
 /**
  * عرض المسائل حسب الصفحة
  */
 window.displayComplexProblems = function(page) {
-    currentComplexPage = page;    const listDiv = document.getElementById('cmp-questions-list');
+    currentComplexPage = page;
+    const listDiv = document.getElementById('cmp-questions-list');
     const start = (page - 1) * CMP_PER_PAGE;
     const items = complexProblems.slice(start, start + CMP_PER_PAGE);
 
@@ -176,9 +160,6 @@ window.displayComplexProblems = function(page) {
 
     renderComplexPagination();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    
-    // ✅ إعادة عرض المعادلات بعد تغيير الصفحة
-    renderComplexMath();
 };
 
 /**
@@ -187,14 +168,10 @@ window.displayComplexProblems = function(page) {
 window.toggleCmpHint = function(idx) {
     const hintBox = document.getElementById(`cmp-h-${idx}`);
     hintBox.classList.toggle('show');
-    
-    // ✅ إعادة معالجة المعادلات عند فتح التلميح (في حال احتوى على صيغ رياضية)
-    if (hintBox.classList.contains('show')) {
-        renderComplexMath();
-    }
 };
 
-/** * التحقق من إجابات الصفحة الحالية وربطها بالنقاط والإنجازات
+/**
+ * التحقق من إجابات الصفحة الحالية وربطها بالنقاط والإنجازات
  */
 window.checkAllComplexAnswers = function() {
     const start = (currentComplexPage - 1) * CMP_PER_PAGE;
@@ -243,7 +220,8 @@ window.checkAllComplexAnswers = function() {
 
 /**
  * تحديث الإحصائيات في الهيدر
- */function updateComplexStats() {
+ */
+function updateComplexStats() {
     const solved = userComplexAnswers.filter(a => a !== "" && a !== null).length;
     const points = localStorage.getItem('math_user_points') || "0";
     
@@ -269,7 +247,4 @@ function renderComplexPagination() {
         }
     }
     container.innerHTML = html;
-    
-    // ✅ إعادة معالجة المعادلات بعد بناء أزرار التنقل (لضمان تحديث أي محتوى ديناميكي)
-    renderComplexMath();
 }

@@ -1,6 +1,6 @@
 /**
  * المستوى المتقدم - MathLinguistic
- * التحديث: دعم MathJax للمعادلات الرياضية + ربط كامل بنظام الإنجازات، دعم الثيمات، ونظام النقاط الموحد  (10 نقاط للمسألة).
+ * التحديث: ربط كامل بنظام الإنجازات، دعم الثيمات، ونظام النقاط الموحد.
  */
 
 let advancedProblems = [];
@@ -9,24 +9,10 @@ let currentAdvancedPage = 1;
 const ADV_PER_PAGE = 5;
 
 /**
- * ✅ دالة جديدة: تهيئة وعرض معادلات MathJax للمستوى المتقدم
- */
-function renderAdvancedMath() {
-    if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
-        const container = document.getElementById('adv-questions-list');
-        if (container) {
-            setTimeout(() => {
-                MathJax.typesetPromise([container])
-                    .catch(err => console.error('⚠️ MathJax Error in Advanced:', err));
-            }, 100);
-        }
-    }
-}
-
-/**
  * الدالة الرئيسية لتحميل الصفحة
  */
 window.loadAdvancedPage = async function() {
+    // استدعاء دالة التنظيف من main.js لمنع تداخل الأحداث والمؤقتات
     if (typeof cleanupCurrentPage === 'function') cleanupCurrentPage();
     
     const mainContent = document.getElementById('main-content');
@@ -38,21 +24,25 @@ window.loadAdvancedPage = async function() {
         const data = await response.json();
         advancedProblems = data.problems || data;
 
+        // استعادة التقدم من التخزين المحلي
         const saved = localStorage.getItem('math_adv_achievements');
         userAdvancedAnswers = saved ? JSON.parse(saved) : new Array(advancedProblems.length).fill("");
 
         renderAdvancedLayout();
         
+        // ✅ 4. تحديث الميتا بعد نجاح التحميل والعرض (هذا هو المكان الصحيح!)
+        if (typeof updatePageMeta === 'function') {
+            updatePageMeta('advanced'); // ✅ المفتاح مطابق لما في meta-manager.js
+        }
+    } catch (error) {
+        console.error("Advanced Level Error:", error);
+        mainContent.innerHTML = `<p style="text-align:center; color:#e74c3c; padding:40px;">❌ عذراً، تعذر تحميل المسائل المتقدمة حالياً.</p>`;
+    }
+    
+        // ✅ تحديث الميتا حتى في حالة الخطأ (اختياري لكن مفضل)
         if (typeof updatePageMeta === 'function') {
             updatePageMeta('advanced');
         }
-    } catch (error) {
-        console.error("Advanced Level Error:", error);        mainContent.innerHTML = `<p style="text-align:center; color:#e74c3c; padding:40px;">❌ عذراً، تعذر تحميل المسائل المتقدمة حالياً.</p>`;
-    }
-    
-    if (typeof updatePageMeta === 'function') {
-        updatePageMeta('advanced');
-    }
 };
 
 /**
@@ -61,6 +51,7 @@ window.loadAdvancedPage = async function() {
 function renderAdvancedLayout() {
     const mainContent = document.getElementById('main-content');
     
+    // حقن الأنماط لدعم الوضع الليلي والنهاري
     const styleId = 'adv-scoped-styles';
     if (!document.getElementById(styleId)) {
         const styleSheet = document.createElement("style");
@@ -96,7 +87,8 @@ function renderAdvancedLayout() {
             
             .adv-pagination { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
             .adv-page-node { width: 35px; height: 35px; border: 1px solid #8a2387; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #8a2387; font-weight: bold; }
-            .adv-page-node.active { background: #8a2387; color: white; }            
+            .adv-page-node.active { background: #8a2387; color: white; }
+            
             .adv-feedback { margin-top: 10px; font-weight: bold; }
             .adv-correct { color: #27ae60; animation: pulse 0.5s; }
             .adv-wrong { color: #e74c3c; }
@@ -130,9 +122,6 @@ function renderAdvancedLayout() {
 
     updateAdvancedStats();
     displayAdvancedProblems(currentAdvancedPage);
-    
-    // ✅ استدعاء MathJax بعد عرض المحتوى لأول مرة
-    renderAdvancedMath();
 }
 
 /**
@@ -145,7 +134,8 @@ window.displayAdvancedProblems = function(page) {
     const items = advancedProblems.slice(start, start + ADV_PER_PAGE);
 
     listDiv.innerHTML = items.map((prob, index) => {
-        const globalIdx = start + index;        const isSolved = userAdvancedAnswers[globalIdx] !== "" && userAdvancedAnswers[globalIdx] !== null;
+        const globalIdx = start + index;
+        const isSolved = userAdvancedAnswers[globalIdx] !== "" && userAdvancedAnswers[globalIdx] !== null;
         
         return `
             <div class="adv-problem-card">
@@ -170,9 +160,6 @@ window.displayAdvancedProblems = function(page) {
 
     renderAdvancedPagination();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    
-    // ✅ إعادة عرض المعادلات بعد تغيير الصفحة
-    renderAdvancedMath();
 };
 
 /**
@@ -181,11 +168,6 @@ window.displayAdvancedProblems = function(page) {
 window.toggleAdvHint = function(idx) {
     const hintBox = document.getElementById(`adv-h-${idx}`);
     hintBox.classList.toggle('show');
-    
-    // ✅ إعادة معالجة المعادلات عند فتح التلميح
-    if (hintBox.classList.contains('show')) {
-        renderAdvancedMath();
-    }
 };
 
 /**
@@ -194,6 +176,7 @@ window.toggleAdvHint = function(idx) {
 window.checkAllCurrentPageAnswers = function() {
     const start = (currentAdvancedPage - 1) * ADV_PER_PAGE;
     let newlyCorrectCount = 0;
+
     for (let i = start; i < start + ADV_PER_PAGE; i++) {
         const txtInput = document.getElementById(`adv-text-${i}`);
         const feed = document.getElementById(`adv-feed-${i}`);
@@ -202,6 +185,7 @@ window.checkAllCurrentPageAnswers = function() {
         const userVal = txtInput.value.trim();
         if (userVal === "") { feed.innerHTML = ""; continue; }
 
+        // التحقق من الإجابة (مقارنة مرنة)
         const isCorrect = userVal == (advancedProblems[i].correct_answer || advancedProblems[i].answer);
 
         if (isCorrect) {
@@ -221,10 +205,12 @@ window.checkAllCurrentPageAnswers = function() {
     if (newlyCorrectCount > 0) {
         localStorage.setItem('math_adv_achievements', JSON.stringify(userAdvancedAnswers));
         
+        // إظهار توست نجاح إذا كان متاحاً في main.js
         if (typeof window.showToast === 'function') {
             window.showToast(`أحسنت! ربحت ${newlyCorrectCount * 10} نقطة 🌟`, 'success');
         }
 
+        // --- زناد نظام الإنجازات الذكي ---
         if (typeof window.checkAndUnlockAchievements === 'function') {
             window.checkAndUnlockAchievements();
         }
@@ -244,6 +230,7 @@ function updateAdvancedStats() {
     if (document.getElementById('adv-points')) document.getElementById('adv-points').innerText = points;
     if (document.getElementById('adv-stars')) document.getElementById('adv-stars').innerText = Math.floor(solved / 10);
 }
+
 /**
  * بناء أزرار التنقل
  */
@@ -254,6 +241,7 @@ function renderAdvancedPagination() {
     
     let html = '';
     for (let i = 1; i <= total; i++) {
+        // عرض أول صفحة، آخر صفحة، والصفحات القريبة من الحالية
         if (i === 1 || i === total || (i >= currentAdvancedPage - 2 && i <= currentAdvancedPage + 2)) {
             html += `<div class="adv-page-node ${i === currentAdvancedPage ? 'active' : ''}" onclick="displayAdvancedProblems(${i})">${i}</div>`;
         } else if (i === currentAdvancedPage - 3 || i === currentAdvancedPage + 3) {
@@ -261,7 +249,4 @@ function renderAdvancedPagination() {
         }
     }
     container.innerHTML = html;
-    
-    // ✅ إعادة معالجة المعادلات بعد بناء أزرار التنقل
-    renderAdvancedMath();
-} 
+}

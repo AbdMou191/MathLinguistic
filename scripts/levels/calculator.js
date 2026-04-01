@@ -4,13 +4,25 @@
     let lastResult = "0";
     let activeModule = "sci"; 
 
+    // تعريف دالة العاملي على window لتعمل داخل eval
+    window.factorial = (n) => {
+        if (n < 0) return "Error";
+        if (n === 0) return 1;
+        if (!Number.isInteger(n)) return "Error"; // العاملي للأعداد الصحيحة فقط
+        if (n > 170) return "Infinity"; // لتجنب تجاوز سعة الذاكرة
+        
+        let res = 1;
+        for (let i = 2; i <= n; i++) res *= i;
+        return res;
+    };
+
     window.loadCalculatorPage = function() {
         window.currentLevel = 'calculator';
         renderAcademicCalc();
         
-        // ✅ 4. تحديث الميتا بعد نجاح التحميل والعرض (هذا هو المكان الصحيح!)
+        // تحديث الميتا بعد نجاح التحميل والعرض
         if (typeof updatePageMeta === 'function') {
-            updatePageMeta('beginner'); // ✅ المفتاح مطابق لما في meta-manager.js
+            updatePageMeta('beginner'); 
         }
     };
 
@@ -18,7 +30,6 @@
         const mainContent = document.getElementById('main-content');
         if (!mainContent) return;
         
-        // نترك الحاوية بدون فرض خلفية لتعتمد على خلفية الموقع الأصلية
         mainContent.style.backgroundColor = "transparent"; 
         
         mainContent.innerHTML = `
@@ -30,6 +41,7 @@
                 margin: 0 auto;
                 padding: 10px;
                 box-sizing: border-box;
+                font-family: sans-serif; /* لضمان مظهر موحد للأرقام */
             }
 
             /* شاشة النتائج - تتبنى ألوان الموقع */
@@ -41,20 +53,28 @@
                 margin-bottom: 15px;
                 text-align: right;
                 box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                min-height: 80px; /* ضمان مساحة ثابتة للشاشة */
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
             }
             .calc-formula { 
                 color: var(--text-color, #555); 
                 opacity: 0.8;
-                font-size: 0.9rem; 
+                font-size: 1rem; 
                 min-height: 1.2rem;
+                white-space: nowrap;
                 overflow: hidden;
+                text-overflow: ellipsis;
+                margin-bottom: 5px;
             }
             .calc-output { 
                 color: #00ff88; /* اللون الأخضر المميز لتطبيقك */
-                font-size: 2.2rem; 
+                font-size: 2.5rem; 
                 font-weight: bold; 
-                margin-top: 5px;
+                margin-top: 0;
                 word-wrap: break-word;
+                line-height: 1;
             }
 
             /* التبويبات بأسلوب البطاقات */
@@ -65,7 +85,7 @@
             }
             .nav-item {
                 flex: 1;
-                padding: 10px;
+                padding: 12px;
                 border: 1px solid var(--border-color, #ccc);
                 border-radius: 8px;
                 background: var(--card-bg, #eee);
@@ -73,7 +93,8 @@
                 font-weight: bold;
                 cursor: pointer;
                 text-align: center;
-                font-size: 0.8rem;
+                font-size: 0.9rem;
+                transition: background 0.2s;
             }
             .nav-item.active {
                 background: #00ff88;
@@ -81,23 +102,23 @@
                 border-color: #00ff88;
             }
 
-            /* شبكة الأزرار - تحسين التباين للوضع النهاري */
+            /* شبكة الأزرار */
             .calc-grid {
                 display: grid;
                 grid-template-columns: repeat(5, 1fr);
-                gap: 6px;
+                gap: 8px;
             }
             
             .calc-btn {
-                height: 50px;
+                height: 55px;
                 border: 1px solid var(--border-color, rgba(0,0,0,0.1));
-                border-radius: 8px;
+                border-radius: 10px;
                 background: var(--card-bg, #f9f9f9);
-                color: var(--text-color, #111); /* يضمن الظهور في الوضع النهاري */
-                font-size: 1rem;
+                color: var(--text-color, #111); 
+                font-size: 1.1rem;
                 font-weight: bold;
                 cursor: pointer;
-                transition: background 0.2s, transform 0.1s;
+                transition: background 0.2s, transform 0.1s, opacity 0.1s;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -107,39 +128,50 @@
             /* ألوان مميزة للعمليات */
             .btn-blue { color: #007bff; }
             .btn-orange { color: #fd7e14; }
-            .btn-red { color: #dc3545; }
+            .btn-red { color: #dc3545; font-weight: 900; }
+            
+            /* زر يساوي المميز */
             .btn-equal { 
                 grid-column: span 2; 
                 background: #00ff88 !important; 
                 color: #000 !important; 
+                font-size: 1.5rem;
             }
 
+            /* واجهة الإحصاء */
             .stats-box {
                 background: var(--card-bg, rgba(255,255,255,0.05));
                 padding: 15px;
-                border-radius: 10px;
+                border-radius: 12px;
                 border: 1px solid var(--border-color, #ccc);
             }
             .stats-field {
                 width: 100%;
-                padding: 12px;
-                border-radius: 6px;
+                padding: 15px;
+                border-radius: 8px;
                 border: 1px solid var(--border-color, #ccc);
                 background: var(--input-bg, #fff);
                 color: #000;
-                margin-bottom: 10px;
+                margin-bottom: 12px;
                 box-sizing: border-box;
+                font-size: 1rem;
             }
 
             .home-btn {
-                margin-top: 20px;
+                margin-top: 25px;
                 width: 100%;
-                padding: 10px;
+                padding: 12px;
                 background: none;
                 border: 1px solid var(--border-color, #888);
                 color: var(--text-color, #888);
                 border-radius: 8px;
                 cursor: pointer;
+                font-size: 0.9rem;
+                transition: border-color 0.2s, color 0.2s;
+            }
+            .home-btn:hover {
+                border-color: #00ff88;
+                color: #00ff88;
             }
         </style>
 
@@ -150,7 +182,7 @@
             </div>
 
             <div class="calc-display-unit">
-                <div class="calc-formula" id="f-display">${expression}</div>
+                <div class="calc-formula" id="f-display"></div>
                 <div class="calc-output" id="o-display">${lastResult}</div>
             </div>
 
@@ -160,6 +192,9 @@
             
             <button class="home-btn" onclick="loadHomePage()">[ عودة للرئيسية ]</button>
         </div>`;
+        
+        // تحديث الشاشة فوراً لعرض الصيغة بشكل صحيح عند التبديل
+        updateScreen();
     }
 
     function renderBody() {
@@ -168,7 +203,7 @@
             <div class="calc-grid">
                 <button class="calc-btn btn-blue" onclick="add('Math.PI')">π</button>
                 <button class="calc-btn btn-blue" onclick="add('Math.E')">e</button>
-                <button class="calc-btn btn-blue" onclick="add('Math.pow(')">xʸ</button>
+                <button class="calc-btn btn-blue" onclick="add('**')">xʸ</button>
                 <button class="calc-btn btn-red" onclick="clearAll()">AC</button>
                 <button class="calc-btn btn-red" onclick="del()">DEL</button>
 
@@ -180,7 +215,7 @@
 
                 <button class="calc-btn btn-blue" onclick="add('Math.log(')">ln</button>
                 <button class="calc-btn btn-blue" onclick="add('Math.log10(')">log</button>
-                <button class="calc-btn btn-blue" onclick="add('factorial(')">n!</button>
+                <button class="calc-btn btn-blue" onclick="add('window.factorial(')">n!</button>
                 <button class="calc-btn" onclick="add('(')">(</button>
                 <button class="calc-btn btn-orange" onclick="add('*')">×</button>
 
@@ -220,32 +255,111 @@
         }
     }
 
-    // المنطق البرمجي الأساسي
     window.switchModule = (m) => { activeModule = m; renderAcademicCalc(); };
-    window.add = (t) => { if(t === 'Ans') expression += lastResult; else expression += t; updateScreen(); };
+    
+    window.add = (t) => { 
+        if(t === 'Ans') {
+            // إضافة عامل ضرب تلقائي إذا لزم الأمر قبل Ans
+            autoMultiplyBefore(t);
+            expression += lastResult;
+        } else {
+            // إضافة عامل ضرب تلقائي قبل الدوال (مثل sin) إذا سبقتها أرقام
+            autoMultiplyBefore(t);
+            expression += t; 
+        }
+        updateScreen(); 
+    };
+
+    // دالة مساعدة لإضافة عامل الضرب تلقائياً (*)
+    function autoMultiplyBefore(newInput) {
+        if (expression.length === 0) return;
+        const lastChar = expression.slice(-1);
+        
+        // التحقق مما إذا كان المدخل دالة أو Ans أو ثابت رياضي
+        const needsPreMultiply = (
+            newInput.includes('Math.') || 
+            newInput.includes('window.') || 
+            newInput === 'Ans' || 
+            newInput === '('
+        );
+
+        // إذا كان آخر حرف رقماً أو قوساً مغلقاً، والمدخل يحتاج لضرب
+        if (needsPreMultiply && ((lastChar >= '0' && lastChar <= '9') || lastChar === ')')) {
+            expression += '*';
+        }
+    }
+
     window.clearAll = () => { expression = ""; lastResult = "0"; updateScreen(); };
     window.del = () => { expression = expression.slice(0, -1); updateScreen(); };
+    
     window.solve = () => {
         try {
-            let res = eval(expression);
-            lastResult = Number.isInteger(res) ? res.toString() : res.toFixed(4).replace(/\.?0+$/,"");
-            expression = ""; updateScreen();
-        } catch { lastResult = "Error"; updateScreen(); }
+            if (!expression) return;
+
+            // محاولة إغلاق الأقواس المفتوحة تلقائياً لتجنب الخطأ
+            let tempExp = expression;
+            const openBrackets = (tempExp.match(/\(/g) || []).length;
+            const closeBrackets = (tempExp.match(/\)/g) || []).length;
+            for(let i=0; i < (openBrackets - closeBrackets); i++) { tempExp += ')'; }
+
+            // حساب النتيجة باستخدام eval
+            let res = eval(tempExp);
+
+            // التحقق من صحة النتيجة (ليست NaN أو Infinity)
+            if (!Number.isFinite(res)) {
+                lastResult = "Error";
+            } else {
+                // تنسيق النتيجة: تقريب الأرقام العشرية الطويلة
+                lastResult = Number.isInteger(res) ? res.toString() : res.toFixed(6).replace(/\.?0+$/,"");
+            }
+            expression = ""; 
+            updateScreen();
+        } catch (e) { 
+            console.error("Calculation Error:", e);
+            lastResult = "Error"; 
+            updateScreen(); 
+        }
     };
+
     window.statsCalc = (type) => {
         const input = document.getElementById('stats-input');
-        if(!input) return;
-        const data = input.value.split(',').map(Number).filter(n => !isNaN(n));
-        if(data.length === 0) return;
-        let mean = data.reduce((a,b)=>a+b)/data.length;
-        let res = (type === 'mean') ? mean : (type === 'sum') ? data.reduce((a,b)=>a+b) : (type === 'var') ? data.reduce((a,b)=>a+Math.pow(b-mean, 2), 0) / data.length : Math.sqrt(data.reduce((a,b)=>a+Math.pow(b-mean, 2), 0) / data.length);
-        lastResult = res.toFixed(3); updateScreen();
+        if(!input || !input.value) return;
+        // تحويل المدخلات إلى مصفوفة أرقام، وتنظيف أي قيم غير صالحة
+        const data = input.value.split(',').map(s => s.trim()).filter(s => s!=='').map(Number).filter(n => !isNaN(n));
+        
+        if(data.length === 0) { lastResult = "Error"; updateScreen(); return; }
+        
+        let sum = data.reduce((a,b)=>a+b, 0);
+        let mean = sum / data.length;
+        let res;
+        
+        if (type === 'mean') res = mean;
+        else if (type === 'sum') res = sum;
+        else {
+            // حساب التباين (Variance)
+            let variance = data.reduce((a,b)=> a + Math.pow(b - mean, 2), 0) / data.length;
+            // الانحراف المعياري (SD) هو جذر التباين
+            res = (type === 'var') ? variance : Math.sqrt(variance);
+        }
+        
+        lastResult = res.toFixed(4).replace(/\.?0+$/,""); 
+        updateScreen();
     };
+
     function updateScreen() {
         const f = document.getElementById('f-display');
         const o = document.getElementById('o-display');
-        if(f) f.innerText = expression.replace(/Math\./g, '');
+        if(f) {
+            // تحويل رموز البرمجة إلى رموز رياضية للعرض فقط
+            let displayExp = expression
+                .replace(/\*\*/g, '^')        // تحويل ** إلى ^ لعرض القوى
+                .replace(/window\.factorial\(/g, 'fact(') // تبسيط factorial
+                .replace(/Math\./g, '')       // حذف Math.
+                .replace(/window\./g, '')     // حذف window.
+                .replace(/\*/g, '×')          // تحويل * إلى ×
+                .replace(/\//g, '÷');         // تحويل / إلى ÷
+            f.innerText = displayExp;
+        }
         if(o) o.innerText = lastResult;
     }
-    window.factorial = (n) => n <= 1 ? 1 : n * factorial(n - 1);
 })();

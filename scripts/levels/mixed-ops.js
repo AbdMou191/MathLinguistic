@@ -1,5 +1,5 @@
 /**
- * 🛡️ نظام منع التداخل المدمج - لا تحذف هذا الجزء
+ * 🛡️ نظام منع التداخل المدمج
  */
 (function() {
     if (window._ResourceManager) return;
@@ -22,332 +22,460 @@
         removeStyle: function(styleId) { const el = document.getElementById(styleId); if(el) el.remove(); styles.delete(styleId); }
     };
     window.addEventListener('beforeunload', () => window._ResourceManager?.cleanupAll());
-    window.safeNavigate = function(loaderFn, gameId) {
-        window._ResourceManager?.cleanupAll();
-        setTimeout(() => { window.scrollTo(0,0); if(typeof loaderFn === 'function') loaderFn(); }, 50);
-    };
 })();
 
-// === متغيرات التحكم الصارمة ===
-window.mixedOpsVersion = 0;
-window.mixedOpsInterval = null;
-window.mixedOpsData = null;
-
-// === معرفات فريدة للعناصر ===
-const MIXED_IDS = {
-    cntNum: 'mixed-cnt-num',
-    mathDisplay: 'mixed-math-display',
-    gameMsg: 'mixed-game-msg',
-    optionsArea: 'mixed-options-area',
-    container: 'mixed-container'
-};
+// === المتغيرات ===
+var MIXED_GAME_ID = 'mixed-ops';
+var MIXED_PREFIX = 'mixed-';
+var mixedGameData = null;
+var mixedGameVersion = 0;
+var mixedTimeouts = []; // ✅ مصفوفة لتخزين جميع المؤقتات
+var mixedCleanupExecuted = 0;
+var mixedCleanupLock = false;
 
 const MIXED_ADV_CONFIGS = {
-    1: { name: "مستوى 1: أعشار (جمع وطرح)", count: 8, min: 1, max: 9, decimals: 1, ops: ['+', '-'] },
-    2: { name: "مستوى 2: ضرب بسيط (أعداد صحيحة)", count: 6, min: 2, max: 12, decimals: 0, ops: ['+', '-', '×'] },
-    3: { name: "مستوى 3: تحدي المئة (عشري)", count: 10, min: 10, max: 99, decimals: 1, ops: ['+', '-'] },
-    4: { name: "مستوى 4: مختلط (صحيح وعشري)", count: 12, min: 5, max: 50, decimals: 1, ops: ['+', '-', '×'] },
-    5: { name: "مستوى 5: الإعصار الذهني المتقدم", count: 15, min: 10, max: 150, decimals: 1, ops: ['+', '-', '×', '÷'] }
+    1: { name: ": أعشار", count: 5, min: 1, max: 9, decimals: 1, ops: ['+', '-'] },
+    2: { name: " : ضرب بسيط", count: 4, min: 2, max: 12, decimals: 0, ops: ['+', '-', '×'] },
+    3: { name: " : تحدي المئة", count: 6, min: 10, max: 99, decimals: 1, ops: ['+', '-'] },
+    4: { name: " : مختلط", count: 7, min: 5, max: 50, decimals: 1, ops: ['+', '-', '×'] },
+    5: { name: " : الاعشار لذهني", count: 8, min: 10, max: 150, decimals: 1, ops: ['+', '-', '×', '÷'] }
 };
 
-// === وظيفة التنظيف الكاملة ===
-window.destroyMixedOps = function() {
-    window.mixedOpsVersion++;
-    
-    // إيقاف المؤقت
-    if (window.mixedOpsInterval) { 
-        clearInterval(window.mixedOpsInterval); 
-        window.mixedOpsInterval = null; 
+// === تنظيف جميع المؤقتات ===
+function mixedClearAllTimeouts() {
+    for (var i = 0; i < mixedTimeouts.length; i++) {
+        clearTimeout(mixedTimeouts[i]);
     }
+    mixedTimeouts = [];
+}
+// === تسجيل مؤقت جديد ===
+function mixedSetTimeout(callback, delay) {
+    var timeoutId = setTimeout(callback, delay);
+    mixedTimeouts.push(timeoutId);
+    return timeoutId;
+}
+
+// === التنظيف ===
+function mixedCleanup() {
+    if (mixedCleanupLock) return;
+    var now = Date.now();
+    if (mixedCleanupExecuted && (now - mixedCleanupExecuted) < 200) return;
+    mixedCleanupLock = true;
     
-    // تنظيف الموارد المسجلة
-    window._ResourceManager?.cleanup('mixed-ops');
+    mixedGameVersion++;
+    mixedClearAllTimeouts(); // ✅ تنظيف جميع المؤقتات
     
-    // مسح محتوى main-content بشكل صريح
-    const main = document.getElementById('main-content');
-    if (main) {
-        main.innerHTML = '';
+    if (window.GameCore && typeof window.GameCore.cleanupGame === 'function') {
+        window.GameCore.cleanupGame(MIXED_GAME_ID);
     }
+    if (window._ResourceManager && typeof window._ResourceManager.cleanup === 'function') {
+        window._ResourceManager.cleanup(MIXED_GAME_ID);
+    }
+    mixedGameData = null;
+    mixedCleanupExecuted = Date.now();
     
-    // تعيين البيانات على null
-    window.mixedOpsData = null;
-};
+    setTimeout(function() { mixedCleanupLock = false; }, 100);
+}
 
-// === منطق التوليد والحفظ ===
-function generateMixedAdvQuestion(level) {
-    const config = MIXED_ADV_CONFIGS[level];
-    let sequence = [], currentTotal = 0;
-    const factor = Math.pow(10, config.decimals);
-
-    for (let i = 0; i < config.count; i++) {
-        let rawNum = Math.floor(Math.random() * (config.max - config.min + 1)) + config.min;
-        let num = config.decimals > 0 ? parseFloat((rawNum / factor).toFixed(config.decimals)) : rawNum;
-        let op = config.ops[Math.floor(Math.random() * config.ops.length)];
-        
-        if (i === 0) { 
-            currentTotal = num; 
-            op = ""; 
-        } else {
+// === توليد سؤال ===
+function mixedGenerateQuestion(level) {
+    var config = MIXED_ADV_CONFIGS[level];
+    var sequence = [], currentTotal = 0;
+    var factor = Math.pow(10, config.decimals);
+    for (var i = 0; i < config.count; i++) {
+        var rawNum = Math.floor(Math.random() * (config.max - config.min + 1)) + config.min;
+        var num = config.decimals > 0 ? parseFloat((rawNum / factor).toFixed(config.decimals)) : rawNum;
+        var op = config.ops[Math.floor(Math.random() * config.ops.length)];
+        if (i === 0) { currentTotal = num; op = ""; }
+        else {
             if (op === '+') currentTotal += num;
             else if (op === '-') {
-                if (currentTotal - num < 0) { 
-                    op = '+'; 
-                    currentTotal += num; 
-                } else {
-                    currentTotal -= num;
-                }
+                if (currentTotal - num < 0) { op = '+'; currentTotal += num; }
+                else { currentTotal -= num; }
             }
-            else if (op === '×') { 
-                num = (Math.floor(Math.random() * 3) + 2); 
-                currentTotal *= num; 
-            }
-            else if (op === '÷') { 
-                num = 2; 
-                currentTotal /= num; 
-            }
+            else if (op === '×') { num = (Math.floor(Math.random() * 3) + 2); currentTotal *= num; }
+            else if (op === '÷') { num = 2; currentTotal /= num; }
         }
-        currentTotal = parseFloat(currentTotal.toFixed(2));
-        sequence.push({ op, num });
+        currentTotal = parseFloat(currentTotal.toFixed(2));        sequence.push({ op: op, num: num });
     }
-    return { sequence, finalAnswer: currentTotal };
+    return { sequence: sequence, finalAnswer: currentTotal, level: level };
 }
 
-function saveMixedOpsAnswer(isCorrect) {
-    if (!window.mixedOpsData) return;
-    
-    const key = 'mathlinguistic_mixed_ops_answers';
-    let answers = JSON.parse(localStorage.getItem(key) || '{}');
-    const id = `lvl_${window.mixedOpsData.currentLevel}_${Date.now()}`;
-    answers[id] = { correct: isCorrect, timestamp: Date.now(), level: window.mixedOpsData.currentLevel };
-    localStorage.setItem(key, JSON.stringify(answers));
+// === توليد 6 خيارات ===
+function mixedGenerateOptions(correct, decimals) {
+    var opts = {};
+    opts[correct] = true;
+    var step = decimals > 0 ? 0.1 : 1;
+    while (Object.keys(opts).length < 6) {
+        var dev = (Math.floor(Math.random() * 8) + 1) * step;
+        var val = Math.random() > 0.5 ? correct + dev : correct - dev;
+        if (val >= 0) opts[parseFloat(val.toFixed(2))] = true;
+    }
+    var result = [];
+    for (var key in opts) { if (opts.hasOwnProperty(key)) result.push(parseFloat(key)); }
+    return result.sort(function() { return Math.random() - 0.5; });
 }
 
-// === تشغيل اللعبة ===
-window.loadMixedOpsPage = function() {
-    // تنظيف أي لعبة سابقة أولاً
-    window.destroyMixedOps();
+// === عرض الواجهة ===
+function mixedRenderUI(showOptions) {
+    var main = document.getElementById('main-content');
+    if (!main) return;
     
-    const currentAttempt = ++window.mixedOpsVersion;
+    var points = window.GameCore ? window.GameCore.getPoints() : 0;
+    var lives = window.GameCore ? window.GameCore.getLives(MIXED_GAME_ID) : 2;
+    var levelNum = mixedGameData ? mixedGameData.level : 1;
+    var config = MIXED_ADV_CONFIGS[levelNum];
     
-    // تسجيل دالة التنظيف
-    window._ResourceManager?.register('mixed-ops', () => {
-        window.mixedOpsVersion++;
-        if (window.mixedOpsInterval) { 
-            clearInterval(window.mixedOpsInterval); 
-            window.mixedOpsInterval = null; 
-        }
-        window._ResourceManager?.removeStyle('mixed-ops-styles');
-    });
+    var html = '<div class="st-wrapper">';
+    html += '<div class="gc-header">';
+    html += '<h2>⚡ ' + config.name + '</h2>';
+    html += '<button class="gc-btn gc-btn-secondary" onclick="window.mixedHandleExit()">🏠 الرئيسية</button>';
+    html += '</div>';
     
-    // إنشاء بيانات جديدة
-    window.mixedOpsData = {
-        currentLevel: 1,
-        currentQuestion: generateMixedAdvQuestion(1),
-        isShowing: true,
-        isProcessing: false,
-        version: currentAttempt
-    };
+    html += '<div class="gc-stats-bar">';
+    html += '<span>🏆 <span class="gc-points-display">' + points + '</span></span>';
+    html += '<span>❤️ <span id="' + MIXED_PREFIX + 'lives">' + lives + '</span></span>';
+    html += '<span>📊 مستوى <span id="' + MIXED_PREFIX + 'level">' + levelNum + '</span></span>';
+    html += '</div>';
     
-    // تطبيق الأنماط
-    renderMixedStyles();
-    
-    // بدء العد التنازلي
-    startMixedCountdown(currentAttempt);
-};
-
-function startMixedCountdown(version) {
-    let count = 5;
-    const main = document.getElementById('main-content');
-    
-    // بناء واجهة العد التنازلي
-    main.innerHTML = `
-        <div class="mental-container" id="${MIXED_IDS.container}">
-            <div class="mental-card mixed-adv-theme">
-                <div class="lvl-badge">تحدي العمليات المتقدمة</div>
-                <h2 class="lvl-title-main">${MIXED_ADV_CONFIGS[window.mixedOpsData.currentLevel].name}</h2>
-                <div class="countdown-box"><span id="${MIXED_IDS.cntNum}">${count}</span></div>
-                <p class="prepare-txt">ركز جيداً على العمليات</p>
-                <div class="footer-tools">
-                     <button class="reset-ui-btn" onclick="window.loadMixedOpsPage()">🔄 إلغاء والبدء من جديد</button>
-                </div>
-            </div>
-        </div>`;
-
-    // التأكد من عدم وجود مؤقت سابق
-    if (window.mixedOpsInterval) {
-        clearInterval(window.mixedOpsInterval);
+    html += '<div class="st-card">';
+    html += '<div class="st-math-box" id="' + MIXED_PREFIX + 'q-text" style="height:100px;display:flex;align-items:center;justify-content:center;">';
+    if (!showOptions) {
+        html += '<span style="font-size:1.5rem;color:var(--ml-text-light);">انتظر...</span>';
+    } else {
+        html += '<span style="font-size:2rem;">؟ = ؟</span>';
     }
-
-    // بدء مؤقت جديد
-    window.mixedOpsInterval = setInterval(() => {
-        if (version !== window.mixedOpsVersion) { 
-            clearInterval(window.mixedOpsInterval); 
-            window.mixedOpsInterval = null;
-            return; 
+    html += '</div>';    
+    html += '<div id="' + MIXED_PREFIX + 'timer-box" style="text-align:center;margin:10px 0;height:30px;">';
+    if (showOptions) {
+        html += '<span style="font-size:1.2rem;color:var(--ml-warning);font-weight:bold;">⏱️ <span id="' + MIXED_PREFIX + 'countdown">5</span></span>';
+    }
+    html += '</div>';
+    
+    html += '<div id="' + MIXED_PREFIX + 'msg" class="st-msg"></div>';
+    
+    html += '<div class="st-options-grid" id="' + MIXED_PREFIX + 'opts" style="grid-template-columns:repeat(3,1fr);gap:10px;">';
+    if (showOptions) {
+        var options = mixedGameData.options;
+        for (var i = 0; i < 6; i++) {
+            var opt = options[i] !== undefined ? options[i] : '?';
+            html += '<button class="gc-btn gc-btn-primary" onclick="window.mixedSubmitAnswer(' + opt + ')" style="font-size:1.1rem;">' + opt + '</button>';
         }
+    } else {
+        for (var j = 0; j < 6; j++) {
+            html += '<button class="gc-btn" disabled style="background:var(--ml-border);color:var(--ml-text-light);font-size:1.1rem;">-</button>';
+        }
+    }
+    html += '</div>';
+    html += '</div>';
+    
+    html += '<div class="st-footer">';
+    html += '<button class="gc-btn gc-btn-danger" onclick="window.mixedRestartGame()">🔄 من البداية</button>';
+    html += '</div>';
+    html += '</div>';
+    
+    main.innerHTML = html;
+    mixedUpdateStats();
+}
+
+// === عرض التسلسل ===
+function mixedShowSequence(version, callback) {
+    if (!mixedGameData || mixedGameData.version !== version) return;
+    
+    mixedGameData.isShowing = true;
+    var displayEl = document.getElementById(MIXED_PREFIX + 'q-text');
+    var sequence = mixedGameData.currentQuestion.sequence;
+    var index = 0;
+    
+    function showNext() {
+        if (!mixedGameData || mixedGameData.version !== version || index >= sequence.length) {
+            mixedGameData.isShowing = false;
+            if (callback) callback();
+            return;
+        }
+        var item = sequence[index];
+        if (displayEl) {            displayEl.innerHTML = '<span style="font-size:3rem;font-weight:900;color:var(--ml-accent);">' + (item.op || '') + item.num + '</span>';
+        }
+        index++;
         
+        mixedSetTimeout(function() {
+            if (displayEl) displayEl.innerHTML = '<span style="font-size:2rem;color:var(--ml-text-light);">...</span>';
+            mixedSetTimeout(showNext, 300);
+        }, 1200);
+    }
+    showNext();
+}
+
+// === بدء العد التحضيري ===
+function mixedStartPrepCountdown(version) {
+    var main = document.getElementById('main-content');
+    if (!main) return;
+    
+    var levelNum = mixedGameData ? mixedGameData.level : 1;
+    var config = MIXED_ADV_CONFIGS[levelNum];
+    
+    var html = '<div class="st-wrapper">';
+    html += '<div class="gc-header">';
+    html += '<h2>⚡ ' + config.name + '</h2>';
+    html += '<button class="gc-btn gc-btn-secondary" onclick="window.mixedHandleExit()">🏠 الرئيسية</button>';
+    html += '</div>';
+    
+    html += '<div class="st-card" style="text-align:center;padding:60px 20px;">';
+    html += '<div style="font-size:1.3rem;margin-bottom:30px;color:var(--ml-text);font-weight:bold;">ركز جيداً...</div>';
+    html += '<div style="width:150px;height:150px;margin:0 auto 30px auto;border:10px solid var(--ml-accent);border-radius:50%;display:flex;align-items:center;justify-content:center;">';
+    html += '<span id="' + MIXED_PREFIX + 'prep-num" style="font-size:5rem;font-weight:900;color:var(--ml-accent);">5</span>';
+    html += '</div>';
+    html += '<p style="color:var(--ml-text-light);font-size:1rem;">سيبدأ العرض خلال لحظات</p>';
+    html += '</div>';
+    html += '<div class="st-footer">';
+    html += '<button class="gc-btn gc-btn-danger" onclick="window.mixedRestartGame()">🔄 من البداية</button>';
+    html += '</div>';
+    html += '</div>';
+    
+    main.innerHTML = html;
+    
+    var count = 5;
+    var prepEl = document.getElementById(MIXED_PREFIX + 'prep-num');
+    
+    function countdown() {
+        if (!mixedGameData || mixedGameData.version !== version) return;
         count--;
-        const el = document.getElementById(MIXED_IDS.cntNum);
-        if (el) el.textContent = count;
-        
-        if (count <= 0) { 
-            clearInterval(window.mixedOpsInterval); 
-            window.mixedOpsInterval = null;
-            
-            // التحقق مرة أخرى قبل عرض التسلسل
-            if (version === window.mixedOpsVersion && window.mixedOpsData) {
-                displayMixedSequence(version); 
-            }
+        if (prepEl) prepEl.textContent = count.toString();
+        if (count <= 0) {
+            mixedRenderUI(false);
+            mixedSetTimeout(function() {                mixedShowSequence(version, function() {
+                    mixedShowOptionsWithTimer(version);
+                });
+            }, 500);
+        } else {
+            mixedSetTimeout(countdown, 1000);
         }
-    }, 1000);
-}
-
-async function displayMixedSequence(version) {
-    if (version !== window.mixedOpsVersion || !window.mixedOpsData) return;
-    
-    window.mixedOpsData.isShowing = true;
-    renderMixedGameUI();
-    
-    const displayEl = document.getElementById(MIXED_IDS.mathDisplay);
-    const sequence = window.mixedOpsData.currentQuestion.sequence;
-
-    for (let item of sequence) {
-        if (version !== window.mixedOpsVersion || !window.mixedOpsData) return;
-        if (displayEl) displayEl.innerHTML = `<span class="fixed-num">${item.op}${item.num}</span>`;
-        await new Promise(r => setTimeout(r, 1000));
-        
-        if (version !== window.mixedOpsVersion || !window.mixedOpsData) return;
-        if (displayEl) displayEl.innerHTML = "";
-        await new Promise(r => setTimeout(r, 250));
     }
-
-    if (version !== window.mixedOpsVersion || !window.mixedOpsData) return;
-    if (displayEl) displayEl.textContent = "؟";
-    window.mixedOpsData.isShowing = false;
-    renderMixedGameUI();
+    mixedSetTimeout(countdown, 1000);
 }
 
-// === التحقق من الإجابة ===
-window.submitMixedAnswer = function(val) {
-    if (!window.mixedOpsData || window.mixedOpsData.isShowing || window.mixedOpsData.isProcessing) return;
-    window.mixedOpsData.isProcessing = true;
-
-    const isCorrect = (parseFloat(val) === window.mixedOpsData.currentQuestion.finalAnswer);
-    saveMixedOpsAnswer(isCorrect);
-
-    if (isCorrect) {
-        let currentPoints = parseInt(localStorage.getItem('math_user_points') || '0');
-        localStorage.setItem('math_user_points', (currentPoints + 10).toString());
-        showMixedFeedback("✅ عبقري!", "success");
+// === عرض الخيارات مع العد التنازلي ===
+function mixedShowOptionsWithTimer(version) {
+    if (!mixedGameData || mixedGameData.version !== version) return;
+    
+    mixedGameData.options = mixedGenerateOptions(mixedGameData.currentQuestion.finalAnswer, MIXED_ADV_CONFIGS[mixedGameData.level].decimals);
+    mixedRenderUI(true);
+    
+    var timeLeft = 5;
+    var timerEl = document.getElementById(MIXED_PREFIX + 'countdown');
+    
+    function countdown() {
+        if (!mixedGameData || mixedGameData.version !== version) return;
+        timeLeft--;
+        if (timerEl) timerEl.textContent = timeLeft.toString();
         
-        if (typeof window.checkAndUnlockAchievements === 'function') { 
-            window.checkAndUnlockAchievements(); 
+        if (timeLeft <= 0) {
+            mixedHandleWrongAnswer(true);
+        } else {
+            mixedSetTimeout(countdown, 1000);
         }
-        
-        setTimeout(() => {
-            if (window.mixedOpsData && window.mixedOpsData.version === window.mixedOpsVersion) {
-                nextMixedLevel();
+    }
+    mixedSetTimeout(countdown, 1000);
+}
+
+// === معالجة الإجابة الخاطئة ===
+function mixedHandleWrongAnswer(isTimeout) {
+    if (!window.GameCore) return;
+    
+    var msgEl = document.getElementById(MIXED_PREFIX + 'msg');
+    if (msgEl) {
+        msgEl.textContent = isTimeout ? '⏱️ انتهى الوقت!' : '❌ إجابة خاطئة!';
+        msgEl.className = 'st-msg error show';
+    }
+    
+    var newLives = window.GameCore.deductLife(MIXED_GAME_ID);
+    if (mixedGameData) mixedGameData.lives = newLives;
+    mixedUpdateStats();
+    
+    if (newLives <= 0) {        window.GameCore.toast('💔 انتهت المحاولات! إعادة المستوى', 'error');
+        mixedSetTimeout(function() {
+            window.GameCore.resetLives(MIXED_GAME_ID, 2);
+            if (mixedGameData) {
+                mixedGameData.lives = 2;
+                mixedGameData.currentQuestion = mixedGenerateQuestion(mixedGameData.level);
             }
+            mixedStartLevel();
         }, 1500);
     } else {
-        showMixedFeedback(`❌ خطأ! الجواب: ${window.mixedOpsData.currentQuestion.finalAnswer}`, "error");
-        window.mixedOpsData.isProcessing = false;
+        window.GameCore.toast('لديك محاولة أخرى', 'warning');
+        mixedSetTimeout(function() {
+            mixedStartLevel();
+        }, 1500);
+    }
+}
+
+// === تقديم الإجابة ===
+window.mixedSubmitAnswer = function(val) {
+    if (!window.GameCore) return;
+    if (!window.GameCore.canExecuteGame(MIXED_GAME_ID)) return;
+    if (!mixedGameData || mixedGameData.isShowing || mixedGameData.isProcessing) return;
+    
+    mixedGameData.isProcessing = true;
+    mixedClearAllTimeouts(); // ✅ إيقاف جميع العدادات
+    
+    var q = mixedGameData.currentQuestion;
+    var isCorrect = Math.abs(parseFloat(val) - q.finalAnswer) < 0.01;
+    var msgEl = document.getElementById(MIXED_PREFIX + 'msg');
+    
+    if (isCorrect) {
+        var earned = 10;
+        window.GameCore.addPoints(earned, 'إجابة صحيحة', MIXED_GAME_ID);
+        window.GameCore.toast('+' + earned + ' نقطة', 'success');
+        if (msgEl) { msgEl.textContent = '✅ عبقري!'; msgEl.className = 'st-msg success show'; }
+        
+        mixedSaveProgress();
+        
+        mixedSetTimeout(function() {
+            mixedNextQuestion();
+        }, 1000);
+    } else {
+        mixedHandleWrongAnswer(false);
     }
 };
 
-function nextMixedLevel() {
-    if (!window.mixedOpsData) return;
+// === حفظ التقدم ===
+function mixedSaveProgress() {
+    if (!window.GameCore || !mixedGameData) return;
+    window.GameCore.saveProgress(MIXED_GAME_ID, {        completedLevel: mixedGameData.level,
+        lastPlayed: Date.now(),
+        gameType: 'mixed-ops'
+    });
+}
+
+// === السؤال التالي ===
+function mixedNextQuestion() {
+    if (!window.GameCore) return;
+    if (!window.GameCore.canExecuteGame(MIXED_GAME_ID)) return;
+    if (!mixedGameData) return;
     
-    if (window.mixedOpsData.currentLevel < 5) {
-        window.mixedOpsData.currentLevel++;
-        window.mixedOpsData.currentQuestion = generateMixedAdvQuestion(window.mixedOpsData.currentLevel);
-        window.mixedOpsData.isProcessing = false;
-        startMixedCountdown(window.mixedOpsVersion);
+    if (mixedGameData.level >= 5) {
+        mixedEndGame();
     } else {
-        document.getElementById('main-content').innerHTML = `
-            <div class="mental-container">
-                <div class="mental-card">
-                    <h2>🏆 مذهل!</h2>
-                    <p>أنهيت جميع المستويات</p>
-                    <button class="ans-btn" onclick="window.loadMixedOpsPage()">إعادة التحدي</button>
-                </div>
-            </div>`;
+        window.GameCore.resetLives(MIXED_GAME_ID, 2);
+        mixedGameData.level++;
+        mixedGameData.currentQuestion = mixedGenerateQuestion(mixedGameData.level);
+        mixedGameData.isProcessing = false;
+        mixedGameData.isShowing = false;
+        mixedGameData.lives = 2;
+        mixedStartLevel();
+        window.GameCore.toast('🎉 مستوى جديد!', 'success');
     }
 }
 
-function showMixedFeedback(text, type) {
-    const el = document.getElementById(MIXED_IDS.gameMsg);
-    if (el && window.mixedOpsData) {
-        el.textContent = text; 
-        el.className = `msg-box-mental ${type}`;
-        el.style.opacity = '1';
-        setTimeout(() => { 
-            const currentEl = document.getElementById(MIXED_IDS.gameMsg);
-            if(currentEl && window.mixedOpsData) {
-                currentEl.style.opacity = '0'; 
-            }
-        }, 2000);
+// === انتهاء اللعبة ===
+function mixedEndGame() {
+    var main = document.getElementById('main-content');
+    if (main) {
+        var points = window.GameCore ? window.GameCore.getPoints() : 0;
+        var html = '<div class="st-wrapper" style="text-align:center;padding:50px;">';
+        html += '<h2 style="font-size:3rem;">🏆</h2>';
+        html += '<h3>أحسنت! أكملت التحدي</h3>';
+        html += '<p>النقاط الكلية: ' + points + '</p>';
+        html += '<div class="st-footer">';
+        html += '<button class="gc-btn gc-btn-primary" onclick="window.mixedRestartGame()">🔄 إعادة</button>';
+        html += '<button class="gc-btn gc-btn-secondary" onclick="window.mixedHandleExit()">🏠 الرئيسية</button>';
+        html += '</div>';
+        html += '</div>';
+        main.innerHTML = html;
     }
 }
 
-function renderMixedGameUI() {
-    const main = document.getElementById('main-content');
-    if (!main || !window.mixedOpsData || window.mixedOpsData.version !== window.mixedOpsVersion) return;
+// === إعادة بدء اللعبة ===
+window.mixedRestartGame = function() {
+    if (!window.GameCore) return;
+    window.GameCore.resetProgress(MIXED_GAME_ID);
+    window.GameCore.resetLives(MIXED_GAME_ID, 2);
+    mixedClearAllTimeouts();    mixedGameVersion++;
+    mixedGameData = {
+        level: 1,
+        currentQuestion: mixedGenerateQuestion(1),
+        lives: 2,
+        version: mixedGameVersion,
+        isShowing: false,
+        isProcessing: false,
+        options: []
+    };
+    mixedStartLevel();
+    window.GameCore.toast('🔄 تم البدء من البداية', 'info');
+};
 
-    const config = MIXED_ADV_CONFIGS[window.mixedOpsData.currentLevel];
+// === بدء المستوى ===
+function mixedStartLevel() {
+    if (!mixedGameData || !window.GameCore) return;
+    if (!window.GameCore.canExecuteGame(MIXED_GAME_ID)) return;
     
-    main.innerHTML = `
-        <div class="mental-container">
-            <div class="mental-card mixed-adv-theme">
-                <div class="lvl-badge">${config.name}</div>
-                <div id="${MIXED_IDS.mathDisplay}" class="display-screen">...</div>
-                <div id="${MIXED_IDS.gameMsg}" class="msg-box-mental"></div>
-                <div class="options-layout" id="${MIXED_IDS.optionsArea}"></div>
-                <div class="footer-tools">
-                    <button class="reset-ui-btn" onclick="window.loadMixedOpsPage()">🔄 إعادة التحدي</button>
-                </div>
-            </div>
-        </div>`;
+    mixedClearAllTimeouts(); // ✅ تنظيف المؤقتات القديمة
+    mixedGameData.isProcessing = false;
+    mixedGameData.isShowing = false;
+    mixedGameData.options = [];
+    mixedStartPrepCountdown(mixedGameData.version);
+}
 
-    if (!window.mixedOpsData.isShowing) {
-        const corr = window.mixedOpsData.currentQuestion.finalAnswer;
-        let s = new Set([corr]);
-        const step = config.decimals > 0 ? 0.1 : 1;
-        
-        while(s.size < 4) {
-            let offset = (Math.floor(Math.random() * 5) + 1) * step;
-            let val = Math.random() > 0.5 ? corr + offset : corr - offset;
-            s.add(parseFloat(val.toFixed(2)));
-        }
-        
-        const opts = [...s].sort(() => Math.random() - 0.5);
-        const optionsArea = document.getElementById(MIXED_IDS.optionsArea);
-        if (optionsArea) {
-            optionsArea.innerHTML = opts.map(o => 
-                `<button class="ans-btn" onclick="window.submitMixedAnswer('${o}')">${o}</button>`
-            ).join('');
-        }
+// === تحديث الإحصائيات ===
+function mixedUpdateStats() {
+    var lvs = document.getElementById(MIXED_PREFIX + 'lives');
+    var lvl = document.getElementById(MIXED_PREFIX + 'level');
+    var pts = document.querySelectorAll('.gc-points-display');
+    
+    if (lvs && mixedGameData) lvs.textContent = mixedGameData.lives || 2;
+    if (lvl && mixedGameData) lvl.textContent = mixedGameData.level || 1;
+    if (window.GameCore) {
+        var points = window.GameCore.getPoints();
+        for (var i = 0; i < pts.length; i++) { pts[i].textContent = points; }
     }
 }
 
-function renderMixedStyles() {
-    const STYLE_ID = 'mixed-ops-styles';
-    if (document.getElementById(STYLE_ID)) return;
+// === خروج فوري ===
+window.mixedHandleExit = function() {
+    console.log('🚪 Mixed Ops: خروج فوري...');
+    mixedClearAllTimeouts();
+    mixedGameData = null;
+    mixedGameVersion++;
+    var main = document.getElementById('main-content');
+    if (main) {
+        main.innerHTML = '<div style="text-align:center; padding:60px; direction:rtl;"><div style="font-size:2.5rem; margin-bottom:15px;">🏠</div><p style="color:var(--text-secondary);">جاري العودة للرئيسية...</p></div>';
+    }    setTimeout(function() {
+        if (typeof window.loadHomePage === 'function') { window.loadHomePage(); }
+    }, 30);
+};
+
+// === تحميل صفحة اللعبة ===
+window.loadMixedOpsPage = function() {
+    console.log('🎮 Mixed Ops: تحميل اللعبة...');
+    mixedCleanupExecuted = 0;
+    mixedCleanupLock = false;
+    mixedCleanup();
+    mixedGameVersion++;
+    if (window.GameCore) { window.GameCore.registerGame(MIXED_GAME_ID, mixedCleanup); }
     
-    const css = `
-        .mental-container { padding: 15px; max-width: 450px; margin: 20px auto; direction: rtl; }
-        .mental-card { background: #fff; border-radius: 30px; padding: 40px 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; min-height: 520px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; }
-        .mixed-adv-theme { border: 2px solid #6c5ce7; }
-        .countdown-box { width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 8px solid #6c5ce7; margin: 20px; }
-        #${MIXED_IDS.cntNum} { font-size: 4rem; font-weight: 900; color: #6c5ce7; }
-        #${MIXED_IDS.mathDisplay} { font-size: 3.5rem; font-weight: 900; height: 120px; display: flex; align-items: center; }
-        .options-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
-        .ans-btn { padding: 15px; border: none; background: #6c5ce7; color: #fff; border-radius: 15px; font-size: 1.2rem; cursor: pointer; }
-        .reset-ui-btn { background: #eee; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; margin-top: 10px; }
-        .msg-box-mental { height: 30px; transition: 0.3s; opacity: 0; font-weight: bold; margin: 10px 0; }
-        .success { color: #2ecc71; } .error { color: #e74c3c; }
-        [data-theme="dark"] .mental-card { background: #2d3436; color: #fff; }
-    `;
+    var savedProgress = window.GameCore ? window.GameCore.loadProgress(MIXED_GAME_ID) : null;
+    var startLevel = 1;
     
-    window._ResourceManager?.addStyle(STYLE_ID, css);
+    if (savedProgress && savedProgress.completedLevel) {
+        startLevel = savedProgress.completedLevel;
+    }
+    
+    window.GameCore.resetLives(MIXED_GAME_ID, 2);
+    
+    mixedGameData = {
+        level: startLevel,
+        currentQuestion: mixedGenerateQuestion(startLevel),
+        lives: 2,
+        version: mixedGameVersion,
+        isShowing: false,
+        isProcessing: false,
+        options: []
+    };
+    mixedStartLevel();
+};
+
+// ✅ حماية beforeunload
+if (!window._mixedBeforeUnloadAttached) {
+    window.addEventListener('beforeunload', mixedCleanup);
+    window._mixedBeforeUnloadAttached = true;
 }

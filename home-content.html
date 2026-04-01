@@ -1,83 +1,157 @@
-<main id="main-content">
-
-  <div id="scrolling-rule-bar" aria-live="polite">
-    <span>مرحباً بك في MathLinguistic! استعد لتحدي ذهنك.</span>
+<!-- ============================================ -->
+<!-- 🎮 قسم الألعاب (شريط أيقونات فقط - بدون نصوص) -->
+<!-- ============================================ -->
+<section class="content-section" id="games-section">
+  <div class="section-header">
+    <h2><i class="fas fa-gamepad"></i> الألعاب</h2>
+    <p>العب وتعلم بطريقة ممتعة</p>
   </div>
-
-  <div class="main-buttons" id="main-action-buttons">
-    <button class="action-btn" data-action="speed-test">اختبر نفسك في وقت محدد</button>
-    <button class="action-btn" data-action="mental-math">حساب ذهني في الجمع والطرح</button>
-    <button class="action-btn" data-action="mixed-ops">حساب ذهني في عمليات مختلطة</button>
-  </div>
-
-  <div class="cards-container" id="levels-and-achievements">
-    
-    <div class="level-card lesson-style" id="lesson-beginner-card" data-target="learn-beginner">
-      <h3><i class="fas fa-book"></i> درس: المبتدئ</h3>
-      <p>قواعد الجمع والطرح الأساسية ومكملات العشرة.</p>
+  
+  <div class="games-icon-bar">
+    <div class="game-icon-item" data-target="speed-test" title="اختبار السرعة">
+      <i class="fas fa-stopwatch"></i>
     </div>
-
-    <div class="level-card lesson-style" id="lesson-intermediate-card" data-target="learn-intermediate">
-      <h3><i class="fas fa-book"></i> درس: المتوسط</h3>
-      <p>أسرار الضرب والقسمة والتعامل مع الكسور.</p>
+    <div class="game-icon-item" data-target="mental-math" title="الحساب الذهني">
+      <i class="fas fa-brain"></i>
     </div>
-
-    <div class="level-card lesson-style" id="lesson-advanced-card" data-target="learn-advanced">
-      <h3><i class="fas fa-book"></i> درس: المتقدم</h3>
-      <p>شرح المعادلات الجبرية والنسب المئوية بتبسيط.</p>
+    <div class="game-icon-item" data-target="mixed-ops" title="العمليات المختلطة">
+      <i class="fas fa-robot"></i>
     </div>
-
-    <div class="level-card lesson-style" id="lesson-complex-card" data-target="learn-complex">
-      <h3><i class="fas fa-book"></i> درس: المعقد</h3>
-      <p>قواعد المنطق الرياضي والعمليات المركبة.</p>
+    <div class="game-icon-item" data-target="loudoukou" title="لودوكو">
+      <i class="fas fa-th"></i>
     </div>
-
-    <hr style="width: 100%; border: 0; border-top: 1px solid var(--border-color); margin: 20px 0; grid-column: 1 / -1;">
-
-    <div class="level-card" id="beginner-card" data-target="beginner">
-      <h3>المستوى المبتدئ</h3>
-      <p>تمارين بسيطة في الجمع والطرح للأطفال أو المبتدئين.</p>
+    <div class="game-icon-item" data-target="crossmath" title="الأرقام المتقاطعة">
+      <i class="fas fa-border-all"></i>
     </div>
-
-    <div class="level-card" id="intermediate-card" data-target="intermediate">
-      <h3>المستوى المتوسط</h3>
-      <p>تمارين أكثر تحديًا تشمل الضرب والقسمة والكسور البسيطة.</p>
+    <div class="game-icon-item" data-target="calculator" title="الحاسبة">
+      <i class="fas fa-calculator"></i>
     </div>
-
-    <div class="level-card" id="advanced-card" data-target="advanced">
-      <h3>المستوى المتقدم</h3>
-      <p>مسائل جبرية ونسبة مئوية وكلمات رياضية متقدمة.</p>
+    <div class="game-icon-item" data-target="sliding_puzzle" title="ترتيب الأرقام">
+      <i class="fas fa-puzzle-piece"></i>
     </div>
-
-    <div class="level-card" id="complex-card" data-target="complex">
-      <h3>المستوى المعقد</h3>
-      <p>تحديات رياضية معقدة تتطلب تفكيرًا منطقيًا عميقًا.</p>
-    </div>
-    
-    <div class="level-card" id="loudoukou-card" data-target="loudoukou">
-      <h3>لودوكو</h3>
-      <p>تحديات رياضية معقدة تتطلب تفكيرًا منطقيًا عميقًا.</p>
-    </div>
-    
-    <div class="level-card" id="crossmath-card" data-target="crossmath">
-      <h3>الأرقام المتقاطعة</h3>
-      <p>املاً الفراغات لتكتمل المعادلات الأفقية والرأسية.</p>
-    </div>
-
-    <div class="level-card" id="calculator-card" data-target="calculator">
-      <h3>الحاسبة الذكية</h3>
-      <p>آلة حاسبة علمية شاملة مع محول وحدات متكامل.</p>
-    </div>
-
-    <div class="level-card" id="puzzle-card" data-target="sliding_puzzle">
-      <h3>ترتيب الأرقام</h3>
-      <p>تحدى ذكاءك في ترتيب الأرقام من 3×3 إلى 9×9 بأقل عدد من التحركات.</p>
-    </div>
-
-    <div class="level-card" id="achievements-card" data-target="achievements">
-      <h3>الإنجازات</h3>
-      <p>تتبع تقدمك، اكتسب النجوم، وافتح الشارات الخاصة بك!</p>
+    <div class="game-icon-item" data-target="achievements" title="الإنجازات">
+      <i class="fas fa-trophy"></i>
     </div>
   </div>
+</section>
 
-</main>
+<!-- ============================================ -->
+<!-- 📚 قسم الدروس (بطاقات عمودية) -->
+<!-- ============================================ -->
+<section class="content-section" id="lessons-section">
+  <div class="section-header">
+    <h2><i class="fas fa-chalkboard-teacher"></i> الدروس</h2>
+    <p>تعلم خطوة بخطوة</p>
+  </div>
+  
+  <div class="lessons-vertical-cards">
+    
+    <!-- درس 1: المبتدئ -->
+    <div class="lesson-v-card beginner" data-target="learn-beginner" data-category="lesson" data-search="مبتدئ,أساسيات,جمع,طرح">      <div class="lesson-v-icon">
+        <i class="fas fa-star"></i>
+      </div>
+      <div class="lesson-v-content">
+        <h3>المبتدئ</h3>
+        <p>قواعد الجمع والطرح ومكملات العشرة</p>
+      </div>
+      <div class="lesson-v-badge">سهل</div>
+    </div>
+    
+    <!-- درس 2: المتوسط -->
+    <div class="lesson-v-card intermediate" data-target="learn-intermediate" data-category="lesson" data-search="متوسط,ضرب,قسمة,كسور">
+      <div class="lesson-v-icon">
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <div class="lesson-v-content">
+        <h3>المتوسط</h3>
+        <p>أسرار الضرب والقسمة والكسور</p>
+      </div>
+      <div class="lesson-v-badge">متوسط</div>
+    </div>
+    
+    <!-- درس 3: المتقدم -->
+    <div class="lesson-v-card advanced" data-target="learn-advanced" data-category="lesson" data-search="متقدم,جبر,نسب,مئوية">
+      <div class="lesson-v-icon">
+        <i class="fas fa-brain"></i>
+      </div>
+      <div class="lesson-v-content">
+        <h3>المتقدم</h3>
+        <p>المعادلات الجبرية والنسب المئوية</p>
+      </div>
+      <div class="lesson-v-badge">صعب</div>
+    </div>
+    
+    <!-- درس 4: المعقد -->
+    <div class="lesson-v-card complex" data-target="learn-complex" data-category="lesson" data-search="معقد,منطق,مركبة,متقدمة">
+      <div class="lesson-v-icon">
+        <i class="fas fa-infinity"></i>
+      </div>
+      <div class="lesson-v-content">
+        <h3>المعقد</h3>
+        <p>المنطق الرياضي والعمليات المركبة</p>
+      </div>
+      <div class="lesson-v-badge">خبير</div>
+    </div>
+    
+  </div>
+</section>
+
+<!-- ============================================ --><!-- ✏️ قسم التمارين (بطاقات عمودية - ألوان مميزة) -->
+<!-- ============================================ -->
+<section class="content-section" id="exercises-section">
+  <div class="section-header">
+    <h2><i class="fas fa-pencil-alt"></i> التمارين</h2>
+    <p>طبق ما تعلمته وتحدي نفسك</p>
+  </div>
+  
+  <div class="exercises-vertical-cards">
+    
+    <!-- تمرين 1: المبتدئ -->
+    <div class="lesson-v-card beginner exercise" data-target="beginner" data-category="exercise" data-search="مبتدئ,تمارين,بسيطة,أطفال">
+      <div class="lesson-v-icon">
+        <i class="fas fa-shapes"></i>
+      </div>
+      <div class="lesson-v-content">
+        <h3>المبتدئ</h3>
+        <p>تمارين بسيطة في الجمع والطرح</p>
+      </div>
+      <div class="lesson-v-badge">50 تمرين</div>
+    </div>
+    
+    <!-- تمرين 2: المتوسط -->
+    <div class="lesson-v-card intermediate exercise" data-target="intermediate" data-category="exercise" data-search="متوسط,تحدي,ضرب,قسمة">
+      <div class="lesson-v-icon">
+        <i class="fas fa-dumbbell"></i>
+      </div>
+      <div class="lesson-v-content">
+        <h3>المتوسط</h3>
+        <p>تمارين الضرب والقسمة والكسور</p>
+      </div>
+      <div class="lesson-v-badge">75 تمرين</div>
+    </div>
+    
+    <!-- تمرين 3: المتقدم -->
+    <div class="lesson-v-card advanced exercise" data-target="advanced" data-category="exercise" data-search="متقدم,جبرية,كلمات,رياضية">
+      <div class="lesson-v-icon">
+        <i class="fas fa-fire"></i>
+      </div>
+      <div class="lesson-v-content">
+        <h3>المتقدم</h3>
+        <p>مسائل جبرية وكلمات رياضية</p>
+      </div>
+      <div class="lesson-v-badge">100 تمرين</div>
+    </div>
+    
+    <!-- تمرين 4: المعقد -->
+    <div class="lesson-v-card complex exercise" data-target="complex" data-category="exercise" data-search="معقد,منطقي,عميق,تحديات">
+      <div class="lesson-v-icon">
+        <i class="fas fa-crown"></i>      </div>
+      <div class="lesson-v-content">
+        <h3>المعقد</h3>
+        <p>تحديات منطقية وتفكير عميق</p>
+      </div>
+      <div class="lesson-v-badge">150 تمرين</div>
+    </div>
+    
+  </div>
+</section>

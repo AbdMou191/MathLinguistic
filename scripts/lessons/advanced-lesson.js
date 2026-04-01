@@ -1,13 +1,13 @@
 /**
- * منطق درس المستوى المتقدم - النسخة المصححة (v3.0)
- * الإصلاح: منع تضارب الأنماط مع المستويات الأخرى
+ * 📚 منطق درس المستوى المتقدم - النسخة المصححة (v3.1)
+ * ✅ إزالة تصميم أزرار الترقيم فقط (تستخدم main.css)
  */
 
 let currentAdvLessonPage = 1;
 const ADV_LESSONS_PER_PAGE = 2;
 let advLessonDataCache = null; 
 
-// ✅ دالة تنظيف الأنماط القديمة (مشتركة - نفس الدالة في الملف الأول)
+// ✅ دالة تنظيف الأنماط القديمة (مشتركة)
 function cleanupLessonStyles() {
     const stylesToRemove = ['beginner-lesson-styles', 'advanced-lesson-styles', 'intermediate-lesson-styles', 'complex-lesson-styles', 'lesson-page-styles'];
     stylesToRemove.forEach(id => {
@@ -16,14 +16,17 @@ function cleanupLessonStyles() {
     });
 }
 
-window.loadAdvancedLesson = async function() {
+window.loadAdvancedLesson = async function(lessonData) {
     window.currentLevel = 'learn-advanced'; 
     const mainContent = document.getElementById('main-content');
     
     mainContent.innerHTML = "<p style='text-align:center; padding:50px;'>جاري تحميل دروس المستوى المتقدم...</p>";
 
     try {
-        if (!advLessonDataCache) {
+        // ✅ استخدام البيانات الممررة أو الجلب كاحتياط
+        if (lessonData) {
+            advLessonDataCache = lessonData;
+        } else if (!advLessonDataCache) {
             const res = await fetch('data/lessons/advanced.json');
             if (!res.ok) throw new Error("File not found");
             advLessonDataCache = await res.json();
@@ -31,32 +34,26 @@ window.loadAdvancedLesson = async function() {
         
         renderAdvancedLessonPage();
         
-        // ✅ 4. تحديث الميتا بعد نجاح التحميل والعرض (هذا هو المكان الصحيح!)
-        if (typeof updatePageMeta === 'function') {
-            updatePageMeta('advanced-lesson'); // ✅ المفتاح مطابق لما في meta-manager.js
-        }
-    } catch (err) {
-        console.error('Error:', err);
-        mainContent.innerHTML = "<p style='text-align:center; padding:50px; color:red;'>تعذر تحميل دروس المستوى المتقدم.</p>";
-    }
-    
-        // ✅ تحديث الميتا حتى في حالة الخطأ (اختياري لكن مفضل)
         if (typeof updatePageMeta === 'function') {
             updatePageMeta('advanced-lesson');
         }
+    } catch (err) {
+        console.error('❌ Advanced Lesson Error:', err);
+        mainContent.innerHTML = "<p style='text-align:center; padding:50px; color:red;'>تعذر تحميل دروس المستوى المتقدم.</p>";
+    }
 };
 
 function generatePaginationNumbers(currentPage, totalPages) {
     const pages = [];
     
     if (totalPages <= 6) {
-        for (let i = 1; i <= totalPages; i++) pages.push(i);
-        return pages;
+        for (let i = 1; i <= totalPages; i++) pages.push(i);        return pages;
     }
     
     if (currentPage <= 3) {
         pages.push(1, 2, 3, '...', totalPages);
-    } else if (currentPage >= totalPages - 2) {        pages.push(1, '...', totalPages - 2, totalPages - 1, totalPages);
+    } else if (currentPage >= totalPages - 2) {
+        pages.push(1, '...', totalPages - 2, totalPages - 1, totalPages);
     } else {
         pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
     }
@@ -64,21 +61,17 @@ function generatePaginationNumbers(currentPage, totalPages) {
     return pages;
 }
 
-function getCurrentTheme() {
-    if (document.documentElement.getAttribute('data-theme') === 'dark') return 'dark';
-    if (document.body.classList.contains('dark-mode')) return 'dark';
-    return 'light';
-}
-
 function renderAdvancedLessonPage() {
     const mainContent = document.getElementById('main-content');
     const data = advLessonDataCache;
+    
+    if (!data || !data.lessons) return;
     
     const totalLessons = data.lessons.length;
     const totalPages = Math.ceil(totalLessons / ADV_LESSONS_PER_PAGE);
 
     const start = (currentAdvLessonPage - 1) * ADV_LESSONS_PER_PAGE;
-    const end = start + ADV_LESSONS_PER_PAGE;
+    const end = Math.min(start + ADV_LESSONS_PER_PAGE, totalLessons);
     const paginatedLessons = data.lessons.slice(start, end);
     
     const paginationNumbers = generatePaginationNumbers(currentAdvLessonPage, totalPages);
@@ -103,9 +96,9 @@ function renderAdvancedLessonPage() {
                 --lesson-border: #eeeeee;
                 --lesson-card-shadow: rgba(0,0,0,0.05);
                 --lesson-btn-bg: #f4f4f4;
-                --lesson-btn-text: #333333;
-                --lesson-btn-border: #dddddd;
-                --lesson-example-bg: #fdfcff;                --lesson-example-border: #e2d1e8;
+                --lesson-btn-text: #333333;                --lesson-btn-border: #dddddd;
+                --lesson-example-bg: #fdfcff;
+                --lesson-example-border: #e2d1e8;
             }
             
             [data-theme="dark"], body.dark-mode {
@@ -146,20 +139,35 @@ function renderAdvancedLessonPage() {
             .example-question { font-weight: bold; color: var(--lesson-accent); font-size: 0.9rem; margin-bottom: 5px; white-space: nowrap; }
             .example-solution { font-size: 0.85rem; color: var(--lesson-text-primary); line-height: 2.1; padding-right: 5px; white-space: nowrap; }
 
+            /* ✅ حاوية الترقيم فقط (بدون تصميم الأزرار - تستخدم main.css) */
             .pagination-container { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 20px; }
-            .lesson-pagination { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; }            
-            .page-node { width: 30px; height: 30px; border: 2px solid var(--lesson-accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--lesson-accent); font-weight: bold; font-size: 0.85rem; background: var(--lesson-bg-primary); }
-            .page-node:hover { background: var(--lesson-accent); color: white; }
-            .page-node.active { background: var(--lesson-accent); color: white; }
-            
+            .lesson-pagination { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; }
             .page-ellipsis { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; color: var(--lesson-text-secondary); font-size: 0.9rem; cursor: default; font-weight: bold; }
             
-            .nav-buttons { display: flex; gap: 12px; }            .nav-btn { background: var(--lesson-btn-bg); color: var(--lesson-btn-text); border: 2px solid var(--lesson-btn-border); padding: 6px 18px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 500; min-width: 70px; }            
-            .nav-btn:hover:not(:disabled) { background: var(--lesson-accent); color: white; border-color: var(--lesson-accent); }
+            .nav-buttons { display: flex; gap: 12px; }
+            .nav-btn { background: var(--lesson-btn-bg); color: var(--lesson-btn-text); border: 2px solid var(--lesson-btn-border); padding: 6px 18px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 500; min-width: 70px; }                        .nav-btn:hover:not(:disabled) { background: var(--lesson-accent); color: white; border-color: var(--lesson-accent); }
             .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         `;
         document.head.appendChild(style);
     }
+
+    // ✅ بناء HTML للترقيم - استخدام كلاسات main.css لأزرار الأرقام فقط
+    let paginationHTML = '';
+    paginationNumbers.forEach(item => {
+        if (item === '...') {
+            paginationHTML += `<span class="page-ellipsis">...</span>`;
+        } else {
+            const isActive = item === currentAdvLessonPage ? 'active' : '';
+            // ✅ استخدام pagination__btn من main.css بدلاً من page-node
+            paginationHTML += `
+              <button class="pagination__btn ${isActive}" 
+                      onclick="changeAdvLessonPage(${item}); return false;"
+                      aria-label="الصفحة ${item}"
+                      aria-current="${isActive ? 'page' : 'false'}">
+                ${item}
+              </button>`;
+        }
+    });
 
     mainContent.innerHTML = `
     <div class="lesson-wrapper">
@@ -186,8 +194,7 @@ function renderAdvancedLessonPage() {
                     ${lesson.examples.map(ex => `
                         <div class="example-block">
                             <div class="example-question">مثال: ${ex.question}</div>
-                            <div class="example-solution"><strong>الحل التفصيلي:</strong> ${ex.detailed_solution}</div>
-                        </div>
+                            <div class="example-solution"><strong>الحل التفصيلي:</strong> ${ex.detailed_solution}</div>                        </div>
                     `).join('')}
                 </div>
             `).join('')}
@@ -195,32 +202,40 @@ function renderAdvancedLessonPage() {
 
         <div class="pagination-container">
             <div class="lesson-pagination">
-                ${paginationNumbers.map(item => {
-                    if (item === '...') {
-                        return `<span class="page-ellipsis">...</span>`;
-                    } else {
-                        return `<div class="page-node ${item === currentAdvLessonPage ? 'active' : ''}" 
-                                 onclick="changeAdvLessonPage(${item})">${item}</div>`;
-                    }
-                }).join('')}
+                ${paginationHTML}
             </div>            
             <div class="nav-buttons">
-                <button class="nav-btn" onclick="changeAdvLessonPage(currentAdvLessonPage - 1)" 
+                <button class="nav-btn" onclick="changeAdvLessonPage(currentAdvLessonPage - 1); return false;" 
                         ${currentAdvLessonPage === 1 ? 'disabled' : ''}>◀ السابق</button>
-                <button class="nav-btn" onclick="changeAdvLessonPage(currentAdvLessonPage + 1)" 
+                <button class="nav-btn" onclick="changeAdvLessonPage(currentAdvLessonPage + 1); return false;" 
                         ${currentAdvLessonPage === totalPages ? 'disabled' : ''}>التالي ▶</button>
             </div>
         </div>
     </div>
     `;
     
+    // ✅ تهيئة الرياضيات
     if (window.MathJax) {
-        window.MathJax.typesetPromise();
+        setTimeout(() => {
+            MathJax.typesetPromise([mainContent]).catch(err => console.error('MathJax Error:', err));
+        }, 100);
     }
+    
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-window.changeAdvLessonPage = (page) => {
+window.changeAdvLessonPage = function(page) {
+    const data = advLessonDataCache;
+    if (!data || !data.lessons) return;
+    
+    const totalLessons = data.lessons.length;
+    const totalPages = Math.ceil(totalLessons / ADV_LESSONS_PER_PAGE);
+    
+    if (page < 1 || page > totalPages) {
+        console.warn('⚠️ رقم الصفحة خارج النطاق');
+        return;
+    }
+    
     currentAdvLessonPage = page;
     renderAdvancedLessonPage();
 };

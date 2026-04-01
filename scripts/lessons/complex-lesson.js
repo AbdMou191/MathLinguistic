@@ -1,55 +1,46 @@
 /**
- * منطق درس المستوى المعقد - النسخة النهائية (v4.0)
- * الإصلاح: 3 دروس/صفحة + إصلاح كامل لنظام الترقيم
+ * 📚 منطق درس المستوى المعقد - النسخة المصححة (v4.1)
+ * ✅ إزالة تصميم أزرار الترقيم (تستخدم main.css)
  */
 
-// ✅ ثابت: 3 دروس في كل صفحة
 const CPX_LESSONS_PER_PAGE = 3;
-
 let cpxCurrentPage = 1;
-let cpxLessonDataCache = null; 
-const CPX_DATA_FILE_PATH = 'data/lessons/complex.json'; 
+let cpxLessonDataCache = null;
 
-window.loadComplexLesson = async function() {
+window.loadComplexLesson = async function(lessonData) {
     window.currentLevel = 'learn-complex'; 
     const mainContent = document.getElementById('main-content');
     
     mainContent.innerHTML = "<p style='text-align:center; padding:50px;'>جاري تحميل الدروس...</p>";
 
     try {
-        if (!cpxLessonDataCache) {
-            const res = await fetch(CPX_DATA_FILE_PATH);
+        if (lessonData) {
+            cpxLessonDataCache = lessonData;
+        } else if (!cpxLessonDataCache) {
+            const res = await fetch('data/lessons/complex.json');
             if (!res.ok) throw new Error("File not found");
             cpxLessonDataCache = await res.json();
         }
+        
         renderComplexLessonPage();
         
-        // ✅ 4. تحديث الميتا بعد نجاح التحميل والعرض (هذا هو المكان الصحيح!)
         if (typeof updatePageMeta === 'function') {
-            updatePageMeta('complex-lesson'); // ✅ المفتاح مطابق لما في meta-manager.js
+            updatePageMeta('complex-lesson');
         }
     } catch (err) {
         console.error('❌ Complex Lesson Error:', err);
         mainContent.innerHTML = "<p style='text-align:center; padding:50px; color:red;'>تعذر تحميل الدروس.</p>";
     }
-    
-        // ✅ تحديث الميتا حتى في حالة الخطأ (اختياري لكن مفضل)
-        if (typeof updatePageMeta === 'function') {
-            updatePageMeta('complex-lesson');
-        }
 };
 
-// ✅ دالة توليد أرقام الصفحات حسب طول المصفوفة
 function generateCpxPaginationNumbers(currentPage, totalPages) {
     const pages = [];
     
     if (totalPages <= 7) {
-        // عرض كل الصفحات إذا كانت 7 أو أقل
         for (let i = 1; i <= totalPages; i++) {
             pages.push(i);
         }
     } else {
-        // عرض ذكي للصفحات الكثيرة
         if (currentPage <= 4) {
             pages.push(1, 2, 3, 4, '...', totalPages);
         } else if (currentPage >= totalPages - 3) {
@@ -59,12 +50,6 @@ function generateCpxPaginationNumbers(currentPage, totalPages) {
         }    }
     
     return pages;
-}
-
-function getCpxCurrentTheme() {
-    if (document.documentElement.getAttribute('data-theme') === 'dark') return 'dark';
-    if (document.body.classList.contains('dark-mode')) return 'dark';
-    return 'light';
 }
 
 function renderMath() {
@@ -88,11 +73,8 @@ function renderComplexLessonPage() {
     if (!data || !data.lessons) return;
 
     const totalLessons = data.lessons.length;
-    
-    // ✅ حساب عدد الصفحات ديناميكياً: طول المصفوفة / 3
     const totalPages = Math.ceil(totalLessons / CPX_LESSONS_PER_PAGE);
     
-    // ✅ التأكد من أن الصفحة الحالية ضمن النطاق الصحيح
     if (cpxCurrentPage > totalPages) cpxCurrentPage = totalPages;
     if (cpxCurrentPage < 1) cpxCurrentPage = 1;
     
@@ -103,17 +85,18 @@ function renderComplexLessonPage() {
     const paginationNumbers = generateCpxPaginationNumbers(cpxCurrentPage, totalPages);
     const showPagination = totalPages > 1;
 
+    // ✅ إنشاء الـ CSS - تم إزالة تصميم أزرار الترقيم
     if (!document.getElementById(styleId)) {
         const style = document.createElement('style');
-        style.id = styleId;        style.textContent = `
+        style.id = styleId;
+        style.textContent = `
             :root {
                 --cpx-bg-primary: #ffffff; --cpx-bg-secondary: #f9f9f9;
                 --cpx-text-primary: #333333; --cpx-text-secondary: #666666;
                 --cpx-text-muted: #444444; --cpx-accent: #2c3e50;
                 --cpx-accent-hover: #1a252f; --cpx-border: #eeeeee;
                 --cpx-card-shadow: rgba(0,0,0,0.05); --cpx-btn-bg: #f4f4f4;
-                --cpx-btn-text: #333333; --cpx-btn-border: #dddddd;
-                --cpx-example-bg: #f8f9fa; --cpx-example-border: #dee2e6;
+                --cpx-btn-text: #333333; --cpx-btn-border: #dddddd;                --cpx-example-bg: #f8f9fa; --cpx-example-border: #dee2e6;
             }
             [data-theme="dark"], body.dark-mode {
                 --cpx-bg-primary: #1a1a2e; --cpx-bg-secondary: #16213e;
@@ -141,28 +124,10 @@ function renderComplexLessonPage() {
             .cpx-example-question { font-weight: bold; color: var(--cpx-accent); font-size: 0.95rem; margin-bottom: 8px; }
             .cpx-example-solution { font-size: 0.9rem; color: var(--cpx-text-primary); line-height: 1.8; padding-right: 5px; white-space: normal; }
             
-            /* ✅ تنسيق الترقيم - مهم جداً */
+            /* ✅ حاوية الترقيم فقط (بدون تصميم الأزرار) */
             .cpx-pagination-container { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 25px; }
             .cpx-lesson-pagination { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-            .cpx-page-node { 
-                width: 40px; 
-                height: 40px; 
-                border: 2px solid var(--cpx-accent); 
-                border-radius: 6px; 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                cursor: pointer; 
-                color: var(--cpx-accent); 
-                font-weight: bold;                 font-size: 1rem; 
-                background: var(--cpx-bg-primary);
-                user-select: none;
-                -webkit-tap-highlight-color: transparent;
-            }
-            .cpx-page-node:hover { background: var(--cpx-accent); color: white; }
-            .cpx-page-node.active { background: var(--cpx-accent); color: white; cursor: default; }
             .cpx-page-ellipsis { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: var(--cpx-text-secondary); font-size: 1rem; }
-            
             .cpx-nav-buttons { display: flex; gap: 10px; }
             .cpx-nav-btn { background: var(--cpx-btn-bg); color: var(--cpx-btn-text); border: 1px solid var(--cpx-btn-border); padding: 8px 20px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
             .cpx-nav-btn:hover:not(:disabled) { background: var(--cpx-accent); color: white; }
@@ -175,15 +140,13 @@ function renderComplexLessonPage() {
 
     const lessonsCounter = `<div class="cpx-lessons-counter">عرض الدروس ${start + 1} - ${end} من ${totalLessons} | صفحة ${cpxCurrentPage} من ${totalPages}</div>`;
 
-    // ✅ بناء HTML للترقيم - باستخدام onclick مباشر وموثوق
+    // ✅ بناء HTML للترقيم - استخدام كلاسات main.css
     let paginationHTML = '';
     paginationNumbers.forEach(item => {
         if (item === '...') {
             paginationHTML += `<span class="cpx-page-ellipsis">...</span>`;
-        } else {
-            const isActive = item === cpxCurrentPage ? 'active' : '';
-            // ✅ استخدام onclick مباشر مع return false لمنع أي سلوك افتراضي
-            paginationHTML += `<div class="cpx-page-node ${isActive}" onclick="window.changeCpxLessonPage(${item}); return false;">${item}</div>`;
+        } else {            const isActive = item === cpxCurrentPage ? 'active' : '';
+            paginationHTML += `<button class="pagination__btn ${isActive}" onclick="window.changeCpxLessonPage(${item}); return false;">${item}</button>`;
         }
     });
 
@@ -203,7 +166,8 @@ function renderComplexLessonPage() {
             ${paginatedLessons.map((lesson, index) => `
                 <div class="cpx-lesson-card" data-lesson-index="${start + index}">
                     <div class="cpx-lesson-card-header">
-                        <i class="fas ${lesson.icon} cpx-lesson-icon"></i>                        <h3 class="cpx-lesson-card-title">${lesson.title}</h3>
+                        <i class="fas ${lesson.icon} cpx-lesson-icon"></i>
+                        <h3 class="cpx-lesson-card-title">${lesson.title}</h3>
                     </div>
                     <p class="cpx-lesson-explanation">${lesson.explanation}</p>
                     <ul class="cpx-lesson-steps">
@@ -230,14 +194,12 @@ function renderComplexLessonPage() {
                         ${cpxCurrentPage === totalPages ? 'disabled' : ''}>التالي ▶</button>
             </div>
         </div>
-    </div>
-    `;
+    </div>    `;
     
     renderMath();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ✅ دالة تغيير الصفحة - متاحة عالمياً
 window.changeCpxLessonPage = function(page) {
     const data = cpxLessonDataCache;
     if (!data || !data.lessons) {
@@ -248,14 +210,8 @@ window.changeCpxLessonPage = function(page) {
     const totalLessons = data.lessons.length;
     const totalPages = Math.ceil(totalLessons / CPX_LESSONS_PER_PAGE);
     
-    console.log('📄 تغيير الصفحة:', page, 'من', totalPages);
-    
-    // ✅ التحقق من صحة رقم الصفحة
-    if (page < 1) {
-        console.warn('⚠️ رقم الصفحة أقل من 1');        return;
-    }
-    if (page > totalPages) {
-        console.warn('⚠️ رقم الصفحة أكبر من الإجمالي:', totalPages);
+    if (page < 1 || page > totalPages) {
+        console.warn('⚠️ رقم الصفحة خارج النطاق');
         return;
     }
     

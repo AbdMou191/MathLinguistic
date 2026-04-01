@@ -1,6 +1,8 @@
 /**
- * منطق درس المستوى المبتدئ - النسخة المصححة (v3.0)
- * الإصلاح: منع تضارب الأنماط مع المستويات الأخرى
+ * 📚 منطق درس المستوى المبتدئ - النسخة الموحدة (v3.1)
+ * ✅ إزالة تصميم أزرار الترقيم فقط (تستخدم main.css)
+ * ✅ إضافة دعم MathJax
+ * ✅ دعم استقبال البيانات كمعامل
  */
 
 // متغيرات لإدارة الصفحات
@@ -17,14 +19,17 @@ function cleanupLessonStyles() {
     });
 }
 
-window.loadBeginnerLesson = async function() {
+window.loadBeginnerLesson = async function(lessonData) {
     window.currentLevel = 'learn-beginner'; 
     const mainContent = document.getElementById('main-content');
     
     mainContent.innerHTML = "<p style='text-align:center; padding:50px;'>جاري تحميل الدرس...</p>";
 
     try {
-        if (!lessonDataCache) {
+        // ✅ استخدام البيانات الممررة أو الجلب كاحتياط
+        if (lessonData) {
+            lessonDataCache = lessonData;
+        } else if (!lessonDataCache) {
             const res = await fetch('data/lessons/beginner.json');
             if (!res.ok) throw new Error("Lesson file not found");
             lessonDataCache = await res.json();
@@ -32,20 +37,30 @@ window.loadBeginnerLesson = async function() {
         
         renderLessonPage();
         
-        // ✅ 4. تحديث الميتا بعد نجاح التحميل والعرض (هذا هو المكان الصحيح!)
+        // ✅ تهيئة MathJax بعد العرض
+        renderMath();
+        
         if (typeof updatePageMeta === 'function') {
-            updatePageMeta('beginner-lesson'); // ✅ المفتاح مطابق لما في meta-manager.js
+            updatePageMeta('beginner-lesson');
         }
     } catch (err) {
-        console.error('Error:', err);
+        console.error('❌ Beginner Lesson Error:', err);
         mainContent.innerHTML = "<p style='text-align:center; padding:50px; color:red;'>عذراً، تعذر تحميل الدرس.</p>";
     }
-    
-        // ✅ تحديث الميتا حتى في حالة الخطأ (اختياري لكن مفضل)
-        if (typeof updatePageMeta === 'function') {
-            updatePageMeta('beginner');
-        }
 };
+// ✅ دالة دعم MathJax (مضافة)
+function renderMath() {
+    if (window.MathJax) {
+        setTimeout(() => {
+            const mainContent = document.getElementById('main-content');
+            if (mainContent) {
+                MathJax.typesetPromise([mainContent]).catch(err => {
+                    console.error('MathJax Error:', err);
+                });
+            }
+        }, 100);
+    }
+}
 
 // === دالة إنشاء أزرار الترقيم الذكي ===
 function generateSmartPagination(currentPage, totalPages) {
@@ -56,7 +71,8 @@ function generateSmartPagination(currentPage, totalPages) {
         for (let i = 1; i <= totalPages; i++) {
             pages.push({ type: 'page', value: i });
         }
-    } else {        pages.push({ type: 'page', value: 1 });
+    } else {
+        pages.push({ type: 'page', value: 1 });
         
         if (currentPage > 3) {
             pages.push({ type: 'ellipsis', value: 'start' });
@@ -80,11 +96,12 @@ function generateSmartPagination(currentPage, totalPages) {
 }
 
 function renderLessonPage() {
-    const mainContent = document.getElementById('main-content');
-    const data = lessonDataCache;
+    const mainContent = document.getElementById('main-content');    const data = lessonDataCache;
+    
+    if (!data || !data.lessons) return;
     
     const start = (currentLessonPage - 1) * LESSONS_PER_PAGE;
-    const end = start + LESSONS_PER_PAGE;
+    const end = Math.min(start + LESSONS_PER_PAGE, data.lessons.length);
     const paginatedLessons = data.lessons.slice(start, end);
     const totalPages = Math.ceil(data.lessons.length / LESSONS_PER_PAGE);
 
@@ -105,7 +122,8 @@ function renderLessonPage() {
                 --lesson-text-muted: #444444;
                 --lesson-accent: #f39c12;
                 --lesson-accent-hover: #e67e22;
-                --lesson-border: #eeeeee;                --lesson-card-shadow: rgba(0,0,0,0.05);
+                --lesson-border: #eeeeee;
+                --lesson-card-shadow: rgba(0,0,0,0.05);
                 --lesson-btn-bg: #f4f4f4;
                 --lesson-btn-text: #333333;
                 --lesson-btn-border: #dddddd;
@@ -127,8 +145,7 @@ function renderLessonPage() {
                 --lesson-btn-text: #f0f0f0;
                 --lesson-btn-border: #3a3a5a;
                 --lesson-example-bg: #2a2a1e;
-                --lesson-example-border: #f39c12;
-            }
+                --lesson-example-border: #f39c12;            }
 
             .lesson-wrapper { padding: 10px; text-align: right; direction: rtl; background: var(--lesson-bg-primary); color: var(--lesson-text-primary); font-family: sans-serif; max-width: 100%; overflow-x: hidden; }
             
@@ -151,12 +168,10 @@ function renderLessonPage() {
             .example-question { font-weight: bold; color: var(--lesson-accent); font-size: 0.9rem; margin-bottom: 5px; white-space: nowrap; }
             .example-solution { font-size: 0.85rem; color: var(--lesson-text-primary); line-height: 2.1; padding-right: 5px; white-space: nowrap; }
 
-            .pagination-wrapper { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 20px; }
-            
-            .lesson-pagination { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; }            
-            .page-node { width: 30px; height: 30px; border: 2px solid var(--lesson-accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--lesson-accent); font-weight: bold; font-size: 0.85rem; background: var(--lesson-bg-primary); }            .page-node:hover { background: var(--lesson-accent); color: white; }
-            .page-node.active { background: var(--lesson-accent); color: white; }
-            .page-node.ellipsis { border: none; width: auto; padding: 0 5px; cursor: default; color: var(--lesson-text-secondary); font-size: 0.9rem; font-weight: bold; }
+            /* ✅ حاوية الترقيم فقط (بدون تصميم الأزرار - تستخدم main.css) */
+            .pagination-wrapper { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 20px; }            
+            .lesson-pagination { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; }
+            .page-node-ellipsis { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; color: var(--lesson-text-secondary); font-size: 0.9rem; cursor: default; font-weight: bold; }
             
             .page-nav-buttons { display: flex; gap: 12px; }
             .page-nav-btn { background: var(--lesson-btn-bg); color: var(--lesson-btn-text); border: 2px solid var(--lesson-btn-border); padding: 6px 18px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 500; min-width: 70px; }            
@@ -169,12 +184,19 @@ function renderLessonPage() {
     }
 
     const paginationItems = generateSmartPagination(currentLessonPage, totalPages);
+    
+    // ✅ بناء HTML للترقيم - استخدام كلاسات main.css لأزرار الأرقام فقط
     const paginationHTML = paginationItems.map(item => {
         if (item.type === 'ellipsis') {
-            return `<span class="page-node ellipsis">...</span>`;
+            return `<span class="page-node-ellipsis">...</span>`;
         }
-        return `<div class="page-node ${item.value === currentLessonPage ? 'active' : ''}" 
-                     onclick="changeLessonPage(${item.value})">${item.value}</div>`;
+        const isActive = item.value === currentLessonPage ? 'active' : '';
+        return `
+          <button class="pagination__btn ${isActive}" 
+                  onclick="changeLessonPage(${item.value}); return false;"
+                  aria-label="الصفحة ${item.value}"                  aria-current="${isActive ? 'page' : 'false'}">
+            ${item.value}
+          </button>`;
     }).join('');
 
     mainContent.innerHTML = `
@@ -206,13 +228,13 @@ function renderLessonPage() {
             </div>            
             <div class="page-nav-buttons">
                 <button class="page-nav-btn" 
-                        onclick="changeLessonPage(${currentLessonPage - 1})" 
+                        onclick="changeLessonPage(${currentLessonPage - 1}); return false;" 
                         ${currentLessonPage === 1 ? 'disabled' : ''}>
                     ◀ السابق
                 </button>
                 
                 <button class="page-nav-btn" 
-                        onclick="changeLessonPage(${currentLessonPage + 1})" 
+                        onclick="changeLessonPage(${currentLessonPage + 1}); return false;" 
                         ${currentLessonPage === totalPages ? 'disabled' : ''}>
                     التالي ▶
                 </button>
@@ -221,15 +243,24 @@ function renderLessonPage() {
             <p class="page-indicator">
                 صفحة ${currentLessonPage} من ${totalPages}
             </p>
-        </div>
-    </div>`;
+        </div>    </div>`;
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-window.changeLessonPage = (page) => {
+window.changeLessonPage = function(page) {
+    if (!lessonDataCache || !lessonDataCache.lessons) return;
+    
     const totalPages = Math.ceil(lessonDataCache.lessons.length / LESSONS_PER_PAGE);
-    if (page < 1 || page > totalPages) return;
+    
+    if (page < 1 || page > totalPages) {
+        console.warn('⚠️ رقم الصفحة خارج النطاق');
+        return;
+    }
+    
     currentLessonPage = page;
     renderLessonPage();
+    
+    // ✅ إعادة تهيئة MathJax عند تغيير الصفحة
+    renderMath();
 };

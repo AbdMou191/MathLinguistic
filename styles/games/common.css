@@ -1,1 +1,1009 @@
+/* ==========================================
+   🎨 MathLinguistic - تنسيقات متجاوبة v5.2
+   ✅ مدمج مع نظام الثيم الرئيسي
+   ========================================== */
 
+/* ربط متغيرات الألعاب بالثيم الرئيسي */
+:root {
+  /* ألوان أساسية من الثيم الرئيسي */
+  --ml-accent: var(--accent-color);
+  --ml-accent-hover: var(--accent-hover);
+  --ml-success: var(--difficulty-easy);
+  --ml-error: var(--difficulty-hard);
+  --ml-warning: var(--difficulty-medium);
+  --ml-bg: var(--bg-primary);
+  --ml-card: var(--card-bg);
+  --ml-text: var(--text-primary);
+  --ml-text-light: var(--text-secondary);
+  --ml-border: var(--border-color);
+  --ml-shadow: var(--card-shadow);
+}
+
+/* ✅ دعم الوضع الليلي */
+[data-theme="dark"] {
+  --ml-accent: var(--accent-color);
+  --ml-accent-hover: var(--accent-hover);
+  --ml-success: var(--difficulty-easy);
+  --ml-error: var(--difficulty-hard);
+  --ml-warning: var(--difficulty-medium);
+  --ml-bg: var(--bg-primary);
+  --ml-card: var(--card-bg);
+  --ml-text: var(--text-primary);
+  --ml-text-light: var(--text-secondary);
+  --ml-border: var(--border-color);
+  --ml-shadow: var(--card-shadow);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background: var(--ml-bg);
+  color: var(--ml-text);
+  direction: rtl;
+  line-height: 1.6;
+  overflow-x: hidden;  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ==========================================
+   GameCore Components
+   ========================================== */
+
+.gc-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 2px solid var(--ml-accent);
+  padding-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.gc-header h2 {
+  margin: 0;
+  color: var(--ml-accent);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.gc-stats-bar {
+  display: flex;
+  gap: 10px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  background: var(--ml-card);
+  padding: 12px 15px;
+  border-radius: 12px;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  border: 1px solid var(--ml-border);
+  flex-wrap: wrap;
+  box-shadow: var(--ml-shadow);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.gc-stats-bar span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+.gc-btn {
+  height: 48px;
+  min-width: 48px;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: 'Cairo', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  touch-action: manipulation;
+}
+
+.gc-btn-primary {
+  background: var(--ml-accent);
+  color: #fff;
+  box-shadow: 0 4px 0 var(--ml-accent-hover);
+}
+
+.gc-btn-primary:active {
+  transform: translateY(4px);
+  box-shadow: none;
+}
+
+.gc-btn-secondary {
+  background: #95a5a6;
+  color: #fff;
+  box-shadow: 0 4px 0 #7f8c8d;
+}
+
+.gc-btn-secondary:active {
+  transform: translateY(4px);
+  box-shadow: none;
+}
+
+.gc-btn-danger {
+  background: var(--ml-error);
+  color: #fff;
+  box-shadow: 0 4px 0 #c0392b;
+}
+
+.gc-btn-danger:active {
+  transform: translateY(4px);
+  box-shadow: none;
+}
+.gc-btn-warning {
+  background: var(--ml-warning);
+  color: #fff;
+  box-shadow: 0 4px 0 #d68910;
+}
+
+.gc-btn-warning:active {
+  transform: translateY(4px);
+  box-shadow: none;
+}
+
+.gc-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ==========================================
+   Speed Test Game Styles
+   ========================================== */
+
+.st-wrapper {
+  direction: rtl;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.st-card {
+  background: var(--ml-card);
+  border-radius: 16px;
+  padding: 20px;
+  width: 100%;
+  border: 1px solid var(--ml-border);
+  box-shadow: var(--ml-shadow);
+  margin-bottom: 15px;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.st-math-box {
+  background: var(--ml-bg);
+  border: 2px solid var(--ml-border);
+  border-radius: 12px;
+  padding: 25px 20px;  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ml-text);
+  word-break: break-word;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.st-options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.st-options-grid .gc-btn {
+  width: 100%;
+  font-size: 1.3rem;
+}
+
+.st-msg {
+  min-height: 30px;
+  font-weight: bold;
+  text-align: center;
+  margin: 10px 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  font-size: 1rem;
+}
+
+.st-msg.show {
+  opacity: 1;
+}
+
+.st-msg.success {
+  color: var(--ml-success);
+}
+
+.st-msg.error {
+  color: var(--ml-error);
+}
+
+.st-footer {
+  display: flex;  gap: 10px;
+  width: 100%;
+  margin-top: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.st-footer .gc-btn {
+  flex: 1;
+  min-width: 140px;
+}
+
+/* ==========================================
+   Sliding Puzzle Game Styles
+   ========================================== */
+
+.sp-container {
+  direction: rtl;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.sp-board {
+  display: grid;
+  background: var(--ml-border);
+  padding: 8px;
+  border-radius: 12px;
+  gap: 8px;
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 1/1;
+  box-shadow: var(--ml-shadow);
+  margin: 15px auto;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease;
+}
+
+.sp-tile {
+  background: var(--ml-accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border-radius: 8px;  user-select: none;
+  box-shadow: 0 4px 0 var(--ml-accent-hover);
+  transition: transform 0.1s, background 0.2s;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  font-size: 1.5rem;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sp-tile:active {
+  transform: scale(0.95);
+  box-shadow: none;
+}
+
+.sp-tile-empty {
+  background: transparent;
+  border: 2px dashed var(--ml-border);
+  box-shadow: none;
+  cursor: default;
+}
+
+.sp-tile-wrong {
+  animation: sp-shake 0.3s;
+  background: var(--ml-error) !important;
+}
+
+@keyframes sp-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+.sp-controls {
+  width: 100%;
+  max-width: 400px;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sp-row {  display: flex;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sp-select {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid var(--ml-border);
+  font-family: 'Cairo', sans-serif;
+  background: var(--ml-card);
+  color: var(--ml-text);
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  min-height: 48px;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+
+/* ==========================================   Responsive Design - Mobile First
+   ========================================== */
+
+@media (max-width: 360px) {
+  .gc-header h2 {
+    font-size: 1.1rem;
+  }
+  
+  .gc-stats-bar {
+    font-size: 0.75rem;
+    padding: 8px 10px;
+    gap: 8px;
+  }
+  
+  .gc-btn {
+    height: 44px;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+  }
+  
+  .st-math-box {
+    font-size: 1.6rem;
+    padding: 15px 10px;
+  }
+  
+  .st-options-grid .gc-btn {
+    font-size: 1.1rem;
+  }
+  
+  .sp-tile {
+    font-size: 1.1rem;
+  }
+  
+  .l-cell {
+    font-size: 0.9rem;
+  }
+  
+  .lou-numpad .numpad-btn {
+    height: 45px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width: 481px) {
+  .gc-header h2 {
+    font-size: 1.4rem;
+  }
+  
+  .gc-stats-bar {
+    font-size: 0.9rem;    padding: 12px 15px;
+  }
+  
+  .gc-btn {
+    height: 50px;
+    font-size: 1rem;
+  }
+  
+  .st-math-box {
+    font-size: 2.5rem;
+  }
+  
+  .sp-tile {
+    font-size: 1.6rem;
+  }
+  
+  .l-cell {
+    font-size: 1.2rem;
+  }
+}
+
+@media (min-width: 769px) {
+  .st-wrapper,
+  .sp-container,
+  .lou-wrapper {
+    max-width: 550px;
+    padding: 20px;
+  }
+  
+  .gc-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .gc-btn {
+    height: 52px;
+    font-size: 1.1rem;
+  }
+  
+  .st-math-box {
+    font-size: 2.8rem;
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .st-wrapper,
+  .sp-container,
+  .lou-wrapper {
+    padding: 10px;
+  }
+    .gc-stats-bar {
+    margin-bottom: 10px;
+    padding: 8px 10px;
+  }
+  
+  .st-card {
+    padding: 15px;
+    margin-bottom: 10px;
+  }
+  
+  .sp-board {
+    max-width: 300px;
+    padding: 6px;
+  }
+}
+
+/* ==========================================
+   Touch-friendly improvements
+   ========================================== */
+
+@media (hover: none) and (pointer: coarse) {
+  .gc-btn {
+    min-height: 50px;
+    min-width: 50px;
+  }
+  
+  .st-options-grid .gc-btn {
+    min-height: 55px;
+  }
+  
+  .sp-tile,
+  .l-cell,
+  .numpad-btn {
+    min-height: 50px;
+  }
+}
+
+/* ==========================================
+   Print styles
+   ========================================== */
+
+@media print {
+  .gc-btn,
+  .st-footer,
+  .sp-controls,
+  .lou-numpad {
+    display: none !important;
+  }
+}
+/* ==========================================
+   Accessibility
+   ========================================== */
+
+.gc-btn:focus,
+.sp-select:focus,
+.numpad-btn:focus {
+  outline: 3px solid var(--ml-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================
+   Mixed Operations Styles (إضافة بسيطة)
+   ========================================== */
+.display-screen {
+    font-size: 3.5rem;
+    font-weight: 900;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ml-text);
+    margin: 15px 0;
+    word-break: break-word;
+    transition: color 0.3s ease;
+}
+
+.msg-box-mental {
+    height: 30px;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+    font-weight: bold;
+    margin: 10px 0;
+    font-size: 1rem;
+}
+
+.msg-box-mental.success {
+    color: var(--ml-success);
+    opacity: 1;
+}
+
+.msg-box-mental.error {
+    color: var(--ml-error);
+    opacity: 1;
+}
+
+.countdown-box {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 8px solid var(--ml-accent);
+    margin: 20px auto;
+}
+
+#mixed-cnt-num {
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--ml-accent);
+}
+
+.lvl-badge {
+    background: var(--ml-accent);
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.lvl-title-main {
+    color: var(--ml-accent);
+    font-size: 1.2rem;
+    margin: 0 0 15px 0;
+    font-weight: 700;
+}
+
+.prepare-txt {
+    color: var(--ml-text-light);
+    font-size: 0.95rem;
+    margin: 0 0 20px 0;
+}
+
+.footer-tools {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.options-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    width: 100%;
+    margin: 15px 0;
+}
+
+.mixed-adv-theme {
+    border: 2px solid var(--ml-accent);
+}
+
+/* ==========================================
+   Loudoukou - حدود صحيحة v6.6
+   ========================================== */
+
+.lou-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 1/1;
+  margin: 20px auto;
+  background-color: var(--ml-border); 
+  border: 3px solid var(--ml-text);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  gap: 1px; 
+  overflow: hidden;
+}
+
+.l-cell {
+  background: var(--ml-card);
+  color: var(--ml-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1rem, 4vw, 1.4rem);
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s, transform 0.1s;
+  aspect-ratio: 1/1;
+  position: relative;
+  box-sizing: border-box;
+  border: none; 
+}
+
+/* ✅ حدود عمودية سميكة - بعد العمود 3 و 6 */
+/* العمود 3: خلايا 3, 12, 21, 30, 39, 48, 57, 66, 75 */
+/* ✅ الحدود السميكة العمودية - موجهة لـ RTL */
+/* بعد العمود 3 (من اليمين): خلايا 3, 12, 21, 30, 39, 48, 57, 66, 75 */
+.l-cell:nth-child(9n+3):not(:nth-child(9n)) {
+  border-left: 3px solid var(--ml-text) !important;
+  margin-left: 0;
+}
+
+/* بعد العمود 6 (من اليمين): خلايا 6, 15, 24, 33, 42, 51, 60, 69, 78 */
+.l-cell:nth-child(9n+6):not(:nth-child(9n)) {
+  border-left: 3px solid var(--ml-text) !important;
+  margin-left: 0;
+}
+
+/* ✅ الحدود السميكة الأفقية */
+.l-cell:nth-child(n+19):nth-child(-n+27),
+.l-cell:nth-child(n+46):nth-child(-n+54) {
+  border-bottom: 3px solid var(--ml-text) !important;
+  margin-bottom: 0;
+}
+
+/* الصف 6: خلايا 46-54 */
+.l-cell:nth-child(n+46):nth-child(-n+54) {
+  border-bottom: 3px solid var(--ml-text) !important;
+}
+
+/* ✅ إزالة الحدود الزائدة عن آخر صف وعمود */
+.l-cell:nth-child(9n) {
+  border-right: none !important;
+}
+
+.l-cell:nth-child(n+73) {
+  border-bottom: none !important;
+}
+
+/* الخلايا المعطاة */
+.l-cell.fixed.given {
+  background: var(--ml-bg);
+  color: var(--ml-text);
+  font-weight: 800;
+  cursor: default;
+}
+
+.l-cell.user-filled {
+  color: var(--ml-accent);
+}
+
+.l-cell.selected {
+  background: var(--ml-accent) !important;
+  color: #fff !important;
+  z-index: 5;
+  outline: 2px solid var(--ml-accent);
+}
+
+.l-cell.highlight-row,
+.l-cell.highlight-col,
+.l-cell.highlight-box {
+  background: var(--accent-soft) !important;
+  opacity: 0.9;
+}
+
+.l-cell.highlight-same {
+  background: var(--ml-warning) !important;
+  color: #fff !important;
+}
+
+.l-cell.success {
+  background: var(--ml-success) !important;
+  color: #fff !important;  animation: lou-pop 0.3s ease;
+}
+
+.l-cell.error {
+  background: var(--ml-error) !important;
+  color: #fff !important;
+  animation: lou-shake 0.3s ease;
+}
+
+@keyframes lou-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes lou-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* لوحة الأرقام */
+.lou-numpad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(8px, 2vw, 12px);
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.lou-numpad .gc-btn {
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+/* الوضع الليلي */
+[data-theme="dark"] .l-cell {
+  background: #1e2530;
+}
+
+[data-theme="dark"] .lou-grid {
+  background-color: #000;
+  border-color: var(--ml-text);
+}
+@media (max-width: 400px) {
+  .lou-wrapper { padding: 5px; }
+  .l-cell { font-size: 1.1rem; }
+  .lou-numpad .gc-btn { height: 50px; }
+}
+
+/* ==========================================
+   Crossmath Game - تصميم بسيط وأنيق v4.1
+   ألوان هادئة + زر السالب
+   ========================================== */
+
+.cm-wrapper {
+  direction: rtl;
+  font-family: 'Cairo', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+.cm-info {
+  text-align: center;
+  margin: 10px 0;
+  color: var(--ml-text-light);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* === الشبكة === */
+.cm-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 1/1;
+  margin: 20px auto;
+  background-color: #dfe6e9;
+  border: 2px solid #2d3436;
+  border-radius: 6px;
+  padding: 2px;
+}
+
+/* === الخلايا === */
+.cm-cell {
+  background: #fff;
+  color: #2d3436;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;  border-radius: 3px;
+  aspect-ratio: 1/1;
+}
+
+/* فارغة */
+.cm-cell.cm-empty {
+  background: transparent;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* أرقام ثابتة */
+.cm-cell.cm-num {
+  background: #f5f6fa;
+  color: #2d3436;
+  cursor: default;
+}
+
+/* عمليات */
+.cm-cell.cm-op {
+  background: #74b9ff;
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 800;
+  cursor: default;
+}
+
+/* إدخال */
+.cm-cell.cm-input {
+  background: #fff;
+  color: #0984e3;
+  border: 2px dashed #0984e3;
+  cursor: pointer;
+}
+
+.cm-cell.cm-input:hover {
+  background: #e3f2fd;
+}
+
+/* محدد */
+.cm-cell.cm-input.selected {
+  background: #0984e3 !important;
+  color: #fff !important;
+  border: 2px solid #0770c2;
+  box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.2);
+}
+
+/* صحيح */
+.cm-cell.cm-input.correct {
+  background: #00b894 !important;  color: #fff !important;
+  border: 2px solid #00b894;
+}
+
+/* خطأ */
+.cm-cell.cm-input.wrong {
+  background: #d63031 !important;
+  color: #fff !important;
+  border: 2px solid #d63031;
+  animation: cm-shake 0.3s ease;
+}
+
+/* === لوحة الأرقام === */
+.cm-numpad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: 100%;
+  max-width: 320px;
+  margin: 20px auto;
+}
+
+.cm-numpad .gc-btn {
+  height: 55px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  border-radius: 8px;
+  background: #fff;
+  color: #2d3436;
+  border: 2px solid #dfe6e9;
+  box-shadow: 0 3px 0 #b2bec3;
+  transition: all 0.1s ease;
+}
+
+.cm-numpad .gc-btn:active {
+  transform: translateY(3px);
+  box-shadow: none;
+}
+
+.cm-numpad .gc-btn-primary {
+  background: #fff;
+  color: #2d3436;
+  border-color: #dfe6e9;
+}
+
+.cm-numpad .gc-btn-secondary {
+  background: #fdcb6e !important;
+  color: #2d3436 !important;
+  border-color: #e1b12c !important;
+  box-shadow: 0 3px 0 #e1b12c !important;}
+
+.cm-numpad .gc-btn-warning {
+  background: #6c5ce7 !important;
+  color: #fff !important;
+  border-color: #5b4cdb !important;
+  box-shadow: 0 3px 0 #5b4cdb !important;
+}
+
+/* === الوضع الليلي === */
+[data-theme="dark"] .cm-grid {
+  background-color: #2d3436;
+  border-color: #dfe6e9;
+}
+
+[data-theme="dark"] .cm-cell {
+  background: #636e72;
+  color: #dfe6e9;
+}
+
+[data-theme="dark"] .cm-cell.cm-num {
+  background: #2d3436;
+  color: #dfe6e9;
+}
+
+[data-theme="dark"] .cm-cell.cm-op {
+  background: #0984e3;
+  color: #fff;
+}
+
+[data-theme="dark"] .cm-cell.cm-input {
+  background: #636e72;
+  color: #74b9ff;
+  border-color: #74b9ff;
+}
+
+[data-theme="dark"] .cm-numpad .gc-btn {
+  background: #636e72;
+  color: #dfe6e9;
+  border-color: #2d3436;
+  box-shadow: 0 3px 0 #2d3436;
+}
+
+/* === Animations === */
+@keyframes cm-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+/* === Responsive === */
+@media (max-width: 400px) {
+  .cm-grid {
+    max-width: 100%;
+  }
+  
+  .cm-cell {
+    font-size: 1.1rem;
+  }
+  
+  .cm-cell.cm-op {
+    font-size: 1.2rem;
+  }
+  
+  .cm-numpad {
+    gap: 6px;
+  }
+  
+  .cm-numpad .gc-btn {
+    height: 50px;
+    font-size: 1.3rem;
+  }
+}

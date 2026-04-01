@@ -1,254 +1,54 @@
-// =============== //
-// MathLinguistic - Main Application Logic
-// ال// =============== //
-// MathLinguistic - Main Application Logic
-// النسخة الكاملة الموحدة v3.2 - مع إصلاح شامل لمشاكل التنقل
-// =============== //
-
-// =============== //
-// متغيرات عامة
-// =============== //
+// ==========================================
+// المتغيرات العامة
+// ==========================================
 
 const mainContent = document.getElementById('main-content');
 const menuToggle = document.getElementById('menu-toggle');
 const sidebar = document.getElementById('sidebar-menu');
 const themeToggle = document.getElementById('theme-toggle');
-const backToTopBtn = document.getElementById('back-to-top');
+const searchToggle = document.getElementById('search-toggle');
+const searchOverlay = document.getElementById('search-overlay');
+const searchClose = document.getElementById('search-close');
+const searchInput = document.getElementById('search-input');
+// ✅ متغيرات نتائج البحث (جديدة - كانت ناقصة)
+const searchResults = document.getElementById('search-results');
+const searchNoResults = document.getElementById('search-no-results');
 
-// متغيرات إدارة التنقل
-let isOnHomePage = true;
+let currentSection = 'home';
+// متغيرات مساعدة لصفحة الرئيسية
+let isOnHomePage = false;
 let hasPushedGameEntry = false;
-let lastGameTarget = null; // تتبع آخر لعبة تم الدخول إليها
+let lastGameTarget = null;
+let isNavigationLocked = false; // لمنع التنقل المتكرر
+// 🔍 متغير تأخير البحث (لتحسين الأداء)
+let searchDebounceTimer = null;
 
-// خريطة لتتبع المستمعات المضافة لمنع التكرار
-const eventListenerMap = new Map();
+// ==========================================
+// 📱 متغيرات تثبيت PWA (جديدة)
+// ==========================================
+let deferredPrompt = null;
+let installButton = null;
+const INSTALL_DISMISSED_KEY = 'mathlinguistic_install_dismissed';
+const INSTALL_SHOW_DELAY = 5000; // إظهار الزر بعد 5 ثواني
 
-// =============== //
-// 0. وظيفة المنظف (Cleanup) - النسخة الآمنة
-// =============== //
+// ==========================================
+// 🔼 زر العودة للأعلى
+// ==========================================
 
-function cleanupCurrentPage() {
-  console.log("🧹 جاري تنظيف الصفحة...");
+const backToTopBtn = document.getElementById('back-to-top');
+let scrollThreshold = 300;
 
-  // إيقاف جميع المؤقتات العالمية
-  if (window.mentalMathInterval) {
-    clearInterval(window.mentalMathInterval);
-    window.mentalMathInterval = null;
-  }
-  if (window.mixedOpsInterval) {
-    clearInterval(window.mixedOpsInterval);
-    window.mixedOpsInterval = null;
-  }
-  if (window.speedTestInterval) {
-    clearInterval(window.speedTestInterval);
-    window.speedTestInterval = null;
-  }
-
-  // تنظيف دوال التدمير إذا كانت موجودة
-  if (typeof window.destroyMentalMath === 'function') {
-    window.destroyMentalMath();
-  }
-  if (typeof window.destroyMixedOps === 'function') {
-    window.destroyMixedOps();
-  }
-  if (typeof window.destroySpeedTest === 'function') {
-    window.destroySpeedTest();
-  }
-  
-  // تنظيف أي Resource Manager
-  if (window._ResourceManager && typeof window._ResourceManager.cleanupAll === 'function') {
-    window._ResourceManager.cleanupAll();
-  }
-  
-  // إعادة تعيين متغيرات بيانات الألعاب
-  window.speedTestData = null;
-  window.mentalMathData = null;
-  window.mixedOpsData = null;
-  
-  // مسح المحتوى
-  if (mainContent) {
-    mainContent.innerHTML = '';
-  }
-  
-  console.log("✅ تم التنظيف بنجاح.");
+function calculateScrollThreshold() {
+  const screenHeight = window.innerHeight;
+  scrollThreshold = Math.max(300, Math.floor(screenHeight * 0.5));
 }
 
-// =============== //
-// 1. تبديل الوضع الليلي/النهاري
-// =============== //
-function initTheme() {
-  const savedTheme = localStorage.getItem('theme') || 'light';
-  document.body.setAttribute('data-theme', savedTheme);
-  updateThemeIcon(savedTheme);
-}
-
-function toggleTheme() {
-  const currentTheme = document.body.getAttribute('data-theme');
-  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-  document.body.setAttribute('data-theme', newTheme);
-  localStorage.setItem('theme', newTheme);
-  updateThemeIcon(newTheme);
-}
-
-function updateThemeIcon(theme) {
-  const icon = themeToggle?.querySelector('i');
-  if (icon) {
-    icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-  }
-}
-
-// =============== //
-// 2. التحكم في القائمة الجانبية
-// =============== //
-
-// =============== //
-// 2. التحكم في القائمة الجانبية (مُحدَّث)
-// =============== //
-
-// دالة مساعدة لإدارة قابلية التركيز داخل القائمة
-function setSidebarFocusable(isFocusable) {
-  if (!sidebar) return;
-  const interactiveElements = sidebar.querySelectorAll('button, a, [tabindex="0"], .menu-item');
-  interactiveElements.forEach(el => {
-    if (isFocusable) {
-      el.removeAttribute('tabindex');
-    } else {
-      el.setAttribute('tabindex', '-1');
-    }
-  });
-}
-
-function toggleSidebar() {
-  if(!sidebar) return;  
-  
-  sidebar.classList.toggle('open');
-  const isOpen = sidebar.classList.contains('open');
-  
-  // تحديث aria-hidden عكسياً للحالة
-  sidebar.setAttribute('aria-hidden', !isOpen);
-  
-  // ⭐⭐⭐ التحكم في قابلية التركيز للعناصر الداخلية ⭐⭐⭐
-  setSidebarFocusable(isOpen);
-  
-  // إدارة التركيز: عند الفتح، ركز على أول عنصر
-  if (isOpen) {
-    const firstItem = sidebar.querySelector('.menu-item, button, a');
-    if (firstItem) {
-      setTimeout(() => firstItem.focus(), 100);
-    }
-  } else {
-    // عند الإغلاق، أعد التركيز لزر القائمة
-    if (menuToggle) {
-      menuToggle.focus();
-    }
-  }
-}
-
-// تحديث مستمع النقر الخارجي ليتوافق مع التحديث الجديد
-document.addEventListener('click', (e) => {
-  if (sidebar && sidebar.classList.contains('open') && 
-      !sidebar.contains(e.target) && 
-      e.target !== menuToggle) {
-    sidebar.classList.remove('open');
-    sidebar.setAttribute('aria-hidden', 'true');
-    setSidebarFocusable(false);  // ⭐ إضافة جديدة
-    if (menuToggle) menuToggle.focus();  // ⭐ إضافة جديدة
-  }
-});
-
-document.addEventListener('click', (e) => {
-  if (sidebar && sidebar.classList.contains('open') && 
-      !sidebar.contains(e.target) && 
-      e.target !== menuToggle) {
-    sidebar.classList.remove('open');
-    sidebar.setAttribute('aria-hidden', 'true');
-  }
-});
-
-// =============== //
-// 3. تحميل المحتوى الديناميكي (الرئيسية والصفحات الثابتة)
-// =============== //
-
-function loadHomePage() {
-  console.log("🏠 تحميل الصفحة الرئيسية");
-  
-  isOnHomePage = true;
-  hasPushedGameEntry = false;
-  lastGameTarget = null;
-  window.currentSection = 'home';
-  
-  cleanupCurrentPage();
-  
-  // استبدال الحالة الحالية بالرئيسية
-  history.replaceState({ page: 'home' }, '', location.pathname);
-  
-  fetch('home-content.html')
-    .then(res => {
-      if (!res.ok) throw new Error('Failed to load home page');
-      return res.text();
-    })
-    .then(html => {
-      mainContent.innerHTML = html;
-      attachEventListeners();
-      scrollToTopSmooth();
-      
-      if (typeof updatePageMeta === 'function') {
-        updatePageMeta('home');
-      }
-    })
-    .catch(() => {
-      mainContent.innerHTML = '<div style="text-align:center; padding:40px;"><h2>مرحباً بك في MathLinguistic!</h2><p>جاهز للتحدي؟</p></div>';
-      scrollToTopSmooth();
-      
-      if (typeof updatePageMeta === 'function') {
-        updatePageMeta('home');
-      }
-    });
-}
-
-function loadStaticPage(pageName) {
-  console.log(`📄 تحميل الصفحة الثابتة: ${pageName}`);
-  
-  isOnHomePage = false;
-  hasPushedGameEntry = false; // الخروج من وضع اللعبة
-  lastGameTarget = null;
-  cleanupCurrentPage();
-  
-  // الصفحات الثابتة تستخدم pushState
-  history.pushState({ page: pageName, type: 'static' }, '', `#${pageName}`);
-  
-  fetch(`const-page/${pageName}.html`)
-    .then(response => {
-      if (!response.ok) throw new Error('Page not found');
-      return response.text();
-    })
-    .then(html => {
-      mainContent.innerHTML = html;
-      scrollToTopSmooth();
-      attachEventListeners();
-      
-      if (typeof updatePageMeta === 'function') {
-        updatePageMeta(pageName);
-      }
-    })
-    .catch(err => {
-      console.error('Error loading static page:', err);
-      mainContent.innerHTML = `<div style="text-align:center; padding:40px;"><p>عذراً، لم نتمكن من تحميل الصفحة: ${pageName}</p></div>`;
-      scrollToTopSmooth();
-    });
-}
-
-function scrollToTopSmooth() {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// =============== //
-// 4. زر العودة إلى الأعلى
-// =============== //
-
-function handleScroll() {
-  if (backToTopBtn) {
-    backToTopBtn.style.display = window.scrollY > 300 ? 'block' : 'none';
+function handleBackToTopScroll() {
+  if (!backToTopBtn) return;
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  if (scrollTop > scrollThreshold) {
+    backToTopBtn.classList.add('visible');  } else {
+    backToTopBtn.classList.remove('visible');
   }
 }
 
@@ -256,606 +56,893 @@ function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// =============== //
-// 5. ربط جميع الأحداث (مع منع التكرار)
-// =============== //
+function initBackToTop() {
+  if (!backToTopBtn) return;
+  calculateScrollThreshold();
+  window.addEventListener('scroll', handleBackToTopScroll, { passive: true });
+  backToTopBtn.addEventListener('click', scrollToTop);
+  window.addEventListener('resize', () => {
+    calculateScrollThreshold();
+    handleBackToTopScroll();
+  }, { passive: true });
+  handleBackToTopScroll();
+  console.log('✅ زر العودة للأعلى مهيأ');
+}
 
-function safeAddEventListener(element, eventType, handler) {
-  if (!element) return;
+// =======================================
+// إغلاق القائمة عند النقر خارجها
+// =======================================
+
+document.addEventListener('click', (e) => {
+  if (!sidebar || !sidebar.classList.contains('open')) return;
+  if (!(e.target instanceof Node)) return;
   
-  // استخدام مزيج من العنصر ونوع الحدث واسم الدالة كمفتاح
-  const elementId = element.id || element.className || Math.random().toString(36);
-  const key = `${elementId}_${eventType}_${handler.name}`;
+  const isClickInsideSidebar = sidebar.contains(e.target);
+  const isClickOnMenuToggle = menuToggle && (
+    menuToggle === e.target || menuToggle.contains(e.target)
+  );
   
-  // إذا كان هناك مستمع سابق، قم بإزالته
-  if (eventListenerMap.has(key)) {
-    element.removeEventListener(eventType, eventListenerMap.get(key));
+  if (!isClickInsideSidebar && !isClickOnMenuToggle) {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
   }
-  
-  // إضافة المستمع الجديد وحفظه
-  element.addEventListener(eventType, handler);
-  eventListenerMap.set(key, handler);
-}
+});
 
-function attachEventListeners() {
-  // أزرار الألعاب الرئيسية
-  document.querySelectorAll('[data-action]').forEach(btn => {
-    safeAddEventListener(btn, 'click', actionHandler);
-  });
-
-  // بطاقات المستويات والدروس
-  document.querySelectorAll('[data-target]').forEach(card => {
-    safeAddEventListener(card, 'click', targetHandler);
-  });
-  
-  // روابط التذييل
-  document.querySelectorAll('[data-static-page]').forEach(btn => {
-    safeAddEventListener(btn, 'click', staticPageHandler);
-  });
-
-  // عناصر القائمة الجانبية
-  document.querySelectorAll('.menu-item').forEach(item => {
-    safeAddEventListener(item, 'click', menuHandler);
-  });
-}
-
-// =============== //
-// 6. معالجات الأحداث
-// =============== //
-
-function actionHandler(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  const action = e.currentTarget.dataset.action;
-  handleInteraction(action, 'game');
-}
-
-function targetHandler(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  const target = e.currentTarget.dataset.target;
-  const type = target.startsWith('learn-') ? 'lesson' : 'game';
-  handleInteraction(target, type);
-}
-
-function staticPageHandler(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  const page = e.currentTarget.dataset.staticPage;
-  handleInteraction(page, 'static');
-}
-
-function menuHandler(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  const target = e.currentTarget.dataset.target;
-  const type = target.startsWith('learn-') ? 'lesson' : 'game';
-  handleInteraction(target, type);
-}
-
-// =============== //
-// الدالة المركزية لمعالجة كافة التنقلات (مُحسّنة)
-// =============== //
-
-function handleInteraction(target, type = 'game') {
-  console.log(`🔄 تنقل إلى: ${target} (النوع: ${type})`);
-  
-  // منع التنقل المزدوج
-  if (window._navigationInProgress) {
-    console.log("⚠️ تنقل قيد التنفيذ، يتم تجاهل الطلب");
+// ==========================================
+// 🔄 دالة تحميل المحتوى - النسخة المعدلة
+// ==========================================
+async function loadContent(target, usePushState = true, targetIndex = null) {
+  if (isNavigationLocked) {
+    console.log('⏳ الانتظار حتى ينتهي التحميل السابق...');
     return;
   }
-  
-  window._navigationInProgress = true;
-  window.currentSection = target;
-  isOnHomePage = false;
-  
+  isNavigationLocked = true;  
+  console.log(`📄 تحميل: ${target} ${targetIndex !== null ? '(مع عنصر #' + targetIndex + ')' : ''}`);
   cleanupCurrentPage();
-
-  // ⭐⭐⭐ إدارة history المتطورة ⭐⭐⭐
-  if (type === 'static') {
-    // الصفحات الثابتة: إضافة جديدة للـ history
-    history.pushState({ page: target, type: 'static' }, '', `#${target}`);
-    hasPushedGameEntry = false;
-    lastGameTarget = null;
-  } 
-  else if (type === 'game' || type === 'lesson') {
-    if (!hasPushedGameEntry) {
-      // أول مرة ندخل فيها لعبة: نستبدل الحالة الحالية
-      // هذا يضمن أن زر الرجوع يعيدنا للرئيسية مباشرة
-      history.replaceState({ 
-        page: 'game-entry', 
-        type: 'game',
-        gameTarget: target 
-      }, '', `#${target}`);
-      hasPushedGameEntry = true;
-      lastGameTarget = target;
-    } else {
-      // داخل اللعبة: نحدث الحالة فقط إذا تغيرت اللعبة
-      if (lastGameTarget !== target) {
-        // إذا انتقلنا من لعبة لأخرى، نعتبرها بوابة جديدة
-        history.replaceState({ 
-          page: 'game-entry', 
-          type: 'game',
-          gameTarget: target 
-        }, '', `#${target}`);
-        lastGameTarget = target;
-      } else {
-        // نفس اللعبة: نحدث الحالة فقط
-        history.replaceState({ 
-          page: target, 
-          type: 'game',
-          gameTarget: target 
-        }, '', `#${target}`);
-      }
-    }
-  }
-
-  // تحديث الإنجازات
-  if (typeof window.checkAndUnlockAchievements === 'function') {
-    window.checkAndUnlockAchievements();
-  }
-
-  // معالجة المحتوى حسب النوع
-  if (type === 'lesson') {
-    loadLesson(target);
-  } 
-  else if (type === 'static') {
-    loadStaticPage(target);
-  } 
-  else {
-    loadGame(target);
-  }
-
-  // إغلاق القائمة الجانبية
-  if (sidebar && sidebar.classList.contains('open')) {
+  currentSection = target;
+  
+  if (sidebar?.classList.contains('open')) {
     sidebar.classList.remove('open');
     sidebar.setAttribute('aria-hidden', 'true');
   }
   
-  scrollToTopSmooth();
-  
-  // إعادة تعيين علم التنقل بعد فترة
-  setTimeout(() => {
-    window._navigationInProgress = false;
-  }, 500);
-}
-
-// دوال مساعدة للتحميل
-function loadLesson(target) {
-  const lessonFunctions = {
-    'learn-beginner': window.loadBeginnerLesson,
-    'learn-intermediate': window.loadIntermediateLesson,
-    'learn-advanced': window.loadAdvancedLesson,
-    'learn-complex': window.loadComplexLesson
-  };
-  
-  const loadFn = lessonFunctions[target];
-  
-  if (loadFn && typeof loadFn === 'function') {
-    loadFn();
-    if (typeof updatePageMeta === 'function') {
-      setTimeout(() => updatePageMeta(target), 100);
+  try {
+    let scriptPath = '';
+    let dataPath = '';
+    
+    if (target === 'home') {
+      const response = await fetch('home-content.html');
+      if (!response.ok) throw new Error('فشل تحميل الرئيسية');
+      const html = await response.text();
+      if (mainContent) mainContent.innerHTML = html;
+      attachEventListeners();
+      history.replaceState({ page: 'home' }, '', location.pathname);
+      if (typeof updatePageMeta === 'function') updatePageMeta('home');
+      isNavigationLocked = false;
+      return;
     }
-  } else {
-    mainContent.innerHTML = `<div style="text-align:center; padding:40px;"><p>⚠️ الدرس "${target}" غير متاح حالياً.</p></div>`;
+    
+    if (target.startsWith('learn-')) {
+      const level = target.replace('learn-', '');
+      scriptPath = `scripts/lessons/${level}-lesson.js`;
+      dataPath = `data/lessons/${level}.json`;
+    }
+    else if (['beginner', 'intermediate', 'advanced', 'complex'].includes(target)) {
+      scriptPath = `scripts/levels/${target}.js`;
+      dataPath = `data/levels/${target}.json`;
+    }
+    else if (['speed-test', 'mental-math', 'mixed-ops', 'loudoukou', 'crossmath', 'calculator', 'sliding_puzzle'].includes(target)) {
+      scriptPath = `scripts/levels/${target}.js`;
+      dataPath = `data/levels/${target}.json`;
+    }
+    else if (target === 'achievements') {
+      scriptPath = 'scripts/achievements.js';
+      dataPath = 'data/achievements.json';
+    }
+    else if (['about', 'contact', 'terms', 'privacy'].includes(target)) {
+      scriptPath = `const-page/${target}.html`;
+      const response = await fetch(scriptPath);
+      if (!response.ok) throw new Error(`فشل تحميل ${target}`);
+      const html = await response.text();
+      if (mainContent) mainContent.innerHTML = html;
+      history.replaceState({ page: target, type: 'static' }, '', `#${target}`);      isNavigationLocked = false;
+      return;
+    }
+    else {
+      throw new Error('صفحة غير معروفة: ' + target);
+    }
+    
+    console.log('⏳ تحميل السكريبت:', scriptPath);
+    await loadScript(scriptPath);
+    
+    let jsonData = null;
+    if (dataPath) {
+      try {
+        const dataResponse = await fetch(dataPath);
+        if (dataResponse.ok) jsonData = await dataResponse.json();
+      } catch (e) { console.warn('⚠️ لم يتم تحميل البيانات:', dataPath); }
+    }
+    
+    const functionName = getLoadFunctionName(target);
+    console.log('🎯 استدعاء:', functionName);
+    
+    if (typeof window[functionName] === 'function') {
+      try {
+        if (jsonData && targetIndex !== null && window[functionName].length >= 2) {
+          await window[functionName](jsonData, targetIndex);
+        } else if (jsonData) {
+          await window[functionName](jsonData);
+        } else if (targetIndex !== null && window[functionName].length >= 2) {
+          await window[functionName](null, targetIndex);
+        } else {
+          await window[functionName]();
+        }
+      } catch (callErr) {
+        console.warn('⚠️ محاولة استدعاء بديلة:', callErr);
+        await window[functionName]();
+      }
+    } else {
+      throw new Error(`الدالة ${functionName} غير موجودة`);
+    }
+    
+    if (usePushState) {
+      history.pushState({ page: target, index: targetIndex }, '', `#${target}`);
+    } else {
+      history.replaceState({ page: target, index: targetIndex }, '', `#${target}`);
+    }
+    
+    isNavigationLocked = false;
+    
+  } catch (error) {
+    console.error('❌ خطأ في loadContent:', error);    if (mainContent) {
+      mainContent.innerHTML = `
+        <div style="text-align:center; padding:40px;">
+          <h2>⚠️ خطأ</h2>
+          <p>${error.message}</p>
+          <button onclick="loadContent('home')" class="gc-btn gc-btn-primary">🏠 الرئيسية</button>
+        </div>`;
+    }
+    isNavigationLocked = false;
   }
 }
 
-function loadGame(target) {
-  const functionName = 'load' + target
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join('') + 'Page';
-  
-  if (typeof window[functionName] === 'function') {
-    window[functionName]();
-    if (typeof updatePageMeta === 'function') {
-      setTimeout(() => updatePageMeta(target), 150);
+// ==========================================
+// دالة تحميل السكريبت - نسخة محسّنة تمنع التعارض
+// ==========================================
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector(`script[src="${src}"]`);
+    if (existing) {
+      existing.remove();
+      console.log('🔄 إزالة السكريبت القديم:', src);
     }
-  } else {
-    mainContent.innerHTML = `<div style="text-align:center; padding:40px;"><p>⚠️ القسم "${target}" غير مفعل حالياً.</p></div>`;
-  }
+    
+    const script = document.createElement('script');
+    script.src = src + '?v=' + Date.now();
+    script.onload = () => {
+      console.log('✅ تم تحميل:', src);
+      resolve();
+    };
+    script.onerror = () => {
+      console.error('❌ فشل تحميل:', src);
+      reject(new Error(`فشل تحميل: ${src}`));
+    };
+    document.head.appendChild(script);
+  });
 }
 
-// =============== //
-// 7. معالجة زر الرجوع (مُحسّنة)
-// =============== //
+// ==========================================
+// دالة تحديد اسم الدالة - تدعم كلا الصيغتين
+// ==========================================
+function getLoadFunctionName(target) {
+  if (target.startsWith('learn-')) {
+    const level = target.replace('learn-', '');
+    const baseName = 'load' + level.charAt(0).toUpperCase() + level.slice(1) + 'Lesson';
+    
+    if (typeof window[baseName] === 'function') return baseName;
+    if (typeof window[baseName + 'Page'] === 'function') return baseName + 'Page';
+    
+    throw new Error(`لا توجد دالة تحميل للمستوى: ${target}`);
+  }  
+  if (target === 'sliding_puzzle') return 'loadSlidingPuzzlePage';
+  if (target === 'speed-test') return 'loadSpeedTestPage';
+  if (target === 'mental-math') return 'loadMentalMathPage';
+  if (target === 'mixed-ops') return 'loadMixedOpsPage';
+  
+  if (['beginner', 'intermediate', 'advanced', 'complex'].includes(target)) {
+    const pageFunc = 'load' + target.charAt(0).toUpperCase() + target.slice(1) + 'Page';
+    if (typeof window[pageFunc] === 'function') return pageFunc;
+  }
+  
+  const parts = target.split('-');
+  const capitalized = parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('');
+  return 'load' + capitalized + 'Page';
+}
 
-function handlePopState(event) {
-  console.log("⬅️ زر الرجوع: تم الضغط", event.state);
+// ==========================================
+// ⬅️ معالج زر الرجوع
+// ==========================================
+let lastBackPress = 0;
+
+window.addEventListener('popstate', (event) => {
+  console.log('⬅️ حدث رجوع:', event.state);
   
-  // إلغاء أي تنقل قيد التنفيذ
-  window._navigationInProgress = false;
-  
-  if (!event.state) {
-    // لا توجد حالة - نذهب للرئيسية
-    loadHomePage();
+  if (currentSection === 'home' || !currentSection) {
+    if (navigator.app && typeof navigator.app.exitApp === 'function') {
+      if (Date.now() - lastBackPress < 2000) {
+        navigator.app.exitApp();
+      } else {
+        lastBackPress = Date.now();
+        if (typeof GameCore !== 'undefined') {
+          GameCore.toast('اضغط مرة أخرى للخروج', 'info', 2000);
+        } else {
+          const toast = document.createElement('div');
+          toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:20px;z-index:9999;font-family:Cairo;';
+          toast.textContent = 'اضغط مرة أخرى للخروج';
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 2000);
+        }
+        history.pushState({ page: 'home' }, '', location.pathname);
+      }
+    } else {
+      history.pushState({ page: 'home' }, '', location.pathname);
+    }
     return;
   }
   
-  const state = event.state;
-  
-  if (state.page === 'home') {
-    // العودة للرئيسية
-    loadHomePage();
-  } 
-  else if (state.type === 'static') {
-    // العودة لصفحة ثابتة
-    loadStaticPage(state.page);
-  }
-  else if (state.type === 'game' || state.page === 'game-entry') {
-    // أي حالة لعبة تعيدنا للرئيسية مباشرة
-    loadHomePage();
-  }
-  else {
-    // أي حالة أخرى تعيدنا للرئيسية
-    loadHomePage();
-  }
-}
-
-// =============== //
-// 8. التهيئة
-// =============== //
-
-document.addEventListener('DOMContentLoaded', () => {
-  console.log("🚀 تهيئة التطبيق...");
-  
-  initTheme();
-
-  // إضافة المستمعات للعناصر الثابتة
-  if (menuToggle) menuToggle.addEventListener('click', toggleSidebar);
-  if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
-  if (backToTopBtn) backToTopBtn.addEventListener('click', scrollToTop);
-
-  window.addEventListener('scroll', handleScroll);
-  handleScroll();
-
-  // الحالة الأولية
-  history.replaceState({ page: 'home' }, '', location.pathname);
-  
-  // تحميل الصفحة الرئيسية
-  loadHomePage();
-
-  // معالجة زر الرجوع
-  window.addEventListener('popstate', handlePopState);
+  console.log('🏠 عودة للرئيسية من صفحة داخلية');
+  loadContent('home', false);
 });
+// ==========================================
+// 🔍 دوال البحث الذكي
+// ==========================================
 
-// =============== //
-// باقي الكود (PWA، رسائل الترحيب، إلخ) - يبقى كما هو من ملفك
-// =============== //
+window.handleSearchInput = function() {
+  var query = searchInput ? searchInput.value.trim() : '';
+  
+  if (!query || query.length < 2) {
+    if (searchResults) searchResults.innerHTML = '';
+    if (searchNoResults) searchNoResults.hidden = true;
+    return;
+  }
+  
+  clearTimeout(searchDebounceTimer);
+  searchDebounceTimer = setTimeout(function() {
+    if (!window.SearchIndexer || !window.SearchIndexer.isBuilt) {
+      if (searchResults) {
+        searchResults.innerHTML = '<p style="text-align:center;padding:20px;color:var(--text-muted)">جاري بناء الفهرس...</p>';
+      }
+      return;
+    }
+    
+    var results = window.SearchIndexer.search(query);
+    
+    if (results.length === 0) {
+      if (searchResults) searchResults.innerHTML = '';
+      if (searchNoResults) searchNoResults.hidden = false;
+    } else {
+      if (searchNoResults) searchNoResults.hidden = true;
+      if (searchResults) {
+        searchResults.innerHTML = results.map(function(item) {
+          return '<div class="search-result-item" onclick="window.openSearchResult(\'' + item.id + '\')">' +
+            '<div class="search-result-icon"><i class="fas ' + (item.icon || 'fa-circle') + '"></i></div>' +
+            '<div class="search-result-content">' +
+            '<div class="search-result-title">' + item.title + '</div>' +
+            '<div class="search-result-desc">' + item.path + ' • ' + item.category + '</div>' +
+            '</div></div>';
+        }).join('');
+      }
+    }
+  }, 300);
+};
 
-// [هنا ضع كل كود PWA و showToast من ملفك الأصلي]
-// (لم أكرره هنا للاختصار ولكن يجب أن يبقى كما هو بالكامل)
+window.openSearchResult = function(itemId) {
+  var item = window.SearchIndexer && window.SearchIndexer.index ? 
+    window.SearchIndexer.index.find(function(i) { return i.id === itemId; }) : null;
+  if (item) {
+    window.SearchIndexer.openResult(item);
+    window.closeSearch();  }
+};
 
-// ✅ جعل الدوال متاحة عالمياً
+window.refreshSearchUI = function() {
+  if (searchInput && searchInput.value.trim().length >= 2) {
+    window.handleSearchInput();
+  }
+};
 
+// ==========================================
+// 📱 دوال تثبيت التطبيق (PWA Install)
+// ==========================================
 
-// =============== //
-// باقي الكود (PWA، رسائل الترحيب، إلخ) يبقى كما هو
-// =============== //
-
-// ... (كل كود PWA و showToast من ملفك الأصلي يبقى كما هو) ...
-
-// =============== //
-// 📱 نظام تثبيت التطبيق الذكي (PWA)
-// =============== //
-
-let deferredInstallPrompt = null;
-let installBanner = null;
-let pwaCheckInterval = null;
-
-// ✅ دالة التحقق مما إذا كان التطبيق مثبتاً (شاملة)
-function isAppInstalled() {
-  const conditions = [
-    window.matchMedia('(display-mode: standalone)').matches,
-    window.matchMedia('(display-mode: minimal-ui)').matches,
-    window.navigator.standalone === true,
-    document.referrer.includes('android-app://'),
-    localStorage.getItem('pwa_was_installed') === 'true'
-  ];
-  return conditions.some(c => c === true);
+function initPWAInstall() {
+  console.log('📱 تهيئة نظام تثبيت PWA...');
+  
+  createInstallButton();
+  
+  window.addEventListener('beforeinstallprompt', (e) => {
+    console.log('🎯 حدث beforeinstallprompt تم التقاطه');
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    const isDismissed = localStorage.getItem(INSTALL_DISMISSED_KEY);
+    
+    if (!isDismissed && installButton) {
+      setTimeout(() => {
+        showInstallButton();
+      }, INSTALL_SHOW_DELAY);
+    }
+  });
+  
+  window.addEventListener('appinstalled', () => {
+    console.log('✅ تم تثبيت التطبيق بنجاح!');
+    hideInstallButton();
+    deferredPrompt = null;
+    localStorage.removeItem(INSTALL_DISMISSED_KEY);
+    
+    if (typeof GameCore !== 'undefined' && GameCore.toast) {
+      GameCore.toast('🎉 شكراً لتثبيت MathLinguistic!', 'success', 3000);
+    }
+  });
+  
+  checkInstallStatus();
 }
 
-// ✅ دالة إنشاء شريط التثبيت
-function createInstallBanner() {
-  if (installBanner) return;
-  if (isAppInstalled()) return;
-
-  installBanner = document.createElement('div');
-  installBanner.id = 'pwa-install-banner';
-  installBanner.dir = 'rtl';
-  installBanner.style.cssText = `
-    position: fixed;
-    bottom: ${document.getElementById('back-to-top')?.offsetParent ? '80px' : '20px'};
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--card-bg);
-    border: 2px solid var(--accent-color);
-    border-radius: 16px;
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);    z-index: 9999;
-    font-family: 'Cairo', sans-serif;
-    max-width: 90%;
-    animation: slideUp 0.3s ease;
-  `;
-
-  installBanner.innerHTML = `
-    <div style="font-size: 1.5rem; color: var(--accent-color);">📱</div>
-    <div style="flex: 1; text-align: right;">
-      <div style="font-weight: bold; color: var(--text-primary); font-size: 0.95rem;">
-        تثبيت MathLinguistic؟
+function createInstallButton() {
+  installButton = document.createElement('div');
+  installButton.id = 'pwa-install-banner';
+  installButton.className = 'pwa-install-banner';  installButton.innerHTML = `
+    <div class="install-banner-content">
+      <div class="install-banner-icon">
+        <i class="fas fa-download"></i>
       </div>
-      <div style="font-size: 0.8rem; color: var(--text-secondary);">
-        للوصول السريع دون فتح المتصفح
+      <div class="install-banner-text">
+        <h3>ثبّت MathLinguistic</h3>
+        <p>احصل على تجربة أفضل واعمل بدون إنترنت</p>
+      </div>
+      <div class="install-banner-actions">
+        <button id="install-app-btn" class="install-btn-primary">
+          <i class="fas fa-plus-circle"></i> تثبيت
+        </button>
+        <button id="dismiss-install-btn" class="install-btn-secondary">
+          <i class="fas fa-times"></i> لاحقاً
+        </button>
       </div>
     </div>
-    <button id="pwa-install-yes" style="
-      background: var(--accent-color);
+  `;
+  
+  installButton.style.display = 'none';
+  
+  addInstallButtonStyles();
+  
+  document.body.appendChild(installButton);
+  
+  document.getElementById('install-app-btn')?.addEventListener('click', handleInstallClick);
+  document.getElementById('dismiss-install-btn')?.addEventListener('click', handleDismissClick);
+}
+
+function addInstallButtonStyles() {
+  const style = document.createElement('style');
+  style.id = 'pwa-install-styles';
+  style.textContent = `
+    .pwa-install-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, var(--primary-color, #3498db) 0%, var(--secondary-color, #2ecc71) 100%);
       color: white;
+      padding: 15px 20px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+      z-index: 10000;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+        .pwa-install-banner.show {
+      transform: translateY(0);
+    }
+    
+    .install-banner-content {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .install-banner-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    
+    .install-banner-text {
+      flex: 1;
+      min-width: 150px;
+    }
+    
+    .install-banner-text h3 {
+      margin: 0 0 5px 0;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    
+    .install-banner-text p {
+      margin: 0;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+    
+    .install-banner-actions {
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    
+    .install-btn-primary,
+    .install-btn-secondary {      padding: 10px 20px;
       border: none;
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s;
-    ">تثبيت</button>
-    <button id="pwa-install-no" style="
-      background: transparent;
-      color: var(--text-secondary);
-      border: 1px solid var(--border-color);
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 0.9rem;
+      border-radius: 8px;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
-    ">لاحقاً</button>
-  `;
-
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes slideUp {
-      from { opacity: 0; transform: translate(-50%, 30px); }
-      to { opacity: 1; transform: translate(-50%, 0); }
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
-    #pwa-install-banner button:hover {
-      filter: brightness(1.1);
+    
+    .install-btn-primary {
+      background: white;
+      color: var(--primary-color, #3498db);
     }
-    #pwa-install-no:hover {
-      background: var(--border-color);      color: var(--text-primary);
+    
+    .install-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
-  `;
-  document.head.appendChild(style);
-  document.body.appendChild(installBanner);
-
-  // ✅ زر التثبيت
-  document.getElementById('pwa-install-yes').addEventListener('click', async () => {
-    if (deferredInstallPrompt) {
-      deferredInstallPrompt.prompt();
-      const { outcome } = await deferredInstallPrompt.userChoice;
-      console.log(`📥 نتيجة التثبيت: ${outcome}`);
-      if (outcome === 'accepted') {
-        localStorage.setItem('pwa_was_installed', 'true');
+    
+    .install-btn-secondary {
+      background: rgba(255,255,255,0.2);
+      color: white;
+    }
+    
+    .install-btn-secondary:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    
+    @media (max-width: 600px) {
+      .install-banner-content {
+        flex-direction: column;
+        text-align: center;
       }
-      hideInstallBanner();
-      deferredInstallPrompt = null;
+      
+      .install-banner-actions {
+        width: 100%;
+        justify-content: center;
+      }
     }
-  });
+    
+    [data-theme="dark"] .pwa-install-banner {
+      background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    }
+  `;
+  
+  document.head.appendChild(style);}
 
-  // ✅ زر لاحقاً
-  document.getElementById('pwa-install-no').addEventListener('click', () => {
-    hideInstallBanner();
-    localStorage.setItem('pwa_install_dismissed', 'true');
-  });
-}
-
-// ✅ دالة إخفاء الشريط (مع تنظيف الفحص الدوري)
-function hideInstallBanner() {
-  if (installBanner) {
-    installBanner.style.opacity = '0';
-    installBanner.style.transition = 'opacity 0.3s ease';
+function showInstallButton() {
+  if (installButton) {
+    installButton.style.display = 'block';
     setTimeout(() => {
-      installBanner?.remove();
-      installBanner = null;
+      installButton.classList.add('show');
+    }, 100);
+    console.log('📱 تم إظهار زر التثبيت');
+  }
+}
+
+function hideInstallButton() {
+  if (installButton) {
+    installButton.classList.remove('show');
+    setTimeout(() => {
+      installButton.style.display = 'none';
     }, 300);
-  }
-  if (pwaCheckInterval) {
-    clearInterval(pwaCheckInterval);
-    pwaCheckInterval = null;
+    console.log('📱 تم إخفاء زر التثبيت');
   }
 }
 
-// ✅ فحص دوري لحالة التثبيت (كل 2 ثانية)
-function startPWAStatusCheck() {
-  if (pwaCheckInterval) return;
+async function handleInstallClick() {
+  console.log('🔽 المستخدم ضغط على زر التثبيت');
   
-  pwaCheckInterval = setInterval(() => {
-    if (isAppInstalled() && installBanner) {
-      console.log('✅ تم اكتشاف التثبيت - إخفاء الشريط');      hideInstallBanner();
-    }
-  }, 2000);
-}
-
-// ✅ الاستماع لحدث beforeinstallprompt
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredInstallPrompt = e;
-  
-  if (isAppInstalled() || localStorage.getItem('pwa_install_dismissed') === 'true') {
+  if (!deferredPrompt) {
+    console.warn('⚠️ لا يوجد prompt متاح للتثبيت');
+    showManualInstallInstructions();
     return;
   }
   
-  setTimeout(createInstallBanner, 3000);
-  console.log('📱 شريط التثبيت جاهز للعرض');
-});
-
-// ✅ الاستماع لحدث appinstalled
-window.addEventListener('appinstalled', () => {
-  console.log('✅ حدث appinstalled تم التقاطه');
-  localStorage.setItem('pwa_was_installed', 'true');
-  hideInstallBanner();
-  deferredInstallPrompt = null;
-});
-
-// ✅ فحص عند تحميل الصفحة
-function checkPWAStatusOnLoad() {
-  if (isAppInstalled()) {
-    console.log('📱 التطبيق مثبت - لن يظهر شريط التثبيت');
-    localStorage.setItem('pwa_was_installed', 'true');
-    const existingBanner = document.getElementById('pwa-install-banner');
-    if (existingBanner) existingBanner.remove();
-    return false;
+  deferredPrompt.prompt();
+  
+  const { outcome } = await deferredPrompt.userChoice;
+  console.log(`📊 نتيجة التثبيت: ${outcome}`);
+  
+  if (outcome === 'accepted') {
+    console.log('✅ المستخدم قبل التثبيت');
+    hideInstallButton();
   }
-  return true;
+  
+  deferredPrompt = null;
 }
 
-// ✅ كشف iOS وعرض إرشاد يدوي
-function showIOSInstallHint() {
-  if (!checkPWAStatusOnLoad()) return;
+function handleDismissClick() {
+  console.log('❌ المستخدم أغلق زر التثبيت');
+  hideInstallButton();
   
-  if (/iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase())) {
-    const iosHint = document.createElement('div');
-    iosHint.id = 'ios-install-hint';
-    iosHint.dir = 'rtl';
-    iosHint.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      left: 50%;      transform: translateX(-50%);
-      background: var(--card-bg);
-      border: 2px solid var(--accent-color);
-      border-radius: 16px;
-      padding: 15px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-      z-index: 9999;
-      font-family: 'Cairo', sans-serif;
-      max-width: 90%;
-      animation: slideUp 0.3s ease;
-    `;
-    
-    iosHint.innerHTML = `
-      <div style="font-size: 1.5rem;">🍎</div>
-      <div style="flex: 1; text-align: right;">
-        <div style="font-weight: bold; color: var(--text-primary);">
-          تثبيت على آيفون؟
-        </div>
-        <div style="font-size: 0.8rem; color: var(--text-secondary);">
-          اضغط <i class="fas fa-share-square" style="color:var(--accent-color)"></i> ثم "إضافة للشاشة الرئيسية"
-        </div>
-      </div>
-      <button id="ios-hint-close" style="
-        background: transparent;
-        border: 1px solid var(--border-color);
-        color: var(--text-secondary);
-        padding: 6px 14px;
-        border-radius: 16px;
-        cursor: pointer;
-        font-size: 0.85rem;
-      ">✕</button>
-    `;
-    
-    document.body.appendChild(iosHint);
-    
-    document.getElementById('ios-hint-close').addEventListener('click', () => {
-      iosHint.remove();
-      localStorage.setItem('pwa_install_dismissed', 'true');
-    });
-  }
-}
-
-// ✅ التهيئة عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', () => {
-  // ✅ تسجيل Service Worker (مع المسار الصحيح لـ GitHub Pages)
-  if ('serviceWorker' in navigator && !navigator.serviceWorker.controller) {
-    navigator.serviceWorker.register('/MathLinguistic/sw.js')      .then(reg => console.log('✅ SW registered:', reg.scope))
-      .catch(err => console.error('❌ SW registration failed:', err));
-  }
-  
-  // ✅ بدء الفحص الدوري
-  startPWAStatusCheck();
-  
-  // ✅ فحص iOS
-  setTimeout(showIOSInstallHint, 4000);
-});
-
-// ✅ فحص إضافي عند رؤية الصفحة
-document.addEventListener('visibilitychange', () => {
-  if (!document.hidden && isAppInstalled() && installBanner) {
-    hideInstallBanner();
-  }
-});
-
-// =============== //
-// 🎉 رسالة ترحيب ذكية (تظهر مرة واحدة فقط)
-// =============== //
-
-function showWelcomeMessage() {
-  const hasSeenWelcome = localStorage.getItem('mathlinguistic_welcome_seen');
-  if (!hasSeenWelcome && !isAppInstalled()) {
+  localStorage.setItem(INSTALL_DISMISSED_KEY, 'true');
     setTimeout(() => {
-      if (typeof showToast === 'function') {
-        showToast('🎉 أهلاً بك! استخدم زر 📥 في الأسفل لتثبيت التطبيق والوصول السريع', 'info', 5000);
-      }
-      localStorage.setItem('mathlinguistic_welcome_seen', 'true');
-    }, 2000);
+    localStorage.removeItem(INSTALL_DISMISSED_KEY);
+  }, 7 * 24 * 60 * 60 * 1000);
+}
+
+function showManualInstallInstructions() {
+  const instructions = `
+    <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+                background:white;color:#333;padding:30px;border-radius:15px;
+                box-shadow:0 10px 40px rgba(0,0,0,0.3);z-index:10001;
+                max-width:90%;width:400px;text-align:center;font-family:'Cairo',sans-serif;">
+      <h3 style="margin:0 0 15px 0;color:#3498db;">📱 تثبيت التطبيق</h3>
+      <p style="margin:0 0 20px 0;line-height:1.6;">
+        لتثبيت التطبيق:<br>
+        1. اضغط على قائمة المتصفح (⋮ أو 📤)<br>
+        2. اختر "إضافة إلى الشاشة الرئيسية"<br>
+        3. اضغط "إضافة"
+      </p>
+      <button onclick="this.closest('div').remove()" 
+              style="padding:10px 30px;background:#3498db;color:white;border:none;
+                     border-radius:8px;cursor:pointer;font-family:'Cairo',sans-serif;">
+        فهمت
+      </button>
+    </div>
+    <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);
+                z-index:10000;" onclick="this.remove()"></div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', instructions);
+}
+
+function checkInstallStatus() {
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    console.log('✅ التطبيق يعمل كـ Standalone (مثبت)');
+    return true;
   }
+  
+  if (navigator.standalone === true) {
+    console.log('✅ التطبيق مثبت (iOS)');
+    return true;
+  }
+  
+  console.log('⚠️ التطبيق غير مثبت - يعمل في المتصفح');
+  return false;
 }
 
-// ✅ تفعيل رسالة الترحيب
-document.addEventListener('DOMContentLoaded', () => {
-  showWelcomeMessage();
-});
+window.isAppInstalled = checkInstallStatus;
 
-// ✅ دالة Toast بسيطة (إذا لم تكن موجودة في مكان آخر)
-function showToast(message, type = 'info', duration = 3000) {
-  // إزالة أي Toast سابق
-  const existing = document.querySelector('.toast-notification');
-  if (existing) existing.remove();
+// ==========================================
+// التهيئة الرئيسية// ==========================================
+
+(function init() {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', onReady);
+  } else {
+    onReady();
+  }
   
-  const toast = document.createElement('div');
-  toast.className = `toast-notification toast-${type}`;
-  toast.innerHTML = `
-    <span>${message}</span>
-    <button class="toast-close">&times;</button>  `;
-  
-  // تنسيقات مدمجة
-  toast.style.cssText = `
-    position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-    background: ${type === 'error' ? '#e74c3c' : type === 'success' ? '#2ecc71' : '#3498db'};
-    color: white; padding: 12px 20px; border-radius: 8px;
-    z-index: 10000; font-family: Cairo, sans-serif; font-size: 0.9rem;
-    display: flex; align-items: center; gap: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    animation: slideDown 0.3s ease;
-  `;
-  
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes slideDown { from { top: -50px; opacity: 0; } to { top: 20px; opacity: 1; } }
-    .toast-close { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; margin-right: 5px; }
-  `;
-  document.head.appendChild(style);
-  
-  document.body.appendChild(toast);
-  
-  // إغلاق يدوي
-  toast.querySelector('.toast-close')?.addEventListener('click', () => toast.remove());
-  
-  // إخفاء تلقائي
-  setTimeout(() => {
-    toast.style.animation = 'slideDown 0.3s ease reverse';
-    setTimeout(() => toast.remove(), 300);
-  }, duration);
+  function onReady() {
+    console.log('🚀 بدء التطبيق...');
+    
+    initTheme();
+    initBackToTop();
+    initPWAInstall(); // ✅ استدعاء دالة تثبيت PWA
+    
+    // ✅ تسجيل Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/MathLinguistic/sw.js')
+        .then(reg => {
+          console.log('✅ SW مسجل:', reg.scope);
+          reg.addEventListener('updatefound', () => {
+            console.log('🔄 تحديث جديد متوفر!');
+            if (typeof GameCore !== 'undefined' && GameCore.toast) {
+              GameCore.toast('🔄 يوجد تحديث جديد للتطبيق', 'info', 3000);
+            }
+          });
+        })
+        .catch(err => console.error('❌ خطأ في تسجيل SW:', err));
+    }
+    
+    menuToggle?.addEventListener('click', toggleSidebar);
+    themeToggle?.addEventListener('click', toggleTheme);
+    searchToggle?.addEventListener('click', openSearch);
+    searchClose?.addEventListener('click', closeSearch);
+    
+    if (searchOverlay) {
+      searchOverlay.addEventListener('click', (e) => {
+        if (e.target === searchOverlay) closeSearch();
+      });
+    }
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeSearch();
+    });
+    
+    if (searchInput) {
+      searchInput.addEventListener('input', window.handleSearchInput);
+      searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {          e.preventDefault();
+          window.closeSearch();
+        }
+      });
+    }
+    
+    document.querySelectorAll('.menu-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const target = item.dataset.target;
+        if (target) loadContent(target, true);
+      });
+    });
+    
+    document.querySelectorAll('[data-static-page]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const page = btn.dataset.staticPage;
+        if (page) loadContent(page, true);
+      });
+    });
+    
+    history.replaceState({ page: 'home' }, '', location.pathname);
+    
+    loadContent('home', false);
+    
+    function initDeepLinkHandler() {
+      const hash = location.hash;
+      const params = new URLSearchParams(location.search);
+      
+      if (hash && hash !== '#home') {
+        const target = hash.replace('#', '').split('?')[0];
+        const sectionId = params.get('section');
+        const paragraphId = location.hash.split('#')[2];
+        const lessonParam = params.get('lesson');
+        
+        setTimeout(() => {
+          if (lessonParam && target.startsWith('learn-')) {
+            const lessonIdx = parseInt(lessonParam);
+            if (!isNaN(lessonIdx)) {
+              loadContent(target, false, lessonIdx);
+              return;
+            }
+          }
+          
+          if (sectionId && document.getElementById(sectionId)) {
+            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const el = document.getElementById(sectionId);
+            el.style.animation = 'highlight 1.5s ease';
+          }
+          if (paragraphId && document.getElementById(paragraphId)) {
+            document.getElementById(paragraphId).scrollIntoView({ behavior: 'smooth', block: 'center' });            const el = document.getElementById(paragraphId);
+            el.style.animation = 'highlight 1.5s ease';
+          }
+        }, 600);
+      }
+    }
+    
+    initDeepLinkHandler();
+  }
+})();
+
+// ==========================================
+// دوال مساعدة
+// ==========================================
+
+function toggleSidebar() {
+  if (!sidebar) return;
+  sidebar.classList.toggle('open');
+  const isOpen = sidebar.classList.contains('open');
+  sidebar.setAttribute('aria-hidden', String(!isOpen));
 }
 
-// ✅ جعل الدوال متاحة عالمياً
-window.loadHomePage = loadHomePage;
-window.loadStaticPage = loadStaticPage;
+function initTheme() {
+  const saved = localStorage.getItem('theme') || 'light';
+  document.body.setAttribute('data-theme', saved);
+  updateThemeIcon(saved);
+}
+
+function toggleTheme() {
+  const current = document.body.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.body.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  updateThemeIcon(next);
+}
+
+function updateThemeIcon(theme) {
+  const icon = themeToggle?.querySelector('i');
+  if (icon) icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+}
+
+function openSearch() {
+  if (searchOverlay) {
+    searchOverlay.classList.add('active');
+    searchOverlay.setAttribute('aria-hidden', 'false');
+  }
+  searchInput?.focus();
+}
+
+function closeSearch() {  if (searchOverlay) {
+    searchOverlay.classList.remove('active');
+    searchOverlay.setAttribute('aria-hidden', 'true');
+  }
+  if (searchInput) searchInput.value = '';
+}
+
+function attachEventListeners() {
+  document.querySelectorAll('[data-target]').forEach(el => {
+    el.onclick = () => {
+      const target = el.dataset.target;
+      if (target) loadContent(target, true);
+    };
+  });
+  
+  document.querySelectorAll('[data-static-page]').forEach(btn => {
+    btn.onclick = () => {
+      const page = btn.dataset.staticPage;
+      if (page) loadContent(page, true);
+    };
+  });
+}
+
+// ==========================================
+// ⚡ تخزين المحتوى الرئيسي
+// ==========================================
+var HOME_CONTENT_CACHED = null;
+
+(function preloadHomeContent() {
+  console.log('⚡ تحميل مسبق للرئيسية...');
+  fetch('home-content.html')
+    .then(function(response) {
+      if (response.ok) return response.text();
+      throw new Error('فشل التحميل');
+    })
+    .then(function(html) {
+      HOME_CONTENT_CACHED = html;
+      console.log('✅ الرئيسية مخزنة (' + html.length + ' bytes)');
+    })
+    .catch(function(error) {
+      console.error('❌ فشل الكاش:', error);
+    });
+})();
+
+// ==========================================
+// 🏠 دالة العودة للرئيسية
+// ==========================================
+window.loadHomePage = function() {
+  console.log("🏠 العودة للرئيسية (مباشرة)");
+  currentSection = 'home';  cleanupCurrentPage();
+  history.replaceState({ page: 'home' }, '', location.pathname);
+  
+  fetch('home-content.html')
+    .then(res => {
+      if (!res.ok) throw new Error('Network error');
+      return res.text();
+    })
+    .then(html => {
+      if (mainContent) {
+        mainContent.innerHTML = html;
+        attachEventListeners();
+        window.scrollTo({top: 0, behavior: 'smooth'});
+        if (typeof updatePageMeta === 'function') updatePageMeta('home');
+      }
+    })
+    .catch(err => {
+      console.error('❌ Error loading home:', err);
+      if(mainContent) {
+        mainContent.innerHTML = `
+          <div style="text-align:center;padding:40px">
+            <h3>⚠️ خطأ في التحميل</h3>
+            <button onclick="location.reload()" class="gc-btn gc-btn-primary" style="margin-top:15px">🔄 إعادة المحاولة</button>
+          </div>`;
+      }
+    });
+};
+
+// ==========================================
+// 🎮 دالة تحميل الألعاب
+// ==========================================
+window.loadGame = function(gameId) {
+  console.log('🎮 loadGame:', gameId);
+  if (window.GameCore && typeof window.GameCore.cleanupAll === 'function') {
+    window.GameCore.cleanupAll();
+  }
+  cleanupCurrentPage();
+  if (sidebar) {
+    sidebar.classList.remove('open');
+    sidebar.setAttribute('aria-hidden', 'true');
+  }
+  closeSearch();
+  loadContent(gameId, true);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+// ==========================================
+// 🧹 دالة التنظيف الشاملة
+// ==========================================
+function cleanupCurrentPage() {  console.log("🧹 جاري تنظيف الصفحة...");
+  
+  ['mentalMathInterval', 'mixedOpsInterval', 'speedTestInterval'].forEach(key => {
+    if (window[key]) {
+      clearInterval(window[key]);
+      window[key] = null;
+    }
+  });
+  
+  ['destroyMentalMath', 'destroyMixedOps', 'destroySpeedTest'].forEach(fnName => {
+    if (typeof window[fnName] === 'function') {
+      try {
+        window[fnName]();
+        console.log(`✅ تم استدعاء ${fnName}`);
+      } catch (e) {
+        console.warn(`⚠️ خطأ في ${fnName}:`, e);
+      }
+    }
+  });
+  
+  if (window._ResourceManager && typeof window._ResourceManager.cleanupAll === 'function') {
+    try {
+      window._ResourceManager.cleanupAll();
+      console.log('✅ تم تنظيف _ResourceManager');
+    } catch (e) {
+      console.warn('⚠️ خطأ في تنظيف _ResourceManager:', e);
+    }
+  }
+  
+  ['speedTestData', 'mentalMathData', 'mixedOpsData'].forEach(key => {
+    window[key] = null;
+  });
+  
+  if (mainContent) {
+    mainContent.innerHTML = '';
+    console.log('✅ تم مسح main-content');
+  }
+  
+  console.log("✅ اكتمل التنظيف بنجاح");
+}
+
+// ==========================================
+// 🔄 توليد أرقام صفحات ذكية
+// ==========================================
+function generateSmartPagination(current, total, maxVisible = 4) {
+  const pages = [];
+  if (total <= 7) {
+    for (let i = 1; i <= total; i++) pages.push(i);
+  } else {
+    if (current <= 4) {      pages.push(1, 2, 3, 4, '...', total);
+    } else if (current >= total - 3) {
+      pages.push(1, '...', total-3, total-2, total-1, total);
+    } else {
+      pages.push(1, '...', current-1, current, current+1, '...', total);
+    }
+  }
+  return pages;
+}
+
+// ==========================================
+// تصدير الدوال
+// ==========================================
+window.loadContent = loadContent;
 window.cleanupCurrentPage = cleanupCurrentPage;
-window.showToast = showToast;
+window.toggleTheme = toggleTheme;
+window.toggleSidebar = toggleSidebar;

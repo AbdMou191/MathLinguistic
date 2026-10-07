@@ -1,7 +1,7 @@
 // sw.js - MathLinguistic Service Worker (v8.0.0-OFFLINE-FIRST)
 // ✅ تم التصحيح بناءً على الهيكلية الفعلية
 
-const CACHE_NAME = 'mathlinguistic-v8.0.1-OFFLINE';
+const CACHE_NAME = 'mathlinguistic-v8.0.2-OFFLINE';
 const CORE_CACHE = 'mathlinguistic-core-v8.0.1';
 const DYNAMIC_CACHE = 'mathlinguistic-dynamic-v8';
 

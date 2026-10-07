@@ -1,11 +1,9 @@
-// نظام الإنجازات - MathLinguistic (نسخة مضمونة)
-// ✅ جميع الدوال معرفة على window مباشرة
-
+// نظام الإنجازات - MathLinguistic (نسخة معدلة ومضمونة التفاعل)
 console.log('🏆 achievements.js loading...');
 
 let ALL_ACHIEVEMENTS = null;
 
-// 1. تحميل البيانات
+// 1. تحميل التعريفات
 window.loadAchievementDefinitions = async function() {
     if (ALL_ACHIEVEMENTS) return ALL_ACHIEVEMENTS;
     try {
@@ -16,7 +14,7 @@ window.loadAchievementDefinitions = async function() {
         console.log('✅ تم تحميل', ALL_ACHIEVEMENTS.length, 'إنجاز');
         return ALL_ACHIEVEMENTS;
     } catch (err) {
-        console.error("فشل التحميل:", err);
+        console.error("فشل تحميل تعريفات الإنجازات:", err);
         ALL_ACHIEVEMENTS = [];
         return [];
     }
@@ -31,23 +29,45 @@ window.getEarnedAchievements = function() {
     }
 };
 
-// 3. جمع الإحصائيات
+// 3. جمع الإحصائيات مع دعم مرن لكافة مفاتيح LocalStorage
 window.collectStats = function() {
     const getNum = (k) => parseInt(localStorage.getItem(k) || '0');
-    const countSolved = (k) => {
-        try {
-            const d = JSON.parse(localStorage.getItem(k) || '[]');
-            return Array.isArray(d) ? d.filter(x => x && (x.status === 'correct' || (typeof x === 'string' && x.trim() !== ""))).length : 0;
-        } catch (e) { return 0; }
+    
+    // دالة مرنة لحساب الأسئلة المحلولة بغض النظر عن طريقة حفظها
+    const countSolved = (...keys) => {
+        let total = 0;
+        keys.forEach(k => {
+            try {
+                const raw = localStorage.getItem(k);
+                if (!raw) return;
+                const d = JSON.parse(raw);
+                if (Array.isArray(d)) {
+                    total += d.filter(x => x && (x.status === 'correct' || x.correct === true || typeof x === 'string' || typeof x === 'number')).length;
+                } else if (typeof d === 'number') {
+                    total += d;
+                }
+            } catch (e) {
+                const val = getNum(k);
+                if (val > 0) total += val;
+            }
+        });
+        return total;
     };
+
+    const beg = countSolved('math_beg_answers', 'math_beg_solved');
+    const int = countSolved('math_int_answers', 'math_int_solved');
+    const adv = countSolved('math_adv_answers', 'math_adv_achievements', 'math_adv_solved');
+    const cmp = countSolved('math_complex_answers', 'math_complex_achievements', 'math_complex_solved');
+
     return {
-        beginner_solved: countSolved('math_beg_answers'),
-        intermediate_solved: countSolved('math_int_answers'),
-        advanced_solved: countSolved('math_adv_achievements'),
-        complex_solved: countSolved('math_complex_achievements'),
+        beginner_solved: beg,
+        intermediate_solved: int,
+        advanced_solved: adv,
+        complex_solved: cmp,
         total_beginner: 50,
         total_intermediate: 50,
-        total_advanced: 50,        total_complex: 50,
+        total_advanced: 50,
+        total_complex: 50,
         speed_max_level: getNum('speed_test_max_level'),
         mental_beginner_max_level: getNum('math_mental_beginner_level'),
         mental_advanced_max_level: getNum('math_mixed_ops_level'),
@@ -57,14 +77,14 @@ window.collectStats = function() {
         total_points: getNum('math_user_points'),
         total_hints_used: getNum('total_hints_used'),
         earned_achievements_count: window.getEarnedAchievements().length,
-        beginner_complete: countSolved('math_beg_answers') >= 50,
-        intermediate_complete: countSolved('math_int_answers') >= 50,
-        advanced_complete: countSolved('math_adv_achievements') >= 50,
-        complex_complete: countSolved('math_complex_achievements') >= 50,
+        beginner_complete: beg >= 50,
+        intermediate_complete: int >= 50,
+        advanced_complete: adv >= 50,
+        complex_complete: cmp >= 50,
         speed_master: getNum('speed_test_max_level') >= 50,
         mental_beginner_complete: getNum('math_mental_beginner_level') >= 5,
         mental_advanced_complete: getNum('math_mixed_ops_level') >= 5,
-        all_levels_beginner: countSolved('math_beg_answers') >= 50 && countSolved('math_int_answers') >= 50 && countSolved('math_adv_achievements') >= 50 && countSolved('math_complex_achievements') >= 50
+        all_levels_beginner: beg >= 50 && int >= 50 && adv >= 50 && cmp >= 50
     };
 };
 
@@ -83,12 +103,9 @@ window.evaluateCondition = function(condition, stats) {
 
 // 5. التحقق من الإنجازات الجديدة
 window.checkAndUnlockAchievements = async function() {
-    console.log('🔍 checkAndUnlockAchievements started');
+    console.log('🔍 جاري التحقق من الإنجازات...');
     const defs = await window.loadAchievementDefinitions();
-    if (!defs.length) {
-        console.warn('⚠️ لا توجد إنجازات للتحقق');
-        return;
-    }
+    if (!defs.length) return;
     
     let earned = window.getEarnedAchievements();
     const stats = window.collectStats();
@@ -96,7 +113,8 @@ window.checkAndUnlockAchievements = async function() {
 
     for (const ach of defs) {
         if (earned.includes(ach.id)) continue;
-        if (window.evaluateCondition(ach.condition, stats)) {            earned.push(ach.id);
+        if (window.evaluateCondition(ach.condition, stats)) {
+            earned.push(ach.id);
             newUnlocks.push(ach);
             console.log('🎉 إنجاز جديد:', ach.name);
         }
@@ -105,14 +123,15 @@ window.checkAndUnlockAchievements = async function() {
     if (newUnlocks.length > 0) {
         localStorage.setItem('earned_achievements', JSON.stringify(earned));
         newUnlocks.forEach(a => window.showAchievementToast(a.name, a.description, a.icon));
-        if (document.querySelector('.games-grid')) window.loadAchievementsPage();
+        // إعادة رسم الصفحة إذا كانت شاشة الإنجازات مفتوحة حالياً
+        if (document.querySelector('.ach-page-container')) {
+            window.loadAchievementsPage();
+        }
     }
-    console.log('✅ checkAndUnlockAchievements completed');
 };
 
-// 6. عرض إشعار الإنجاز
+// 6. إشعار فتح إنجاز جديد
 window.showAchievementToast = function(title, desc, icon) {
-    console.log('📢 Toast:', title);
     const old = document.querySelector('.ach-toast');
     if (old) old.remove();
     
@@ -126,26 +145,23 @@ window.showAchievementToast = function(title, desc, icon) {
     setTimeout(() => { t.style.opacity = "0"; t.style.transform = "translateX(-50%) translateY(-100px)"; setTimeout(()=>t.remove(), 500); }, 4000);
 };
 
-// 7. عرض صفحة الإنجازات (لا تتوقع باراميتر)
+// 7. عرض صفحة الإنجازات
 window.loadAchievementsPage = async function() {
-    console.log('🎯 loadAchievementsPage started');
-    
     const main = document.getElementById('main-content');
-    if (!main) {
-        console.error('❌ main-content not found');
-        return;
-    }
+    if (!main) return;
 
     main.innerHTML = '<div style="text-align:center;padding:50px;color:var(--text-primary, #333);">جاري التحميل... 🏆</div>';
+
+    // فحص وتحديث الإنجازات مباشرة قبل عرض الصفحة
+    await window.checkAndUnlockAchievements();
 
     try {
         const all = await window.loadAchievementDefinitions();
         const earned = window.getEarnedAchievements();
 
-        console.log('📊 الإنجازات:', all.length, '| المحققة:', earned.length);
-
         if (!all || all.length === 0) {
-            main.innerHTML = '<div style="text-align:center;padding:50px;color:#e74c3c;">لا توجد إنجازات متاحة.</div>';            return;
+            main.innerHTML = '<div style="text-align:center;padding:50px;color:#e74c3c;">لا توجد إنجازات متاحة.</div>';
+            return;
         }
 
         const groups = {};
@@ -194,7 +210,8 @@ window.loadAchievementsPage = async function() {
             .icon-star { font-size: 1rem; margin: 2px; transition: 0.3s; }
             .icon-crown { font-size: 1.2rem; margin: 2px; transition: 0.3s; }
             .icon-on { text-shadow: 0 0 5px rgba(255,215,0,0.6); }
-            .icon-off { color: var(--text-secondary, #ccc) !important; text-shadow: none; }            @media(max-width: 600px) { .ach-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; } .ach-card { padding: 10px 5px !important; } .ach-card-title { font-size: 0.9rem !important; } .ach-card-desc { display: none; } }
+            .icon-off { color: var(--text-secondary, #ccc) !important; text-shadow: none; }
+            @media(max-width: 600px) { .ach-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; } .ach-card { padding: 10px 5px !important; } .ach-card-title { font-size: 0.9rem !important; } .ach-card-desc { display: none; } }
         </style>
 
         <div class="ach-page-container">
@@ -231,15 +248,9 @@ window.loadAchievementsPage = async function() {
 
         html += `</div></div>`;
         main.innerHTML = html;
-        console.log('✅ loadAchievementsPage completed');
 
     } catch (e) {
-        console.error('❌ Error in loadAchievementsPage:', e);
+        console.error('❌ خطأ في loadAchievementsPage:', e);
         main.innerHTML = `<div style="text-align:center;padding:50px;color:#e74c3c;">حدث خطأ أثناء التحميل: ${e.message}</div>`;
     }
 };
-
-// تأكيد التحميل
-console.log('✅ achievements.js loaded successfully!');
-console.log('✅ window.loadAchievementsPage:', typeof window.loadAchievementsPage);
-console.log('✅ window.checkAndUnlockAchievements:', typeof window.checkAndUnlockAchievements);

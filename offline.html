@@ -11,7 +11,7 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
             background: linear-gradient(135deg, #3498db, #2c3e50);
             min-height: 100vh;
@@ -20,7 +20,7 @@
             align-items: center;
             padding: 20px;
         }
-        
+
         .offline-box {
             background: white;
             border-radius: 30px;
@@ -29,36 +29,36 @@
             text-align: center;
             box-shadow: 0 30px 60px rgba(0,0,0,0.3);
         }
-        
+
         .icon {
             font-size: 80px;
             margin-bottom: 20px;
         }
-        
+
         h1 {
             color: #2c3e50;
             margin-bottom: 15px;
             font-size: 28px;
         }
-        
+
         p {
             color: #7f8c8d;
             margin-bottom: 30px;
             line-height: 1.6;
         }
-        
+
         .offline-features {
             background: #f8f9fa;
             border-radius: 20px;
             padding: 20px;
             margin-bottom: 30px;
         }
-        
+
         .offline-features h3 {
             color: #27ae60;
             margin-bottom: 15px;
         }
-        
+
         .feature-item {
             background: white;
             padding: 10px 15px;
@@ -67,19 +67,25 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             color: #2c3e50;
             text-align: right;
+            cursor: pointer;
+            transition: background 0.2s;
         }
-        
+
+        .feature-item:hover {
+            background: #eef7fc;
+        }
+
         .feature-item i {
             margin-left: 10px;
             color: #3498db;
         }
-        
+
         .buttons {
             display: flex;
             gap: 15px;
             justify-content: center;
         }
-        
+
         button {
             background: #3498db;
             color: white;
@@ -92,16 +98,16 @@
             transition: transform 0.3s, box-shadow 0.3s;
             flex: 1;
         }
-        
+
         button:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(52, 152, 219, 0.4);
         }
-        
+
         button.secondary {
             background: #95a5a6;
         }
-        
+
         .connection-status {
             margin-top: 25px;
             padding: 10px;
@@ -111,40 +117,52 @@
             animation: pulse 2s infinite;
             font-size: 14px;
         }
-        
+
         @keyframes pulse {
             0% { opacity: 1; }
             50% { opacity: 0.7; }
             100% { opacity: 1; }
         }
     </style>
-    <!-- ربط Font Awesome إذا كان متاحاً -->
-    <link rel="stylesheet" href="font-awesome/css/all.min.css">
+    <!-- ✅ تصحيح مسار Font Awesome -->
+    <link rel="stylesheet" href="/MathLinguistic/styles/font-awesome/css/all.min.css">
 </head>
 <body>
     <div class="offline-box">
         <div class="icon">📱</div>
         <h1>لا يوجد اتصال بالإنترنت</h1>
-        <p>لا تقلق! يمكنك الاستمرار في التدرب على التمارين المحفوظة</p>
-        
+        <p>يمكنك الاستمرار في استخدام التطبيق والتمارين المخزنة بدون إنترنت</p>
+
         <div class="offline-features">
             <h3>📚 التمارين المتاحة حالياً:</h3>
-            <div class="feature-item"><i class="fas fa-star"></i> المبتدئ - الجمع والطرح</div>
-            <div class="feature-item"><i class="fas fa-star"></i> المتوسط - الضرب والقسمة</div>
-            <div class="feature-item"><i class="fas fa-star"></i> المتقدم - الجبر والنسب المئوية</div>
-            <div class="feature-item"><i class="fas fa-star"></i> المعقد - التحديات المنطقية</div>
-            <div class="feature-item"><i class="fas fa-bolt"></i> Speed Test - اختبار السرعة</div>
-            <div class="feature-item"><i class="fas fa-brain"></i> Mental Math - الحساب الذهني</div>
+            <div class="feature-item" onclick="window.location.href='/MathLinguistic/'"><i class="fas fa-star"></i> المبتدئ - الجمع والطرح</div>
+            <div class="feature-item" onclick="window.location.href='/MathLinguistic/'"><i class="fas fa-star"></i> المتوسط - الضرب والقسمة</div>
+            <div class="feature-item" onclick="window.location.href='/MathLinguistic/'"><i class="fas fa-star"></i> المتقدم - الجبر والنسب المئوية</div>
+            <div class="feature-item" onclick="window.location.href='/MathLinguistic/'"><i class="fas fa-star"></i> المعقد - التحديات المنطقية</div>
+            <div class="feature-item" onclick="window.location.href='/MathLinguistic/'"><i class="fas fa-bolt"></i> Speed Test - اختبار السرعة</div>
+            <div class="feature-item" onclick="window.location.href='/MathLinguistic/'"><i class="fas fa-brain"></i> Mental Math - الحساب الذهني</div>
         </div>
-        
+
         <div class="buttons">
-            <button onclick="window.location.href='/'">العودة للرئيسية</button>
+            <!-- ✅ تصحيح المسار ليعود لمستودع MathLinguistic -->
+            <button onclick="window.location.href='/MathLinguistic/'">العودة للرئيسية</button>
             <button class="secondary" onclick="window.location.reload()">إعادة المحاولة</button>
         </div>
-        
-        <div class="connection-status">
-            ⚡ سيتم حفظ تقدمك تلقائياً عند عودة الاتصال
+
+        <div class="connection-status" id="net-status">
+            ⚡ وضع العمل بدون إنترنت مفعّل
         </div>
     </div>
+
+    <script>
+        // ✅ إعادة التحميل التلقائية فور عودة الإنترنت
+        window.addEventListener('online', () => {
+            document.getElementById('net-status').innerHTML = '🟢 تم استعادة الاتصال! جاري التحديث...';
+            document.getElementById('net-status').style.background = '#2ecc71';
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        });
+    </script>
 </body>
 </html>

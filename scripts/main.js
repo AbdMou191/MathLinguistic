@@ -651,20 +651,26 @@ window.isAppInstalled = checkInstallStatus;
     initBackToTop();
     initPWAInstall(); // ✅ استدعاء دالة تثبيت PWA
     
-    // ✅ تسجيل Service Worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/MathLinguistic/sw.js')
-        .then(reg => {
-          console.log('✅ SW مسجل:', reg.scope);
-          reg.addEventListener('updatefound', () => {
-            console.log('🔄 تحديث جديد متوفر!');
-            if (typeof GameCore !== 'undefined' && GameCore.toast) {
-              GameCore.toast('🔄 يوجد تحديث جديد للتطبيق', 'info', 3000);
+    // ✅ تسجيل Service Worker والتحديث التلقائي الفوري
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/MathLinguistic/sw.js')
+    .then(reg => {
+      console.log('✅ SW مسجل:', reg.scope);
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        if (newWorker) {
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('🔄 تم تثبيت تحديث جديد، جاري إعادة التحميل تلقائياً...');
+              window.location.reload();
             }
           });
-        })
-        .catch(err => console.error('❌ خطأ في تسجيل SW:', err));
-    }
+        }
+      });
+    })
+    .catch(err => console.error('❌ خطأ في تسجيل SW:', err));
+}
+
     
     menuToggle?.addEventListener('click', toggleSidebar);
     themeToggle?.addEventListener('click', toggleTheme);

@@ -1,6 +1,6 @@
 // ==========================================
-// 🔢 Loudoukou Game - نسخة محسنة v6.5
-// MathLinguistic - إصلاح التنسيق والتشويش والحفظ
+// 🔢 Loudoukou Game - نسخة محسنة ومصححة v6.7
+// MathLinguistic - إصلاح كامل للشبكة والأزرار
 // ==========================================
 
 (function() {
@@ -40,54 +40,89 @@
     10: { emptyMin: 60, emptyMax: 64, name: "إعصار ذهني" }
   };
 
-  // ✅ إنعاش أنماط CSS الخاصة بالشبكة للوضع الليلي والنهاري واستقامة الخانات
+  // ✅ حقن ستايل متناسق ونظيف بدون تداخل الحدود الزائدة
   function louInjectStyles() {
-    if (document.getElementById('lou-custom-styles')) return;
+    var existing = document.getElementById('lou-custom-styles');
+    if (existing) existing.remove();
+    
     var style = document.createElement('style');
     style.id = 'lou-custom-styles';
     style.textContent = `
-      .lou-wrapper { max-width: 500px; margin: 0 auto; padding: 10px; box-sizing: border-box; }
+      .lou-wrapper {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 4px 8px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      
+      /* الشبكة الرئيسية: إطار نظيف وخلفية لخطوط الفواصل */
       .lou-grid {
         display: grid !important;
         grid-template-columns: repeat(9, 1fr) !important;
         grid-template-rows: repeat(9, 1fr) !important;
-        gap: 0 !important;
+        gap: 1px !important;
+        background-color: #3f4a5a !important;
         width: 100% !important;
+        max-width: 350px !important;
         aspect-ratio: 1 / 1 !important;
-        border: 3px solid var(--text-primary, #333) !important;
+        border: 2px solid #cbd5e0 !important;
         border-radius: 8px !important;
         overflow: hidden !important;
-        background-color: var(--border-color, #ccc) !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
-        margin: 15px 0 !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+        margin: 4px auto !important;
+        box-sizing: border-box !important;
       }
+      
+      /* الخلايا الفردية بدون borders عشوائية */
       .l-cell {
-        background-color: var(--card-bg, #ffffff) !important;
-        color: var(--text-primary, #222) !important;
+        background-color: #2d3748 !important;
+        color: #e2e8f0 !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        font-size: clamp(1.1rem, 4vw, 1.6rem) !important;
+        font-size: clamp(0.85rem, 3.8vw, 1.2rem) !important;
         font-weight: bold !important;
-        border: 1px solid var(--border-color, #e0e0e0) !important;
+        border: none !important;
         cursor: pointer !important;
         user-select: none !important;
         box-sizing: border-box !important;
-        transition: background-color 0.2s, color 0.2s !important;
+        transition: background-color 0.15s, color 0.15s !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        position: relative !important;
       }
-      /* حدود المربعات الكبرى 3x3 */
-      .l-cell.border-right-thick { border-right: 2px solid var(--text-primary, #333) !important; }
-      .l-cell.border-bottom-thick { border-bottom: 2px solid var(--text-primary, #333) !important; }
 
-      .l-cell.given { background-color: var(--bg-secondary, #f0f3f6) !important; color: var(--text-primary, #111) !important; font-weight: 900 !important; }
-      .l-cell.user-filled { color: #27ae60 !important; font-weight: bold !important; }
-      .l-cell.selected { background-color: #3498db !important; color: #fff !important; }
-      .l-cell.highlight-row, .l-cell.highlight-col, .l-cell.highlight-box { background-color: rgba(52, 152, 219, 0.15) !important; }
-      .l-cell.highlight-same { background-color: rgba(241, 196, 15, 0.3) !important; }
-      .l-cell.error { background-color: #e74c3c !important; color: #fff !important; }
+      /* حالات الخلايا والتظليل */
+      .l-cell.given { background-color: #1a202c !important; color: #ffffff !important; font-weight: 900 !important; }
+      .l-cell.user-filled { color: #48bb78 !important; font-weight: bold !important; }
+      .l-cell.selected { background-color: #3182ce !important; color: #fff !important; }
+      .l-cell.highlight-row, .l-cell.highlight-col, .l-cell.highlight-box { background-color: rgba(66, 153, 225, 0.2) !important; }
+      .l-cell.highlight-same { background-color: rgba(236, 201, 75, 0.3) !important; }
+      .l-cell.error { background-color: #e53e3e !important; color: #fff !important; }
 
-      @keyframes lou-pop { 0% { transform: scale(0.8); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-      @keyframes lou-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+      /* أزرار التحكم السفلية مصممة للظهور كاملاً دون سحب الشاشة */
+      .lou-numpad {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 5px;
+        margin-top: 4px;
+      }
+      
+      .lou-numpad button {
+        height: 38px !important;
+        font-size: 1rem !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      
+      .st-footer {
+        margin-top: 6px !important;
+      }
     `;
     document.head.appendChild(style);
   }
@@ -161,7 +196,6 @@
     return true;
   }
 
-  // ✅ توليد حل مشوش تماماً وعشوائي وغير مرتب نهائياً
   function louGenerateSolution() {
     var board = new Array(81).fill(0);
     louSolve(board);
@@ -208,12 +242,12 @@
     var config = LOU_DIFFICULTY[Math.min(stage, 10)] || LOU_DIFFICULTY[10];
     
     var html = '<div class="lou-wrapper">';
-    html += '<div class="gc-header">';
-    html += '<h2>🔢 لودوكو <small style="font-size:0.9rem;color:var(--ml-text-light)">(' + config.name + ')</small></h2>';
+    html += '<div class="gc-header" style="margin-bottom: 4px;">';
+    html += '<h2>🔢 لودوكو <small style="font-size:0.8rem;color:var(--ml-text-light)">(' + config.name + ')</small></h2>';
     html += '<button class="gc-btn gc-btn-secondary" onclick="window.louHandleExit()">🏠 الرئيسية</button>';
     html += '</div>';
     
-    html += '<div class="gc-stats-bar">';
+    html += '<div class="gc-stats-bar" style="margin-bottom: 4px;">';
     html += '<span>🏆 <span class="gc-points-display">' + points + '</span></span>';
     html += '<span>📊 مرحلة <span id="' + LOU_PREFIX + 'stage">' + stage + '</span></span>';
     html += '<span>❤️ <span id="' + LOU_PREFIX + 'lives">' + '❤️'.repeat(louStats.lives) + '</span></span>';
@@ -224,14 +258,14 @@
     
     html += '<div class="lou-numpad">';
     for (var n = 1; n <= 9; n++) {
-      html += '<button class="gc-btn gc-btn-primary" style="height:50px;font-size:1.2rem;" onclick="window.louInput(' + n + ')">' + n + '</button>';
+      html += '<button class="gc-btn gc-btn-primary" onclick="window.louInput(' + n + ')">' + n + '</button>';
     }
-    html += '<button class="gc-btn gc-btn-warning" style="height:50px;" onclick="window.louHint()">💡</button>';
-    html += '<button class="gc-btn gc-btn-secondary" style="height:50px;background:#6c757d" onclick="window.louUndo()">↩️</button>';
+    html += '<button class="gc-btn gc-btn-warning" onclick="window.louHint()">💡</button>';
+    html += '<button class="gc-btn gc-btn-secondary" style="background:#6c757d" onclick="window.louUndo()">↩️</button>';
     html += '</div>';
     
     html += '<div class="st-footer">';
-    html += '<button class="gc-btn gc-btn-danger" onclick="window.louConfirmReset()">🔄 من البداية</button>';
+    html += '<button class="gc-btn gc-btn-danger" style="width:100%; height:36px;" onclick="window.louConfirmReset()">🔄 من البداية</button>';
     html += '</div>';
     html += '</div>';
     
@@ -239,7 +273,6 @@
     louUpdateStats();
   }
 
-  // ✅ رسم الخانات بصفوف وأعمدة منتظمة مع إبراز حدود الـ 3x3
   function louDrawGrid() {
     var grid = document.getElementById(LOU_PREFIX + 'grid');
     if (!grid) return;
@@ -260,7 +293,6 @@
       var row = Math.floor(i / 9);
       var col = i % 9;
       
-      // إبراز حدود الفواصل 3x3
       if (col === 2 || col === 5) cell.classList.add('border-right-thick');
       if (row === 2 || row === 5) cell.classList.add('border-bottom-thick');
       
@@ -338,7 +370,6 @@
       louCurrentBoard[louSelectedCellIndex] = val;
       window.GameCore.addPoints(5, 'إجابة صحيحة', LOU_GAME_ID);
       
-      // ✅ حفظ التقدم فور كتابة الرقم الصحيح
       louSaveProgress();
       louCheckWin();
     } else {
@@ -454,7 +485,6 @@
       
       window.GameCore.toast('🎉 أحسنت! +' + bonus + ' نقطة', 'success');
       
-      // ✅ استدعاء نظام الإنجازات لتحديث لوحة الإنجازات مباشرة
       if (typeof window.checkAndUnlockAchievements === 'function') {
         window.checkAndUnlockAchievements();
       }
@@ -478,7 +508,6 @@
     louDrawGrid();
   }
 
-  // ✅ حفظ التقدم بشكل آمن وفعال
   function louSaveProgress() {
     if (!window.GameCore) return;
     
@@ -493,7 +522,6 @@
     });
   }
 
-  // ✅ تحميل التقدم واسترجاعه بشكل صحيح
   function louLoadSavedProgress() {
     var saved = window.GameCore ? window.GameCore.loadProgress(LOU_GAME_ID) : null;
     if (saved && saved.currentBoard && saved.currentBoard.length === 81) {

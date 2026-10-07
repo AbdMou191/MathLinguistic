@@ -1,6 +1,6 @@
 // ==========================================
-// 🔢 Loudoukou Game - نسخة محسنة v6.4
-// MathLinguistic - إصلاح الحدود والتهيئة
+// 🔢 Loudoukou Game - نسخة محسنة v6.5
+// MathLinguistic - إصلاح التنسيق والتشويش والحفظ
 // ==========================================
 
 (function() {
@@ -28,17 +28,69 @@
   };
 
   var LOU_DIFFICULTY = {
-    1: { emptyMin: 15, emptyMax: 20, name: "سهل جداً" },
-    2: { emptyMin: 20, emptyMax: 25, name: "سهل" },
-    3: { emptyMin: 25, emptyMax: 30, name: "متوسط" },
-    4: { emptyMin: 30, emptyMax: 35, name: "متوسط+" },
-    5: { emptyMin: 35, emptyMax: 40, name: "صعب" },
-    6: { emptyMin: 40, emptyMax: 45, name: "صعب+" },
-    7: { emptyMin: 45, emptyMax: 50, name: "محترف" },
-    8: { emptyMin: 50, emptyMax: 55, name: "محترف+" },
-    9: { emptyMin: 55, emptyMax: 60, name: "أسطورة" },
-    10: { emptyMin: 60, emptyMax: 65, name: "إعصار ذهني" }
+    1: { emptyMin: 25, emptyMax: 30, name: "سهل جداً" },
+    2: { emptyMin: 30, emptyMax: 35, name: "سهل" },
+    3: { emptyMin: 35, emptyMax: 40, name: "متوسط" },
+    4: { emptyMin: 40, emptyMax: 45, name: "متوسط+" },
+    5: { emptyMin: 45, emptyMax: 50, name: "صعب" },
+    6: { emptyMin: 50, emptyMax: 53, name: "صعب+" },
+    7: { emptyMin: 53, emptyMax: 56, name: "محترف" },
+    8: { emptyMin: 56, emptyMax: 58, name: "محترف+" },
+    9: { emptyMin: 58, emptyMax: 60, name: "أسطورة" },
+    10: { emptyMin: 60, emptyMax: 64, name: "إعصار ذهني" }
   };
+
+  // ✅ إنعاش أنماط CSS الخاصة بالشبكة للوضع الليلي والنهاري واستقامة الخانات
+  function louInjectStyles() {
+    if (document.getElementById('lou-custom-styles')) return;
+    var style = document.createElement('style');
+    style.id = 'lou-custom-styles';
+    style.textContent = `
+      .lou-wrapper { max-width: 500px; margin: 0 auto; padding: 10px; box-sizing: border-box; }
+      .lou-grid {
+        display: grid !important;
+        grid-template-columns: repeat(9, 1fr) !important;
+        grid-template-rows: repeat(9, 1fr) !important;
+        gap: 0 !important;
+        width: 100% !important;
+        aspect-ratio: 1 / 1 !important;
+        border: 3px solid var(--text-primary, #333) !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+        background-color: var(--border-color, #ccc) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
+        margin: 15px 0 !important;
+      }
+      .l-cell {
+        background-color: var(--card-bg, #ffffff) !important;
+        color: var(--text-primary, #222) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: clamp(1.1rem, 4vw, 1.6rem) !important;
+        font-weight: bold !important;
+        border: 1px solid var(--border-color, #e0e0e0) !important;
+        cursor: pointer !important;
+        user-select: none !important;
+        box-sizing: border-box !important;
+        transition: background-color 0.2s, color 0.2s !important;
+      }
+      /* حدود المربعات الكبرى 3x3 */
+      .l-cell.border-right-thick { border-right: 2px solid var(--text-primary, #333) !important; }
+      .l-cell.border-bottom-thick { border-bottom: 2px solid var(--text-primary, #333) !important; }
+
+      .l-cell.given { background-color: var(--bg-secondary, #f0f3f6) !important; color: var(--text-primary, #111) !important; font-weight: 900 !important; }
+      .l-cell.user-filled { color: #27ae60 !important; font-weight: bold !important; }
+      .l-cell.selected { background-color: #3498db !important; color: #fff !important; }
+      .l-cell.highlight-row, .l-cell.highlight-col, .l-cell.highlight-box { background-color: rgba(52, 152, 219, 0.15) !important; }
+      .l-cell.highlight-same { background-color: rgba(241, 196, 15, 0.3) !important; }
+      .l-cell.error { background-color: #e74c3c !important; color: #fff !important; }
+
+      @keyframes lou-pop { 0% { transform: scale(0.8); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+      @keyframes lou-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+    `;
+    document.head.appendChild(style);
+  }
 
   function louClearAllTimeouts() {
     for (var i = 0; i < louTimeouts.length; i++) {
@@ -47,7 +99,8 @@
     louTimeouts = [];
   }
 
-  function louSetTimeout(callback, delay) {    var tid = setTimeout(callback, delay);
+  function louSetTimeout(callback, delay) {
+    var tid = setTimeout(callback, delay);
     louTimeouts.push(tid);
     return tid;
   }
@@ -76,7 +129,9 @@
   function louSolve(board) {
     for (var i = 0; i < 81; i++) {
       if (board[i] === 0) {
-        for (var n = 1; n <= 9; n++) {
+        var nums = [1,2,3,4,5,6,7,8,9].sort(function() { return Math.random() - 0.5; });
+        for (var k = 0; k < 9; k++) {
+          var n = nums[k];
           if (louIsValid(board, i, n)) {
             board[i] = n;
             if (louSolve(board)) return true;
@@ -96,7 +151,7 @@
     for (var i = 0; i < 9; i++) {
       if (board[row * 9 + i] === num || board[i * 9 + col] === num) return false;
     }
-        var br = Math.floor(row / 3) * 3;
+    var br = Math.floor(row / 3) * 3;
     var bc = Math.floor(col / 3) * 3;
     for (var i = 0; i < 3; i++) {
       for (var j = 0; j < 3; j++) {
@@ -106,16 +161,9 @@
     return true;
   }
 
+  // ✅ توليد حل مشوش تماماً وعشوائي وغير مرتب نهائياً
   function louGenerateSolution() {
     var board = new Array(81).fill(0);
-    for (var i = 0; i < 9; i += 3) {
-      var nums = [1,2,3,4,5,6,7,8,9].sort(function() { return Math.random() - 0.5; });
-      for (var j = 0; j < 3; j++) {
-        for (var k = 0; k < 3; k++) {
-          board[(i + j) * 9 + (i + k)] = nums[j * 3 + k];
-        }
-      }
-    }
     louSolve(board);
     return board;
   }
@@ -124,41 +172,15 @@
     var result = board.slice();
     var removed = 0;
     var attempts = 0;
-    var maxAttempts = 500;
-    
-    var regionMin = {};
-    for (var r = 0; r < 3; r++) {
-      for (var c = 0; c < 3; c++) {
-        regionMin[r + '-' + c] = 3;
-      }
-    }
+    var maxAttempts = 400;
     
     while (removed < emptyCount && attempts < maxAttempts) {
       attempts++;
       var idx = Math.floor(Math.random() * 81);
       if (result[idx] === 0) continue;
       
-      var row = Math.floor(idx / 9);
-      var col = idx % 9;
-      var regionKey = Math.floor(row / 3) + '-' + Math.floor(col / 3);
-      
-      var rowCount = 0, colCount = 0, regionCount = 0;
-      for (var i = 0; i < 9; i++) {
-        if (result[row * 9 + i] !== 0) rowCount++;
-        if (result[i * 9 + col] !== 0) colCount++;      }
-      var br = Math.floor(row / 3) * 3;
-      var bc = Math.floor(col / 3) * 3;
-      for (var i = 0; i < 3; i++) {
-        for (var j = 0; j < 3; j++) {
-          if (result[(br + i) * 9 + (bc + j)] !== 0) regionCount++;
-        }
-      }
-      
-      if (rowCount > 4 && colCount > 4 && regionCount > regionMin[regionKey]) {
-        result[idx] = 0;
-        removed++;
-        regionMin[regionKey] = Math.max(0, regionMin[regionKey] - 1);
-      }
+      result[idx] = 0;
+      removed++;
     }
     return result;
   }
@@ -170,11 +192,11 @@
     louSolution = louGenerateSolution();
     louInitialBoard = louRemoveCellsSmart(louSolution, emptyTarget);
     
-    // ✅ تهيئة صحيحة
     louCurrentBoard = [];
     for (var i = 0; i < 81; i++) {
       louCurrentBoard[i] = louInitialBoard[i] || 0;
     }
+    louSaveProgress();
   }
 
   function louRenderUI() {
@@ -194,7 +216,8 @@
     html += '<div class="gc-stats-bar">';
     html += '<span>🏆 <span class="gc-points-display">' + points + '</span></span>';
     html += '<span>📊 مرحلة <span id="' + LOU_PREFIX + 'stage">' + stage + '</span></span>';
-    html += '<span>❤️ <span id="' + LOU_PREFIX + 'lives">' + '❤️'.repeat(louStats.lives) + '</span></span>';    html += '<span>↩️ <span id="' + LOU_PREFIX + 'undo">' + louStats.undoCount + '</span></span>';
+    html += '<span>❤️ <span id="' + LOU_PREFIX + 'lives">' + '❤️'.repeat(louStats.lives) + '</span></span>';
+    html += '<span>↩️ <span id="' + LOU_PREFIX + 'undo">' + louStats.undoCount + '</span></span>';
     html += '</div>';
     
     html += '<div id="' + LOU_PREFIX + 'grid" class="lou-grid"></div>';
@@ -216,6 +239,7 @@
     louUpdateStats();
   }
 
+  // ✅ رسم الخانات بصفوف وأعمدة منتظمة مع إبراز حدود الـ 3x3
   function louDrawGrid() {
     var grid = document.getElementById(LOU_PREFIX + 'grid');
     if (!grid) return;
@@ -230,46 +254,38 @@
     for (var i = 0; i < 81; i++) {
       var cell = document.createElement('div');
       cell.className = 'l-cell';
+      cell.setAttribute('data-idx', String(i));
+      cell.id = LOU_PREFIX + 'c-' + String(i);
       
       var row = Math.floor(i / 9);
+      var col = i % 9;
       
-      // ✅ إضافة فئة للصفوف 3 و 6
-      if (row === 2 || row === 5) {
-        cell.classList.add('border-bottom-thick');
-      }
+      // إبراز حدود الفواصل 3x3
+      if (col === 2 || col === 5) cell.classList.add('border-right-thick');
+      if (row === 2 || row === 5) cell.classList.add('border-bottom-thick');
       
       var val = louCurrentBoard[i];
       if (val !== 0 && val !== undefined) {
         cell.textContent = String(val);
-        cell.classList.add('fixed');
         if (louInitialBoard[i] !== 0) {
-          cell.classList.add('given');
+          cell.classList.add('fixed', 'given');
         } else {
-          cell.classList.add('user-filled');
+          cell.classList.add('fixed', 'user-filled');
         }
-      } else {
-        cell.setAttribute('data-idx', String(i));
-        (function(cellIndex) {
-          cell.onclick = function() { 
-            louSelect(cellIndex, cell); 
-          };
-        })(i);
-        cell.id = LOU_PREFIX + 'c-' + String(i);
       }
+      
+      (function(cellIndex, cellEl) {
+        cellEl.onclick = function() { 
+          louSelect(cellIndex, cellEl); 
+        };
+      })(i, cell);
       
       grid.appendChild(cell);
     }
-}
+  }
 
   function louSelect(idx, el) {
-    if (louSelectedCellIndex !== -1) {
-      var prev = document.getElementById(LOU_PREFIX + 'c-' + louSelectedCellIndex);
-      if (prev) {
-        prev.classList.remove('selected');
-        louClearHighlights();
-      }
-    }
-    
+    louClearHighlights();
     louSelectedCellIndex = idx;
     el.classList.add('selected');
     louHighlightRelated(idx);
@@ -281,41 +297,18 @@
     var br = Math.floor(row / 3) * 3;
     var bc = Math.floor(col / 3) * 3;
     
-    for (var colIdx = 0; colIdx < 9; colIdx++) {
-      var cellId1 = LOU_PREFIX + 'c-' + (row * 9 + colIdx);
-      var cell1 = document.getElementById(cellId1);
-      if (cell1 && !cell1.classList.contains('fixed')) {
-        cell1.classList.add('highlight-row');
-      }
-    }
-        for (var rowIdx = 0; rowIdx < 9; rowIdx++) {
-      var cellId2 = LOU_PREFIX + 'c-' + (rowIdx * 9 + col);
-      var cell2 = document.getElementById(cellId2);
-      if (cell2 && !cell2.classList.contains('fixed')) {
-        cell2.classList.add('highlight-col');
-      }
-    }
-    
-    for (var i = 0; i < 3; i++) {
-      for (var j = 0; j < 3; j++) {
-        var cellIdx = (br + i) * 9 + (bc + j);
-        var cellId3 = LOU_PREFIX + 'c-' + cellIdx;
-        var cell3 = document.getElementById(cellId3);
-        if (cell3 && !cell3.classList.contains('fixed')) {
-          cell3.classList.add('highlight-box');
-        }
-      }
-    }
-    
-    var selectedVal = louCurrentBoard[idx];
-    if (selectedVal !== 0 && selectedVal !== undefined) {
-      var allCells = document.querySelectorAll('.l-cell:not(.fixed)');
-      for (var k = 0; k < allCells.length; k++) {
-        var c = allCells[k];
-        var cIdx = parseInt(c.getAttribute('data-idx'));
-        if (louCurrentBoard[cIdx] === selectedVal) {
-          c.classList.add('highlight-same');
-        }
+    for (var i = 0; i < 81; i++) {
+      var r = Math.floor(i / 9);
+      var c = i % 9;
+      var cell = document.getElementById(LOU_PREFIX + 'c-' + i);
+      if (!cell) continue;
+      
+      if (r === row) cell.classList.add('highlight-row');
+      if (c === col) cell.classList.add('highlight-col');
+      if (r >= br && r < br + 3 && c >= bc && c < bc + 3) cell.classList.add('highlight-box');
+      
+      if (louCurrentBoard[idx] !== 0 && louCurrentBoard[i] === louCurrentBoard[idx]) {
+        cell.classList.add('highlight-same');
       }
     }
   }
@@ -333,41 +326,43 @@
     if (louSelectedCellIndex === -1) return;
     
     var cell = document.getElementById(LOU_PREFIX + 'c-' + louSelectedCellIndex);
-    if (!cell || cell.classList.contains('fixed')) return;
+    if (!cell || louInitialBoard[louSelectedCellIndex] !== 0) return;
     
     louSaveHistory(louSelectedCellIndex, louCurrentBoard[louSelectedCellIndex]);
     
-    if (val === louSolution[louSelectedCellIndex]) {      cell.textContent = String(val);
-      cell.classList.add('fixed', 'user-filled', 'success');
+    if (val === louSolution[louSelectedCellIndex]) {
+      cell.textContent = String(val);
+      cell.classList.add('fixed', 'user-filled');
       cell.classList.remove('selected', 'error');
-      cell.style.animation = 'lou-pop 0.3s';
       
       louCurrentBoard[louSelectedCellIndex] = val;
       window.GameCore.addPoints(5, 'إجابة صحيحة', LOU_GAME_ID);
+      
+      // ✅ حفظ التقدم فور كتابة الرقم الصحيح
+      louSaveProgress();
       louCheckWin();
     } else {
       cell.classList.add('error');
-      cell.style.animation = 'lou-shake 0.3s';
+      cell.textContent = String(val);
       
       louSetTimeout(function() {
         if (cell) {
           cell.classList.remove('error');
-          cell.textContent = '';
-          louCurrentBoard[louSelectedCellIndex] = 0;
+          cell.textContent = louCurrentBoard[louSelectedCellIndex] ? String(louCurrentBoard[louSelectedCellIndex]) : '';
         }
-      }, 400);
+      }, 500);
       
       louStats.lives--;
       if (louStats.lives <= 0) {
         window.GameCore.toast('💔 انتهت الأرواح! إعادة المرحلة', 'error');
         louSetTimeout(function() {
           louStartNewRound();
-        }, 1500);
+        }, 1200);
         return;
       }
     }
     
-    louClearHighlights();
+    louHighlightRelated(louSelectedCellIndex);
     louUpdateStats();
   };
 
@@ -386,20 +381,22 @@
       window.GameCore.toast('⚠️ لا توجد خطوات للتراجع', 'info');
       return;
     }
-        var last = louStats.history.pop();
+    
+    var last = louStats.history.pop();
     var cell = document.getElementById(LOU_PREFIX + 'c-' + last.idx);
-    if (cell && !cell.classList.contains('fixed')) {
+    if (cell && louInitialBoard[last.idx] === 0) {
       if (last.oldValue === 0 || last.oldValue === undefined) {
         cell.textContent = '';
+        cell.classList.remove('fixed', 'user-filled');
         louCurrentBoard[last.idx] = 0;
       } else {
         cell.textContent = String(last.oldValue);
         louCurrentBoard[last.idx] = last.oldValue;
       }
-      cell.classList.remove('user-filled', 'success', 'error');
     }
     
     louStats.undoCount--;
+    louSaveProgress();
     window.GameCore.toast('↩️ تم التراجع', 'info');
     louUpdateStats();
   };
@@ -408,10 +405,9 @@
     if (!window.GameCore) return;
     
     var isFree = louStats.stage <= 3;
-    
     var empties = [];
     for (var i = 0; i < 81; i++) {
-      if (louCurrentBoard[i] === 0 || louCurrentBoard[i] === undefined) empties.push(i);
+      if (louCurrentBoard[i] === 0) empties.push(i);
     }
     
     if (!empties.length) {
@@ -419,14 +415,13 @@
       return;
     }
     
-    var logicalCell = louFindLogicalCell(empties);
-    var targetIdx = logicalCell !== null ? logicalCell : empties[Math.floor(Math.random() * empties.length)];
-    
+    var targetIdx = empties[Math.floor(Math.random() * empties.length)];
     var cell = document.getElementById(LOU_PREFIX + 'c-' + targetIdx);
+    
     if (cell) {
       louSaveHistory(targetIdx, louCurrentBoard[targetIdx]);
       cell.textContent = String(louSolution[targetIdx]);
-      cell.classList.add('fixed', 'user-filled', 'success');
+      cell.classList.add('fixed', 'user-filled');
       louCurrentBoard[targetIdx] = louSolution[targetIdx];
       
       if (!isFree) {
@@ -435,21 +430,11 @@
       } else {
         window.GameCore.toast('💡 تلميح مجاني!', 'success');
       }
-            louCheckWin();
+      
+      louSaveProgress();
+      louCheckWin();
     }
   };
-
-  function louFindLogicalCell(empties) {
-    for (var i = 0; i < empties.length; i++) {
-      var idx = empties[i];
-      var possible = [];
-      for (var n = 1; n <= 9; n++) {
-        if (louIsValid(louCurrentBoard, idx, n)) possible.push(n);
-      }
-      if (possible.length === 1) return idx;
-    }
-    return null;
-  }
 
   function louCheckWin() {
     if (!window.GameCore) return;
@@ -458,25 +443,27 @@
     var correct = true;
     
     for (var i = 0; i < 81; i++) {
-      if (louCurrentBoard[i] === 0 || louCurrentBoard[i] === undefined) full = false;
+      if (louCurrentBoard[i] === 0) full = false;
       if (louCurrentBoard[i] !== louSolution[i]) correct = false;
     }
     
     if (full && correct) {
       louStats.blocksSolved++;
-      
       var bonus = 50 + (louStats.stage * 10);
       window.GameCore.addPoints(bonus, 'إكمال المرحلة', LOU_GAME_ID);
       
-      louSaveProgress();
-      
       window.GameCore.toast('🎉 أحسنت! +' + bonus + ' نقطة', 'success');
+      
+      // ✅ استدعاء نظام الإنجازات لتحديث لوحة الإنجازات مباشرة
+      if (typeof window.checkAndUnlockAchievements === 'function') {
+        window.checkAndUnlockAchievements();
+      }
       
       louSetTimeout(function() {
         louStats.stage++;
         louStats.undoCount = 3;
         louStartNewRound();
-      }, 2000);
+      }, 1500);
     }
   }
 
@@ -484,19 +471,14 @@
     louSelectedCellIndex = -1;
     louStats.lives = 3;
     louStats.undoCount = 3;
-    louStats.history = [];    
+    louStats.history = [];
+    
     louGeneratePuzzle(louStats.stage);
     louRenderUI();
     louDrawGrid();
-    
-    var filled = louInitialBoard.filter(function(x) { return x !== 0 && x !== undefined; }).length;
-    var percentage = Math.round((filled / 81) * 100);
-    
-    if (window.GameCore) {
-      window.GameCore.toast('المرحلة ' + louStats.stage + ': ' + percentage + '% مملوءة', 'info');
-    }
   }
 
+  // ✅ حفظ التقدم بشكل آمن وفعال
   function louSaveProgress() {
     if (!window.GameCore) return;
     
@@ -505,12 +487,13 @@
       blocksSolved: louStats.blocksSolved,
       lastPlayed: Date.now(),
       gameType: 'loudoukou',
-      currentBoard: louCurrentBoard.slice(),
-      initialBoard: louInitialBoard.slice(),
-      solution: louSolution.slice()
+      currentBoard: louCurrentBoard,
+      initialBoard: louInitialBoard,
+      solution: louSolution
     });
   }
 
+  // ✅ تحميل التقدم واسترجاعه بشكل صحيح
   function louLoadSavedProgress() {
     var saved = window.GameCore ? window.GameCore.loadProgress(LOU_GAME_ID) : null;
     if (saved && saved.currentBoard && saved.currentBoard.length === 81) {
@@ -533,18 +516,17 @@
     if (window.GameCore) {
       var points = window.GameCore.getPoints();
       for (var i = 0; i < p.length; i++) {
-        p[i].textContent = String(points);      }
+        p[i].textContent = String(points);
+      }
     }
     if (s) s.textContent = String(louStats.stage);
     if (l) {
       l.textContent = '❤️'.repeat(Math.max(0, louStats.lives));
-      l.style.animation = louStats.lives === 1 ? 'lou-shake 0.5s infinite' : 'none';
     }
     if (u) u.textContent = String(louStats.undoCount);
   }
 
   window['louHandleExit'] = function() {
-    console.log('🚪 Loudoukou: خروج فوري...');
     louClearAllTimeouts();
     louSelectedCellIndex = -1;
     louGameVersion++;
@@ -582,6 +564,7 @@
 
   window['loadLoudoukouPage'] = function() {
     console.log('🎮 Loudoukou: تحميل اللعبة...');
+    louInjectStyles();
     louCleanupExecuted = 0;
     louCleanupLock = false;
     louCleanup();
@@ -596,6 +579,7 @@
     if (!hasProgress) {
       louStats.stage = 1;
       louStats.blocksSolved = 0;
+      louGeneratePuzzle(louStats.stage);
     }
     
     louStats.lives = 3;
@@ -603,18 +587,9 @@
     louStats.history = [];
     louStats.points = window.GameCore ? window.GameCore.getPoints() : 0;
     
-    // ✅ تأكد من التهيئة BEFORE الرسم
-    if (!louCurrentBoard || louCurrentBoard.length !== 81) {
-      console.log('🎲 إنشاء لغز جديد...');
-      louGeneratePuzzle(louStats.stage);
-    }
-    
-    // ✅ render أولاً ثم draw
     louRenderUI();
     louDrawGrid();
-    
-    console.log('✅ اللعبة جاهزة!');
-};
+  };
 
   if (!window._louBeforeUnloadAttached) {
     window.addEventListener('beforeunload', louCleanup);

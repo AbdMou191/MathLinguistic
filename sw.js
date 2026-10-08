@@ -1,8 +1,8 @@
 // sw.js - MathLinguistic Service Worker (v8.0.5-AUTO-UPDATE)
 
-const CACHE_NAME = 'mathlinguistic-v8.0.8';
-const CORE_CACHE = 'mathlinguistic-core-v8.0.7';
-const DYNAMIC_CACHE = 'mathlinguistic-dynamic-v8.0.7';
+const CACHE_NAME = 'mathlinguistic-v8.0.9';
+const CORE_CACHE = 'mathlinguistic-core-v8.0.8';
+const DYNAMIC_CACHE = 'mathlinguistic-dynamic-v8.0.8';
 
 const PRECACHE_ASSETS = [
   '/MathLinguistic/',

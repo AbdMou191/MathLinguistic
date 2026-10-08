@@ -1096,3 +1096,49 @@ a:focus {
   0%, 100% { background: transparent; }
   30% { background: rgba(52, 152, 219, 0.15); }
 }
+
+/* ==========================================
+   🔗 Floating Share Button - زر المشاركة العائم
+   ========================================== */
+.floating-share-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px; /* جهة اليمين لتفادي زر التمرير للأعلى في اليسار */
+  z-index: 999;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3182ce, #2b6cb0);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.3s ease;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* تأثير التفاعل والضغط */
+.floating-share-btn:active {
+  transform: scale(0.92);
+}
+
+.floating-share-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* في الشاشات الصغيرة جداً لتنسيق المسافات */
+@media (max-width: 480px) {
+  .floating-share-btn {
+    bottom: 16px;
+    right: 16px;
+    width: 46px;
+    height: 46px;
+    font-size: 1.2rem;
+  }
+}

@@ -1,6 +1,6 @@
 /**
- * Meta Manager - النسخة الآمنة v2.0
- * مع حماية كاملة من أخطاء null
+ * Meta Manager & Share System - النسخة الشاملة v3.0
+ * دعم تحديث الميتا للمستويات ومشاركة الصفحات/الدروس الحالية بدقة
  */
 
 const MetaManager = {
@@ -47,7 +47,8 @@ const MetaManager = {
     },
     'learn-complex': {
       title: 'دروس المعقد | MathLinguistic - تحديات الحساب للنخبة',
-      description: 'دروس استثنائية لأعلى مستويات الحساب الذهني. للمتميزين فقط.',      keywords: 'حساب نخبة, دروس معقدة, تحديات رياضية قصوى'
+      description: 'دروس استثنائية لأعلى مستويات الحساب الذهني. للمتميزين فقط.',
+      keywords: 'حساب نخبة, دروس معقدة, تحديات رياضية قصوى'
     },
     'speed-test': {
       title: 'تحدي السرعة | MathLinguistic - اختبر سرعتك في الحساب الذهني',
@@ -96,7 +97,8 @@ const MetaManager = {
     },
     'contact': {
       title: 'اتصل بنا | MathLinguistic - تواصل مع فريق الدعم',
-      description: 'لديك سؤال أو اقتراح؟ تواصل معنا عبر البريد أو واتساب.',      keywords: 'اتصل بنا, دعم فني, تواصل, مساعدة, اقتراحات'
+      description: 'لديك سؤال أو اقتراح؟ تواصل معنا عبر البريد أو واتساب.',
+      keywords: 'اتصل بنا, دعم فني, تواصل, مساعدة, اقتراحات'
     },
     'terms': {
       title: 'شروط الاستخدام | MathLinguistic',
@@ -110,52 +112,39 @@ const MetaManager = {
     }
   },
 
-  // ✅ دالة آمنة لتحديث وسم ميتا (مع حماية من null)
+  // ✅ دالة تحديث وسوم الـ Meta
   updateMetaTag(attrType, attrValue, content) {
     try {
       let meta = document.querySelector(`meta[${attrType}="${attrValue}"]`);
       if (meta) {
         meta.setAttribute('content', content);
-        return true;
       } else {
-        // إنشاء وسم جديد إذا لم يكن موجوداً
         meta = document.createElement('meta');
         meta.setAttribute(attrType, attrValue);
         meta.setAttribute('content', content);
         document.head.appendChild(meta);
-        return true;
       }
+      return true;
     } catch (err) {
       console.warn(`⚠️ Meta update failed for ${attrValue}:`, err);
       return false;
     }
   },
 
-  // ✅ الدالة الرئيسية مع try-catch
+  // ✅ الدالة الرئيسية لتحديث الصفحة العامة
   updateMeta(sectionKey) {
     try {
       const data = this.sections[sectionKey] || this.sections['home'];
-      
-      if (!data) {
-        console.warn(`⚠️ No meta data found for: ${sectionKey}`);
-        return true;
-      }
-      
-      // تحديث العنوان
+      if (!data) return true;
+
       document.title = data.title;
-      
-      // تحديث العناصر الأساسية
-      this.updateMetaTag('name', 'description', data.description);      this.updateMetaTag('name', 'keywords', data.keywords);
-      
-      // تحديث Open Graph
+      this.updateMetaTag('name', 'description', data.description);
+      this.updateMetaTag('name', 'keywords', data.keywords);
       this.updateMetaTag('property', 'og:title', data.title);
       this.updateMetaTag('property', 'og:description', data.description);
-      
-      // تحديث Twitter
       this.updateMetaTag('name', 'twitter:title', data.title);
       this.updateMetaTag('name', 'twitter:description', data.description);
-      
-      // تحديث URL مع Hash
+
       try {
         if (window.history && sectionKey !== 'home') {
           const newUrl = `#${sectionKey}`;
@@ -166,57 +155,186 @@ const MetaManager = {
       } catch (historyErr) {
         console.warn('⚠️ History update failed:', historyErr);
       }
-      
-      console.log(`✅ Meta updated for: ${sectionKey}`);
-      
     } catch (err) {
       console.error('❌ MetaManager Error:', err);
-      console.error('Section:', sectionKey);
     }
   },
 
-  // ✅ التهيئة الآمنة
+  // ✅ 🚀 دالة جديدة وحصرية: مشاركة الدرس/الصفحة الحالية بدقة
+  shareCurrentLesson(pageNumber, customTitle, customImage) {
+    try {
+      const page = pageNumber || 1;
+      const title = customTitle || `درس الصفحة ${page} | MathLinguistic`;
+      const description = `تعلم وتمتع بشرح وتمارين الصفحة رقم ${page} في الحساب الذهني على منصة MathLinguistic.`;
+      
+      // مسار صورة الدرس الخاص بالصفحة لتفادي الصور العشوائية
+      const imageUrl = customImage || `${window.location.origin}/assets/lessons/page-${page}.png`;
+      
+      // رابط المشاركة المباشر مع معامِل الصفحة ?page=XX
+      const shareUrl = `${window.location.origin}${window.location.pathname}?page=${page}`;
+
+      // 1. تحديث الـ Meta Tags بالصورة والعنوان الفعليين فوراً للمشاركة
+      document.title = title;
+      this.updateMetaTag('property', 'og:title', title);
+      this.updateMetaTag('property', 'og:description', description);
+      this.updateMetaTag('property', 'og:image', imageUrl);
+      this.updateMetaTag('property', 'og:url', shareUrl);
+      this.updateMetaTag('name', 'twitter:title', title);
+      this.updateMetaTag('name', 'twitter:description', description);
+      this.updateMetaTag('name', 'twitter:image', imageUrl);
+
+      // 2. تفعيل النافذة التفاعلية للمشاركة في أندرويد/الهاتف (Web Share API)
+      if (navigator.share) {
+        navigator.share({
+          title: title,
+          text: description,
+          url: shareUrl
+        }).then(() => {
+          if (window.GameCore && window.GameCore.toast) {
+            window.GameCore.toast('🔗 تم مشاركة الصفحة بنجاح!', 'success');
+          }
+        }).catch((e) => {
+          if (e.name !== 'AbortError') this.copyLinkToClipboard(shareUrl);
+        });
+      } else {
+        this.copyLinkToClipboard(shareUrl);
+      }
+    } catch (err) {
+      console.error('❌ Share failed:', err);
+    }
+  },
+
+  // دالة مساعدة لنسخ الرابط للحافظة
+  copyLinkToClipboard(url) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url);
+    } else {
+      const input = document.createElement('input');
+      input.value = url;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+    }
+    if (window.GameCore && window.GameCore.toast) {
+      window.GameCore.toast('📋 تم نسخ رابط الصفحة للحافظة!', 'info');
+    }
+  },
+
+  // ✅ التوجيه التلقائي المباشر عند فتح رابط الدرس (Deep-Linking)
+  checkUrlParamsOnLoad() {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const pageParam = urlParams.get('page');
+
+      if (pageParam) {
+        const pageNum = parseInt(pageParam, 10);
+        console.log(`📌 جاري فتح الصفحة المطلوبة من الرابط: ${pageNum}`);
+
+        // ربط فتح الصفحة مع دالة عرض الدروس الخاصة بموقعك
+        setTimeout(() => {
+          if (typeof window.loadLessonPage === 'function') {
+            window.loadLessonPage(pageNum);
+          } else if (typeof window.showLesson === 'function') {
+            window.showLesson(pageNum);
+          }
+        }, 300);
+      }
+    } catch (err) {
+      console.warn('⚠️ Deep link check failed:', err);
+    }
+  },
+
+  // ✅ التهيئة
   init() {
     try {
-      // تحديث أولي
       const initialHash = window.location.hash.replace('#', '') || 'home';
       this.updateMeta(initialHash);
       
-      // الاستماع لتغير الهاش
+      // قراءة معامِلات URL فور دخول المستخدم من رابط مشاركة
+      this.checkUrlParamsOnLoad();
+
+      // ==========================================
+// 🔗 دالة إنشاء زر المشاركة العائم أوتوماتيكياً
+// ==========================================
+function injectFloatingShareButton() {
+  if (document.getElementById('global-floating-share-btn')) return;
+
+  var shareBtn = document.createElement('button');
+  shareBtn.id = 'global-floating-share-btn';
+  shareBtn.className = 'floating-share-btn';
+  shareBtn.setAttribute('title', 'مشاركة هذه الصفحة / الدرس');
+  shareBtn.setAttribute('aria-label', 'مشاركة الصفحة');
+  shareBtn.innerHTML = '🔗'; // يمكنك استبدالها بأيقونة FontAwesome أو SVG إذا أردت
+
+  // عند الضغط على الزر
+  shareBtn.onclick = function() {
+    // 1. جلب رقم الصفحة الحالية المفتوحة في نظام الدروس لديك أوتوماتيكياً
+    var pageNum = window.currentPageNumber || window.currentLessonPage || 1;
+
+    // 2. جلب العنوان إن وجد أو الاعتماد على عنوان الصفحة الحالي
+    var pageTitle = document.title;
+
+    // 3. استدعاء دالة المشاركة الذكية في MetaManager
+    if (window.shareLessonPage) {
+      window.shareLessonPage(pageNum, pageTitle);
+    } else if (window.MetaManager && window.MetaManager.shareCurrentLesson) {
+      window.MetaManager.shareCurrentLesson(pageNum, pageTitle);
+    }
+  };
+
+  document.body.appendChild(shareBtn);
+}
+
+// تفعيل إنشاء الزر بمجرد تحميل الصفحة
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', injectFloatingShareButton);
+} else {
+  injectFloatingShareButton();
+}
+
       window.addEventListener('hashchange', () => {
         const hash = window.location.hash.replace('#', '') || 'home';
         this.updateMeta(hash);
       });
-      
-      // الاستماع للنقر على أزرار القائمة
+
       document.addEventListener('click', (e) => {
         const btn = e.target.closest('[data-target]');
         if (btn) {
           const target = btn.getAttribute('data-target');
           setTimeout(() => this.updateMeta(target), 100);
-        }        
+        }
         const footerBtn = e.target.closest('[data-static-page]');
         if (footerBtn) {
           const page = footerBtn.getAttribute('data-static-page');
           setTimeout(() => this.updateMeta(page), 100);
         }
       });
-      
-      console.log('✅ MetaManager initialized successfully');
+
+      console.log('✅ MetaManager v3.0 (مع نظام المشاركة) initialized successfully');
     } catch (err) {
       console.error('❌ MetaManager init failed:', err);
     }
   }
 };
 
-// ✅ تفعيل المدير عند تحميل الصفحة (آمن)
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    MetaManager.init();
-  });
+  document.addEventListener('DOMContentLoaded', () => MetaManager.init());
 } else {
   MetaManager.init();
 }
 
-// ✅ جعل الدالة متاحة عالمياً
+// جعل الدوال متاحة عاماً
 window.updatePageMeta = (sectionKey) => MetaManager.updateMeta(sectionKey);
+window.shareLessonPage = (pageNumber, title, image) => MetaManager.shareCurrentLesson(pageNumber, title, image);
+
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => MetaManager.init());
+} else {
+  MetaManager.init();
+}
+
+// جعل الدوال متاحة عاماً
+window.updatePageMeta = (sectionKey) => MetaManager.updateMeta(sectionKey);
+window.shareLessonPage = (pageNumber, title, image) => MetaManager.shareCurrentLesson(pageNumber, title, image);

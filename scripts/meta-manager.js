@@ -1,14 +1,23 @@
 /**
- * Meta Manager & Share System - النسخة الشاملة v3.5
- * دمج توليد بطاقة المشاركة التلقائية (Canvas) والزر العائم مع الربط المباشر
+ * Meta Manager & Share System - النسخة الشاملة والمكتملة v4.0
+ * تحتوي على جميع وسوم SEO والـ Open Graph والهاشتاجات لجميع صفحات الدروس والألعاب
  */
 
 const MetaManager = {
+  // 📌 وسوم الموقع العامة الأساسية
+  defaultMeta: {
+    siteName: 'MathLinguistic',
+    locale: 'ar_AR',
+    type: 'website',
+    defaultImage: `${window.location.origin}/icons/icon-512.png`
+  },
+
+  // 📌 الأقسام والوسوم المخصصة لكل صفحة/قسم
   sections: {
     'home': {
       title: 'MathLinguistic | الرئيسية • تعلّم الحساب الذهني بسرعة',
       description: 'منصة MathLinguistic لتعليم الحساب الذهني. دروس، تمارين، ألعاب، وتحديات سرعة لجميع المستويات.',
-      keywords: 'حساب ذهني, رياضيات, تعلم الرياضيات, MathLinguistic, ألعاب تعليمية'
+      keywords: 'حساب ذهني, رياضيات, تعلم الرياضيات, MathLinguistic, ألعاب تعليمية, الحساب السريع'
     },
     'beginner': {
       title: 'المستوى المبتدئ | MathLinguistic - أساسيات الحساب الذهني',
@@ -112,7 +121,7 @@ const MetaManager = {
     }
   },
 
-  // ✅ دالة تحديث وسوم الـ Meta
+  // ✅ دالة تحديث وسوم الـ Meta مع إضافة دعم كل خصائص Open Graph
   updateMetaTag(attrType, attrValue, content) {
     try {
       let meta = document.querySelector(`meta[${attrType}="${attrValue}"]`);
@@ -131,25 +140,38 @@ const MetaManager = {
     }
   },
 
-  // ✅ الدالة الرئيسية لتحديث الصفحة العامة
+  // ✅ التحديث المكتمل لوسوم الـ Meta للصفحة
   updateMeta(sectionKey) {
     try {
       const data = this.sections[sectionKey] || this.sections['home'];
       if (!data) return true;
 
+      const currentUrl = `${window.location.origin}${window.location.pathname}#${sectionKey}`;
+
+      // 1. العنوان والوصف والكلمات المفتاحية
       document.title = data.title;
       this.updateMetaTag('name', 'description', data.description);
       this.updateMetaTag('name', 'keywords', data.keywords);
+
+      // 2. وسوم Facebook Open Graph المكتملة
       this.updateMetaTag('property', 'og:title', data.title);
       this.updateMetaTag('property', 'og:description', data.description);
+      this.updateMetaTag('property', 'og:type', this.defaultMeta.type);
+      this.updateMetaTag('property', 'og:site_name', this.defaultMeta.siteName);
+      this.updateMetaTag('property', 'og:locale', this.defaultMeta.locale);
+      this.updateMetaTag('property', 'og:url', currentUrl);
+      this.updateMetaTag('property', 'og:image', this.defaultMeta.defaultImage);
+
+      // 3. وسوم Twitter Cards المكتملة
+      this.updateMetaTag('name', 'twitter:card', 'summary_large_image');
       this.updateMetaTag('name', 'twitter:title', data.title);
       this.updateMetaTag('name', 'twitter:description', data.description);
+      this.updateMetaTag('name', 'twitter:image', this.defaultMeta.defaultImage);
 
       try {
         if (window.history && sectionKey !== 'home') {
-          const newUrl = `#${sectionKey}`;
-          if (window.location.hash !== newUrl) {
-            window.history.pushState({ section: sectionKey }, data.title, newUrl);
+          if (window.location.hash !== `#${sectionKey}`) {
+            window.history.pushState({ section: sectionKey }, data.title, `#${sectionKey}`);
           }
         }
       } catch (historyErr) {
@@ -168,7 +190,6 @@ const MetaManager = {
       canvas.height = 630;
       const ctx = canvas.getContext('2d');
 
-      // خلفية متدرجة أنيقة
       const gradient = ctx.createLinearGradient(0, 0, 1200, 630);
       gradient.addColorStop(0, '#1a202c');
       gradient.addColorStop(0.5, '#2d3748');
@@ -176,35 +197,29 @@ const MetaManager = {
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, 1200, 630);
 
-      // إطار
       ctx.strokeStyle = '#4299e1';
       ctx.lineWidth = 10;
       ctx.strokeRect(30, 30, 1140, 570);
 
-      // رأس البطاقة
       ctx.fillStyle = '#63b3ed';
       ctx.font = 'bold 36px sans-serif';
       ctx.direction = 'rtl';
       ctx.fillText('📐 MathLinguistic | الحساب الذهني', 1100, 100);
 
-      // القسم
       ctx.fillStyle = '#ecc94b';
       ctx.font = 'bold 32px sans-serif';
       ctx.fillText(`• ${category || 'درس تفاعلي'}`, 1100, 180);
 
-      // رقم الصفحة
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 72px sans-serif';
       const pageText = isNaN(page) ? page : `الصفحة رقم: ${page}`;
       ctx.fillText(pageText, 1100, 280);
 
-      // عنوان الدرس
       ctx.fillStyle = '#e2e8f0';
       ctx.font = 'normal 42px sans-serif';
       const displayTitle = title || 'تعلم تقنيات الحساب الذهني السريع';
       ctx.fillText(displayTitle, 1100, 380);
 
-      // دعوة للحل والتحدي
       ctx.fillStyle = '#48bb78';
       ctx.font = 'bold 34px sans-serif';
       ctx.fillText('🚀 اضغط على الرابط وابدأ التحدي الآن!', 1100, 520);
@@ -216,7 +231,7 @@ const MetaManager = {
     });
   },
 
-  // ✅ 🚀 مشاركة الدرس مع توليد بطاقة الصورة ديناميكياً
+  // ✅ مشاركة الدرس مع تحديث الوسوم ديناميكياً
   async shareCurrentLesson(pageNumber, customTitle) {
     try {
       const page = pageNumber || window.currentPageNumber || window.currentLessonPage || 1;
@@ -227,10 +242,8 @@ const MetaManager = {
       const category = sectionKey.includes('learn') ? 'درس تفاعلي' : (sectionKey.includes('loudoukou') ? 'لعبة سودوكو' : 'تمارين حساب');
       const shareUrl = `${window.location.origin}${window.location.pathname}?page=${page}#${sectionKey}`;
 
-      // 1. توليد بطاقة الصورة تلقائياً
       const imageFile = await this.generateDynamicShareCard(page, title, category);
 
-      // 2. تحديث الـ Meta Tags
       document.title = title;
       this.updateMetaTag('property', 'og:title', title);
       this.updateMetaTag('property', 'og:description', `شرح وتمارين الصفحة رقم ${page}`);
@@ -243,7 +256,6 @@ const MetaManager = {
         files: [imageFile]
       };
 
-      // 3. التنفيذ عبر Web Share API
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [imageFile] })) {
         await navigator.share(shareData);
       } else if (navigator.share) {
@@ -253,14 +265,12 @@ const MetaManager = {
       }
     } catch (err) {
       if (err.name !== 'AbortError') {
-        console.warn('⚠️ Share fallback activated:', err);
         const page = pageNumber || window.currentPageNumber || 1;
         this.copyLinkToClipboard(`${window.location.origin}${window.location.pathname}?page=${page}`);
       }
     }
   },
 
-  // دالة مساعدة لنسخ الرابط للحافظة
   copyLinkToClipboard(url) {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(url);
@@ -277,11 +287,9 @@ const MetaManager = {
     }
   },
 
-  // 🔗 حقن الزر العائم وتنسيقه آلياً
   injectFloatingShareButton() {
     if (document.getElementById('global-floating-share-btn')) return;
 
-    // حقن الستايل التلقائي للزر في الـ head
     if (!document.getElementById('floating-share-styles')) {
       const style = document.createElement('style');
       style.id = 'floating-share-styles';
@@ -329,7 +337,6 @@ const MetaManager = {
     document.body.appendChild(shareBtn);
   },
 
-  // ✅ التوجيه التلقائي المباشر عند فتح رابط الدرس (Deep-Linking)
   checkUrlParamsOnLoad() {
     try {
       const urlParams = new URLSearchParams(window.location.search);
@@ -338,7 +345,6 @@ const MetaManager = {
       if (pageParam) {
         const pageNum = parseInt(pageParam, 10);
         window.currentPageNumber = pageNum;
-        console.log(`📌 جاري فتح الصفحة المطلوبة من الرابط: ${pageNum}`);
 
         setTimeout(() => {
           if (typeof window.loadLessonPage === 'function') {
@@ -353,7 +359,6 @@ const MetaManager = {
     }
   },
 
-  // ✅ التهيئة
   init() {
     try {
       const initialHash = window.location.hash.replace('#', '') || 'home';
@@ -380,21 +385,19 @@ const MetaManager = {
         }
       });
 
-      console.log('✅ MetaManager v3.5 initialized successfully');
+      console.log('✅ MetaManager v4.0 initialized successfully');
     } catch (err) {
       console.error('❌ MetaManager init failed:', err);
     }
   }
 };
 
-// ✅ التفعيل الأحادي والآمن
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => MetaManager.init());
 } else {
   MetaManager.init();
 }
 
-// جعل الدوال متاحة عالمياً
 window.MetaManager = MetaManager;
 window.updatePageMeta = (sectionKey) => MetaManager.updateMeta(sectionKey);
 window.shareLessonPage = (pageNumber, title) => MetaManager.shareCurrentLesson(pageNumber, title);

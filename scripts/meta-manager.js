@@ -1,6 +1,6 @@
 /**
- * Meta Manager & Share System - النسخة الشاملة والمكتملة v4.0
- * تحتوي على جميع وسوم SEO والـ Open Graph والهاشتاجات لجميع صفحات الدروس والألعاب
+ * Meta Manager & Share System - النسخة الشاملة والمكتملة v4.1
+ * دعم كامل للكلمات المفتاحية الثلاثية (عربي - فرنسي - إنجليزي) ووسوم SEO والـ Open Graph
  */
 
 const MetaManager = {
@@ -12,116 +12,119 @@ const MetaManager = {
     defaultImage: `${window.location.origin}/icons/icon-512.png`
   },
 
-  // 📌 الأقسام والوسوم المخصصة لكل صفحة/قسم
+  // 📌 الكلمات المفتاحية العامة الشاملة للغات الثلاث (افتراضية)
+  globalKeywords: 'حساب ذهني, رياضيات, ألعاب تعليمية, سودوكو, تدريب الدماغ, mental math, soroban, abacus, math games, brain training, speed math, calcul mental, mathématiques, jeux éducatifs, calcul rapide, jeux de logique, MathLinguistic',
+
+  // 📌 الأقسام والوسوم المخصصة مع الكلمات المفتاحية المدمجة باللغات الثلاث
   sections: {
     'home': {
-      title: 'MathLinguistic | الرئيسية • تعلّم الحساب الذهني بسرعة',
-      description: 'منصة MathLinguistic لتعليم الحساب الذهني. دروس، تمارين، ألعاب، وتحديات سرعة لجميع المستويات.',
-      keywords: 'حساب ذهني, رياضيات, تعلم الرياضيات, MathLinguistic, ألعاب تعليمية, الحساب السريع'
+      title: 'MathLinguistic | الرئيسية • تعلّم الحساب الذهني بسرعة | Mental Math & Speed Calculation',
+      description: 'منصة MathLinguistic لتعليم الحساب الذهني والسوروبان. دروس، تمارين، ألعاب، وتحديات سرعة بـ 3 لغات. Learn Mental Math & Fast Calculation.',
+      keywords: 'حساب ذهني, رياضيات, سوروبان, ألعاب تعليمية, MathLinguistic, mental math, soroban, abacus, speed math, brain training, calcul mental, mathématiques, jeux éducatifs, calcul rapide'
     },
     'beginner': {
-      title: 'المستوى المبتدئ | MathLinguistic - أساسيات الحساب الذهني',
-      description: 'ابدأ رحلتك في الحساب الذهني مع المستوى المبتدئ. تمارين بسيطة وشرح مفصل للخطوات الأولى.',
-      keywords: 'حساب ذهني للمبتدئين, تعلم الحساب, رياضيات للأطفال, أساسيات الرياضيات, تمارين سهلة'
+      title: 'المستوى المبتدئ | MathLinguistic - أساسيات الحساب الذهني | Beginner Level',
+      description: 'ابدأ رحلتك في الحساب الذهني مع المستوى المبتدئ. تمارين بسيطة وشرح مفصل للخطوات الأولى. Learn basic mental arithmetic step by step.',
+      keywords: 'حساب ذهني للمبتدئين, أساسيات الرياضيات, تمارين سهلة, beginner mental math, basic arithmetic, math for kids, calcul mental débutant, mathématiques de base'
     },
     'intermediate': {
-      title: 'المستوى المتوسط | MathLinguistic - تطوير المهارات الحسابية',
-      description: 'طور مهاراتك في الحساب الذهني مع تمارين المستوى المتوسط. عمليات حسابية أكثر تعقيداً وتحديات.',
-      keywords: 'حساب ذهني متوسط, تمارين رياضيات, تطوير المهارات الحسابية, حساب عقلي'
+      title: 'المستوى المتوسط | MathLinguistic - تطوير المهارات الحسابية | Intermediate Level',
+      description: 'طور مهاراتك في الحساب الذهني مع تمارين المستوى المتوسط. عمليات حسابية أكثر تعقيداً وتحديات. Improve your mental math skills.',
+      keywords: 'حساب ذهني متوسط, تطوير المهارات الحسابية, حساب عقلي, intermediate mental math, speed calculation, mental agility, calcul mental intermédiaire, exercices mathématiques'
     },
     'advanced': {
-      title: 'المستوى المتقدم | MathLinguistic - حساب ذهني متقدم',
-      description: 'تحديات حسابية متقدمة للمحترفين. عمليات معقدة وسرعة في الحل مع نظام إنجازات.',
-      keywords: 'حساب ذهني متقدم, تحديات رياضية, حساب سريع, تدريب الدماغ, رياضيات معقدة'
+      title: 'المستوى المتقدم | MathLinguistic - حساب ذهني متقدم | Advanced Level',
+      description: 'تحديات حسابية متقدمة للمحترفين. عمليات معقدة وسرعة في الحل مع نظام إنجازات. Master advanced mental calculation.',
+      keywords: 'حساب ذهني متقدم, تحديات رياضية, حساب سريع, advanced mental math, master arithmetic, fast math tricks, calcul mental avancé, mathématiques complexes'
     },
     'complex': {
-      title: 'المستوى المعقد | MathLinguistic - تحديات النخبة في الحساب',
-      description: 'أعلى مستوى في الحساب الذهني. تحديات استثنائية للمتميزين فقط.',
-      keywords: 'حساب ذهني معقد, تحديات النخبة, رياضيات متقدمة, عباقرة الحساب, حساب عقلي متقدم'
+      title: 'المستوى المعقد | MathLinguistic - تحديات النخبة في الحساب | Elite Level',
+      description: 'أعلى مستوى في الحساب الذهني. تحديات استثنائية للمتميزين فقط. Elite level mental math challenges.',
+      keywords: 'حساب ذهني معقد, تحديات النخبة, عباقرة الحساب, elite mental math, complex arithmetic, math genius, calcul mental complexe, défis mathématiques'
     },
     'learn-beginner': {
-      title: 'دروس المبتدئ | MathLinguistic - شرح قواعد الحساب الذهني',
-      description: 'دروس مفصلة لشرح قواعد الحساب الذهني للمبتدئين. أمثلة وحلول خطوة بخطوة.',
-      keywords: 'دروس حساب ذهني, شرح الرياضيات, قواعد الحساب, تعلم خطوة بخطوة'
+      title: 'دروس المبتدئ | MathLinguistic - شرح قواعد الحساب الذهني | Beginner Lessons',
+      description: 'دروس مفصلة لشرح قواعد الحساب الذهني للمبتدئين والسوروبان. أمثلة وحلول خطوة بخطوة.',
+      keywords: 'دروس حساب ذهني, قواعد الحساب, تعلم السوروبان, beginner math lessons, soroban rules, learn abacus, cours de calcul mental, règles du boulier'
     },
     'learn-intermediate': {
-      title: 'دروس المتوسط | MathLinguistic - تطوير التقنيات الحسابية',
+      title: 'دروس المتوسط | MathLinguistic - تطوير التقنيات الحسابية | Intermediate Lessons',
       description: 'دروس متقدمة لشرح تقنيات الحساب الذهني. استراتيجيات للحساب السريع والدقيق.',
-      keywords: 'تقنيات حسابية, استراتيجيات الحساب, دروس رياضيات متوسطة'
+      keywords: 'تقنيات حسابية, استراتيجيات الحساب السريع, mental math techniques, fast calculation tricks, techniques de calcul mental, stratégies mathématiques'
     },
     'learn-advanced': {
-      title: 'دروس المتقدم | MathLinguistic - إتقان الحساب الذهني',
-      description: 'دروس احترافية لإتقان الحساب الذهني. عمليات معقدة وحلول مبتكرة.',
-      keywords: 'حساب ذهني احترافي, دروس متقدمة, حلول رياضية مبتكرة'
+      title: 'دروس المتقدم | MathLinguistic - إتقان الحساب الذهني | Advanced Lessons',
+      description: 'دروس احترافية لإتقان الحساب الذهني والعمود الفقري للسوروبان. عمليات معقدة وحلول مبتكرة.',
+      keywords: 'حساب ذهني احترافي, دروس متقدمة, professional mental math, advanced soroban, calcul mental professionnel, cours avancés'
     },
     'learn-complex': {
-      title: 'دروس المعقد | MathLinguistic - تحديات الحساب للنخبة',
-      description: 'دروس استثنائية لأعلى مستويات الحساب الذهني. للمتميزين فقط.',
-      keywords: 'حساب نخبة, دروس معقدة, تحديات رياضية قصوى'
+      title: 'دروس المعقد | MathLinguistic - تحديات الحساب للنخبة | Complex Lessons',
+      description: 'دروس استثنائية لأعلى مستويات الحساب الذهني. للمتميزين وعباقرة الأرقام.',
+      keywords: 'دروس معقدة, حساب نخبة, elite math lessons, expert mental math, cours de mathématiques complexes, calcul d’élite'
     },
     'speed-test': {
-      title: 'تحدي السرعة | MathLinguistic - اختبر سرعتك في الحساب الذهني',
-      description: 'اختبر سرعتك في الحساب الذهني ضد الزمن. سجل أعلى النقاط ونافس نفسك!',
-      keywords: 'تحدي السرعة, حساب سريع, مسابقة رياضيات, اختبار سرعة الحساب, تدريب السرعة'
+      title: 'تحدي السرعة | MathLinguistic - اختبر سرعتك في الحساب الذهني | Speed Test Challenge',
+      description: 'اختبر سرعتك في الحساب الذهني ضد الزمن. سجل أعلى النقاط ونافس نفسك! Test your calculation speed against time.',
+      keywords: 'تحدي السرعة, اختبر سرعتك, مسابقة رياضيات, speed math test, calculation challenge, time attack math, test de vitesse de calcul, défi mathématique'
     },
     'mental-math': {
-      title: 'الحساب الذهني | MathLinguistic - 5 مستويات تدريبية',
-      description: '5 مستويات متدرجة لتدريب الحساب الذهني. ابدأ من السهل إلى الصعب.',
-      keywords: 'تدريب حساب ذهني, تمارين يومية, تحسين الذاكرة الرياضية, حساب عقلي'
+      title: 'الحساب الذهني | MathLinguistic - 5 مستويات تدريبية | Mental Math Practice',
+      description: '5 مستويات متدرجة لتدريب الحساب الذهني. ابدأ من السهل إلى الصعب. 5 levels of progressive mental math training.',
+      keywords: 'تدريب حساب ذهني, تمارين يومية, تحسين الذاكرة, mental math practice, daily brain workout, entrainement calcul mental, exercice cérébral'
     },
     'mixed-ops': {
-      title: 'العمليات المختلطة | MathLinguistic - تحدي الجمع والطرح والضرب',
-      description: 'تمارين تجمع بين عمليات الجمع والطرح والضرب والقسمة. اختبر براعتك!',
-      keywords: 'عمليات مختلطة, جمع وطرح, ضرب وقسمة, تمارين شاملة'
+      title: 'العمليات المختلطة | MathLinguistic - تحدي الجمع والطرح والضرب | Mixed Operations',
+      description: 'تمارين تجمع بين عمليات الجمع والطرح والضرب والقسمة. Mixed operations: addition, subtraction, multiplication & division.',
+      keywords: 'عمليات مختلطة, جمع وطرح, ضرب وقسمة, mixed math operations, arithmetic practice, opérations mixtes, addition et multiplication'
     },
     'loudoukou': {
-      title: 'لعبة السودوكو | MathLinguistic - ألغاز الأرقام المنطقية',
-      description: 'استمتع بلعبة السودوكو الكلاسيكية بمستويات متعددة. طور منطقك الرياضي!',
-      keywords: 'سودوكو, ألغاز الأرقام, ألعاب منطقية, تدريب العقل, سودوكو عربي'
+      title: 'لعبة السودوكو | MathLinguistic - ألغاز الأرقام المنطقية | Sudoku Game',
+      description: 'استمتع بلعبة السودوكو الكلاسيكية بمستويات متعددة. طور منطقك الرياضي! Play classic Sudoku puzzles online.',
+      keywords: 'سودوكو, ألغاز الأرقام, ألعاب منطقية, sudoku game, logic puzzles, number grid, jeu de sudoku, puzzles de logique'
     },
     'crossmath': {
-      title: 'الأرقام المتقاطعة | MathLinguistic - تحدي الكلمات والأرقام',
-      description: 'لعبة الأرقام المتقاطعة تجمع بين الرياضيات والكلمات. مستويات متعددة من الصعوبة.',
-      keywords: 'أرقام متقاطعة, ألغاز رياضية, ألعاب كلمات وأرقام, كلمات متقاطعة رياضية'
+      title: 'الأرقام المتقاطعة | MathLinguistic - تحدي الكلمات والأرقام | Crossmath Game',
+      description: 'لعبة الأرقام المتقاطعة تجمع بين الرياضيات والكلمات. Crossmath puzzles combining numbers and logic.',
+      keywords: 'أرقام متقاطعة, ألغاز رياضية, crossmath, math crossword, number puzzle, mots croisés mathématiques, puzzle numérique'
     },
     'sliding_puzzle': {
-      title: 'ترتيب الأرقام | MathLinguistic - لعبة الترتيب والتصنيف',
-      description: 'رتب الأرقام بذكاء وسرعة. مستويات متعددة تختبر سرعتك ودقتك.',
-      keywords: 'ترتيب الأرقام, ألعاب تصنيف, سرعة البديهة, ألعاب ذكاء, ألغاز ترتيب'
+      title: 'ترتيب الأرقام | MathLinguistic - لعبة الترتيب والتصنيف | Sliding Puzzle',
+      description: 'رتب الأرقام بذكاء وسرعة. مستويات متعددة تختبر سرعتك ودقتك. Classic sliding tile puzzle game.',
+      keywords: 'ترتيب الأرقام, ألعاب تصنيف, sliding tile puzzle, number sorting, order puzzle, jeu de pousse-pousse, puzzle de nombres'
     },
     'calculator': {
-      title: 'الآلة الحاسبة التعليمية | MathLinguistic - تعلم عبر التطبيق',
-      description: 'آلة حاسبة تفاعلية تساعدك على فهم العمليات الحسابية خطوة بخطوة.',
-      keywords: 'آلة حاسبة تعليمية, تعلم الحساب, عمليات حسابية تفاعلية'
+      title: 'الآلة الحاسبة التعليمية | MathLinguistic - تعلم عبر التطبيق | Educational Calculator',
+      description: 'آلة حاسبة تفاعلية تساعدك على فهم العمليات الحسابية خطوة بخطوة. Interactive learning calculator.',
+      keywords: 'آلة حاسبة تعليمية, آلة تفاعلية, educational calculator, interactive math tool, calculatrice éducative, outil mathématique'
     },
     'achievements': {
-      title: 'الإنجازات والأوسمة | MathLinguistic - تتبع تقدمك في التعلم',
-      description: 'شاهد جميع إنجازاتك وأوسمتك. تتبع تقدمك في رحلة تعلم الحساب الذهني.',
-      keywords: 'إنجازات, أوسمة, تتبع التقدم, نظام النقاط, جوائز تعليمية'
+      title: 'الإنجازات والأوسمة | MathLinguistic - تتبع تقدمك | Achievements & Badges',
+      description: 'شاهد جميع إنجازاتك وأوسمتك. تتبع تقدمك في رحلة تعلم الحساب الذهني. Track your progress & earn badges.',
+      keywords: 'إنجازات, أوسمة, تتبع التقدم, achievements, math badges, user progress, succès, badges d’apprentissage'
     },
     'about': {
-      title: 'من نحن | MathLinguistic - عن المنصة وفريق العمل',
-      description: 'تعرف على قصة MathLinguistic وفريق العمل وراء هذه المنصة التعليمية.',
-      keywords: 'من نحن, عن MathLinguistic, فريق العمل, قصة المنصة'
+      title: 'من نحن | MathLinguistic - عن المنصة | About Us',
+      description: 'تعرف على قصة MathLinguistic وفريق العمل وراء هذه المنصة التعليمية. Learn more about MathLinguistic platform.',
+      keywords: 'من نحن, عن المنصة, about us, math platform, à propos, plateforme éducative'
     },
     'contact': {
-      title: 'اتصل بنا | MathLinguistic - تواصل مع فريق الدعم',
-      description: 'لديك سؤال أو اقتراح؟ تواصل معنا عبر البريد أو واتساب.',
-      keywords: 'اتصل بنا, دعم فني, تواصل, مساعدة, اقتراحات'
+      title: 'اتصل بنا | MathLinguistic - تواصل مع فريق الدعم | Contact Us',
+      description: 'لديك سؤال أو اقتراح؟ تواصل معنا عبر البريد أو واتساب. Get in touch with MathLinguistic support team.',
+      keywords: 'اتصل بنا, دعم فني, contact us, support team, contactez-nous, support technique'
     },
     'terms': {
-      title: 'شروط الاستخدام | MathLinguistic',
-      description: 'شروط وأحكام استخدام منصة MathLinguistic التعليمية.',
-      keywords: 'شروط الاستخدام, أحكام, سياسة, قانوني'
+      title: 'شروط الاستخدام | MathLinguistic - Terms of Use',
+      description: 'شروط وأحكام استخدام منصة MathLinguistic التعليمية. Terms and conditions of using MathLinguistic.',
+      keywords: 'شروط الاستخدام, أحكام, terms of use, legal notice, conditions d’utilisation'
     },
     'privacy': {
-      title: 'سياسة الخصوصية | MathLinguistic',
-      description: 'كيف نحمي بياناتك وخصوصيتك في منصة MathLinguistic.',
-      keywords: 'سياسة الخصوصية, حماية البيانات, خصوصية, GDPR'
+      title: 'سياسة الخصوصية | MathLinguistic - Privacy Policy',
+      description: 'كيف نحمي بياناتك وخصوصيتك في منصة MathLinguistic. How we protect your data & privacy.',
+      keywords: 'سياسة الخصوصية, حماية البيانات, privacy policy, data protection, politique de confidentialité'
     }
   },
 
-  // ✅ دالة تحديث وسوم الـ Meta مع إضافة دعم كل خصائص Open Graph
+  // ✅ دالة تحديث وسوم الـ Meta
   updateMetaTag(attrType, attrValue, content) {
     try {
       let meta = document.querySelector(`meta[${attrType}="${attrValue}"]`);
@@ -153,7 +156,7 @@ const MetaManager = {
       this.updateMetaTag('name', 'description', data.description);
       this.updateMetaTag('name', 'keywords', data.keywords);
 
-      // 2. وسوم Facebook Open Graph المكتملة
+      // 2. وسوم Facebook Open Graph
       this.updateMetaTag('property', 'og:title', data.title);
       this.updateMetaTag('property', 'og:description', data.description);
       this.updateMetaTag('property', 'og:type', this.defaultMeta.type);
@@ -162,7 +165,7 @@ const MetaManager = {
       this.updateMetaTag('property', 'og:url', currentUrl);
       this.updateMetaTag('property', 'og:image', this.defaultMeta.defaultImage);
 
-      // 3. وسوم Twitter Cards المكتملة
+      // 3. وسوم Twitter Cards
       this.updateMetaTag('name', 'twitter:card', 'summary_large_image');
       this.updateMetaTag('name', 'twitter:title', data.title);
       this.updateMetaTag('name', 'twitter:description', data.description);
@@ -204,7 +207,7 @@ const MetaManager = {
       ctx.fillStyle = '#63b3ed';
       ctx.font = 'bold 36px sans-serif';
       ctx.direction = 'rtl';
-      ctx.fillText('📐 MathLinguistic | الحساب الذهني', 1100, 100);
+      ctx.fillText('📐 MathLinguistic | Mental Math', 1100, 100);
 
       ctx.fillStyle = '#ecc94b';
       ctx.font = 'bold 32px sans-serif';
@@ -385,7 +388,7 @@ const MetaManager = {
         }
       });
 
-      console.log('✅ MetaManager v4.0 initialized successfully');
+      console.log('✅ MetaManager v4.1 (Multilingual SEO) initialized successfully');
     } catch (err) {
       console.error('❌ MetaManager init failed:', err);
     }

@@ -101,7 +101,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   
   <!-- ✅ CSS -->
-  <link rel="stylesheet" href="/MathLinguistic/styles/font-awesome/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="/MathLinguistic/styles/main.css" />
   <link rel="stylesheet" href="/MathLinguistic/styles/levels.css" />
   <link rel="stylesheet" href="/MathLinguistic/styles/games/common.css" />
@@ -124,8 +124,7 @@
   </script>
   
   <!-- ✅ سياسة الأمان (CSP) -->
-    <!-- ✅ سياسة الأمان (CSP) المعدلة لتسمح للروبوتات ومحركات البحث بتحميل الخطوط والملفات -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://abdmou191.github.io; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://polyfill.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' blob: data: https:; connect-src 'self' https:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://abdmou191.github.io; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' blob: data: https:; connect-src 'self' https:;">
 
 </head>
 
@@ -321,8 +320,7 @@
   
   <!-- 3️⃣ ثالثاً: الملف الرئيسي والمنطق العام -->
   <script src="scripts/main.js" defer></script>
-  <script src="scripts/utils/build-search-index.js" defer></script>
-    <script src="scripts/core/game-core.js" defer></script>
+  <script src="scripts/core/game-core.js" defer></script>
   <script src="scripts/achievements.js" defer></script>
   
   <!-- 4️⃣ رابعاً: ملفات المستويات والتمارين -->

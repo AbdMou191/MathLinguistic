@@ -863,7 +863,7 @@
       return div.innerHTML;
     }
     
-    function navigateToResult(item) {
+        function navigateToResult(item) {
       console.log('🎯 الانتقال إلى:', item.title);
       console.log('📍 loadTarget:', item.loadTarget);
       console.log('🔍 كلمة البحث:', searchState.lastSearchQuery);
@@ -871,6 +871,7 @@
       
       closeSearch();
       
+      // حفظ البيانات المستهدفة لاستخدامها بعد اكتمال التحميل
       window.pendingSearchTarget = {
         id: item.id,
         loadTarget: item.loadTarget,
@@ -888,76 +889,76 @@
       setTimeout(function() {
         var success = false;
         
+        // التحقق مما إذا كانت loadContent تدعم الـ Promises أو التنفيذ المتسلسل
         if (typeof window.loadContent === 'function') {
-          console.log('✅ استخدام loadContent');
-          window.loadContent(item.loadTarget);
+          console.log('✅ استخدام loadContent للتحميل الجزئي');
+          
+          // استدعاء loadContent والانتظار حتى يتم حقن المحتوى ورسمه
+          Promise.resolve(window.loadContent(item.loadTarget)).then(function() {
+            // إعطاء مهلة قصيرة لضمان انتهاء المتصفح من بناء عناصر DOM داخل الصفحة
+            setTimeout(function() {
+              scrollToTargetElement(item);
+            }, 350);
+          }).catch(function(err) {
+            console.warn('⚠️ خطأ أثناء تحميل المحتوى:', err);
+            scrollToTargetElement(item);
+          });
+          
           success = true;
         } else if (item.element && typeof item.element.click === 'function') {
-          console.log('✅ النقر على العنصر المخزن');
           item.element.click();
-          success = true;
-        } else if (item.loadTarget) {
-          var btn = document.querySelector('[data-target="' + item.loadTarget + '"]');
-          if (btn && typeof btn.click === 'function') {
-            console.log('✅ العثور على زر والنقر عليه');
-            btn.click();
-            success = true;
-          }
-        }
-        
-        if (!success && item.sectionId) {
-          console.log('✅ التمرير إلى القسم:', item.sectionId);
-          var section = document.getElementById(item.sectionId);
-          if (section) {
-            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            success = true;
-          }
-        }
-        
-        if (!success && item.source === 'json') {
-          console.log('📄 عرض بيانات JSON:', item.filePath);
-          if (typeof window.showJsonContent === 'function') {
-            window.showJsonContent(item.data, item.title);
-          } else {
-            console.log('بيانات JSON:', item.data);
-            if (typeof window.showToast === 'function') {
-              window.showToast(`📁 تم العثور على: ${item.title} (من ملفات JSON)`, 'info');
-            }
-          }
           success = true;
         }
         
         if (!success) {
-          console.warn('⚠️ لم يتم العثور على طريقة للانتقال إلى:', item.loadTarget);
-          
-          var funcName = 'load' + (item.loadTarget || '')
-            .split('-')
-            .map(function(word) {
-              return word.charAt(0).toUpperCase() + word.slice(1);
-            })
-            .join('') + 'Page';
-          
-          if (typeof window[funcName] === 'function') {
-            console.log('✅ استخدام الدالة المباشرة:', funcName);
-            window[funcName]();
-          } else {
-            if (typeof window.showToast === 'function') {
-              window.showToast('عذراً، لم نتمكن من فتح: ' + item.title, 'error');
-            } else {
-              alert('عذراً، لم نتمكن من فتح: ' + item.title);
-            }
-          }
+          console.warn('⚠️ لم يتم العثور على طريقة مباشرة للانتقال إلى:', item.loadTarget);
         }
-        
-        setTimeout(function() {
-          var target = window.pendingSearchTarget;
-          if (target && target.searchQuery) {
-            highlightTextInPage(target.searchQuery, target.sectionId);
-          }
-          window.pendingSearchTarget = null;
-        }, 800);
       }, 200);
     }
+
+    // دالة مساعدة جديدة للتمرير الدقيق وإبراز النتيجة بعد تحميل الصفحة الجزئية
+    function scrollToTargetElement(item) {
+      var targetElement = null;
+      
+      // 1. البحث باستخدام المعرّف المخصص scrollTo أو sectionId
+      if (item.scrollTo && document.getElementById(item.scrollTo)) {
+        targetElement = document.getElementById(item.scrollTo);
+      } else if (item.sectionId && document.getElementById(item.sectionId)) {
+        targetElement = document.getElementById(item.sectionId);
+      } else if (item.problemIndex !== undefined && item.problemIndex !== null) {
+        // إذا كان تمريراً لمسألة أو تمرين برقم فهرس داخل المستوى
+        var problemCards = document.querySelectorAll('.problem-card, .exercise-card, .question-card, [data-index]');
+        if (problemCards[item.problemIndex]) {
+          targetElement = problemCards[item.problemIndex];
+        }
+      }
+      
+      // 2. إذا وجدنا العنصر، نقوم بالتمرير إليه بسلاسة وإبرازه
+      if (targetElement) {
+        console.log('🎯 تم العثور على العنصر المستهدف، جاري التمرير...');
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // تأثير بصري مؤقت (Highlight) لتوجيه عين المستخدم للمطلوب
+        targetElement.style.transition = 'background-color 0.5s ease, transform 0.3s ease';
+        var originalBg = targetElement.style.backgroundColor;
+        targetElement.style.backgroundColor = 'rgba(255, 235, 59, 0.4)';
+        targetElement.style.transform = 'scale(1.02)';
+        
+        setTimeout(function() {
+          targetElement.style.backgroundColor = originalBg;
+          targetElement.style.transform = 'scale(1)';
+        }, 2000);
+      } else {
+        console.log('⚠️ تعذر العثور على العنصر المطابق بصرياً، محاولة تمييز النص كبديل...');
+        if (window.pendingSearchTarget && window.pendingSearchTarget.searchQuery) {
+          highlightTextInPage(window.pendingSearchTarget.searchQuery, item.sectionId);
+        }
+      }
+      
+      // تنظيف المتغير المؤقت
+      window.pendingSearchTarget = null;
+    }
+
     
     function highlightTextInPage(searchText, sectionId) {
       if (!searchText) return;

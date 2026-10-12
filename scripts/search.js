@@ -1,127 +1,118 @@
 /**
- * 🔍 نظام البحث الذكي المتطور - MathLinguistic
- * الإصدار: 6.2 (مصحح ومستقر للبحث والتوجيه)
+ * 🔍 نظام البحث الذكي - MathLinguistic
+ * الإصدار: 7.0 (مستقر بدون وميض ومعالجة كاملة للتوجيه)
  */
 
 (function() {
   'use strict';
-  
+
   var searchState = {
     isOpen: false,
-    currentResults: [],
-    selectedIndex: -1,
-    searchTimer: null,
     elements: null,
     isInitialized: false,
     searchIndex: [],
     isIndexing: false,
-    lastSearchQuery: '',
-    jsonDataCache: {},
-    isLoadingJson: false,
-        jsonFilesList: [
-      { path: '/MathLinguistic/data/lessons/beginner.json', category: 'درس', type: 'lesson', level: 'مبتدئ', name: 'دروس المبتدئين', target: 'learn-beginner' },
-      { path: '/MathLinguistic/data/lessons/intermediate.json', category: 'درس', type: 'lesson', level: 'متوسط', name: 'دروس المتوسط', target: 'learn-intermediate' },
-      { path: '/MathLinguistic/data/lessons/advanced.json', category: 'درس', type: 'lesson', level: 'متقدم', name: 'دروس المتقدم', target: 'learn-advanced' },
-      { path: '/MathLinguistic/data/lessons/complex.json', category: 'درس', type: 'lesson', level: 'معقد', name: 'دروس المعقد', target: 'learn-complex' },
-      { path: '/MathLinguistic/data/levels/beginner.json', category: 'مستوى', type: 'level', level: 'مبتدئ', name: 'مستوى المبتدئين', target: 'beginner' },
-      { path: '/MathLinguistic/data/levels/intermediate.json', category: 'مستوى', type: 'level', level: 'متوسط', name: 'مستوى المتوسط', target: 'intermediate' },
-      { path: '/MathLinguistic/data/levels/advanced.json', category: 'مستوى', type: 'level', level: 'متقدم', name: 'مستوى المتقدم', target: 'advanced' },
-      { path: '/MathLinguistic/data/levels/complex.json', category: 'مستوى', type: 'level', level: 'معقد', name: 'مستوى المعقد', target: 'complex' },
-      { path: '/MathLinguistic/data/achievements.json', category: 'إنجاز', type: 'achievement', level: 'عام', name: 'الإنجازات', target: 'achievements' }
+    searchTimer: null,
+    jsonFilesList: [
+      { path: '/MathLinguistic/data/lessons/beginner.json', category: 'درس', type: 'lesson', level: 'beginner', name: 'دروس المبتدئين' },
+      { path: '/MathLinguistic/data/lessons/intermediate.json', category: 'درس', type: 'lesson', level: 'intermediate', name: 'دروس المتوسط' },
+      { path: '/MathLinguistic/data/lessons/advanced.json', category: 'درس', type: 'lesson', level: 'mischief', name: 'دروس المتقدم' },
+      { path: '/MathLinguistic/data/lessons/complex.json', category: 'درس', type: 'lesson', level: 'complex', name: 'دروس المعقد' },
+      { path: '/MathLinguistic/data/levels/beginner.json', category: 'مستوى', type: 'level', level: 'beginner', name: 'مستوى المبتدئين' },
+      { path: '/MathLinguistic/data/levels/intermediate.json', category: 'مستوى', type: 'level', level: 'intermediate', name: 'مستوى المتوسط' },
+      { path: '/MathLinguistic/data/levels/advanced.json', category: 'مستوى', type: 'level', level: 'advanced', name: 'مستوى المتقدم' },
+      { path: '/MathLinguistic/data/levels/complex.json', category: 'مستوى', type: 'level', level: 'complex', name: 'مستوى المعقد' },
+      { path: '/MathLinguistic/data/achievements.json', category: 'إنجاز', type: 'achievement', level: 'all', name: 'الإنجازات' }
     ]
-
   };
-  
-  async function loadJsonFiles() {
-    if (searchState.isLoadingJson) return;
-    searchState.isLoadingJson = true;
-    
-    for (const file of searchState.jsonFilesList) {
-      try {
-        const response = await fetch(file.path);
-        if (!response.ok) continue;
-        const data = await response.json();
-        searchState.jsonDataCache[file.path] = {
-          data: data,
-          category: file.category,
-          type: file.type,
-          level: file.level,
-          name: file.name,
-          target: file.target
-        };
-      } catch (e) {
-        // تجاهل أخطاء الشبكة المؤقتة بصمت
+
+  // ✅ 1. خريطة تحويل الأهداف المباشرة لمنع خطأ "صفحة غير معروفة"
+  function resolveCorrectTarget(rawTarget, type, level) {
+    if (!rawTarget || rawTarget === 'lesson' || rawTarget === 'lessons') {
+      if (level && level !== 'all') {
+        return 'learn-' + level; // تحويل lesson + beginner إلى learn-beginner
       }
+      return 'learn-beginner';
     }
-    searchState.isLoadingJson = false;
-    buildSearchIndex();
+    if (rawTarget === 'level' || rawTarget === 'levels') {
+      return level || 'beginner';
+    }
+    return rawTarget;
   }
-  
-  function buildSearchIndex() {
-    var index = [];
+
+  // ✅ 2. جلب الملفات وبناء الفهرس مرة واحدة فقط في البداية
+  async function initIndexOnce() {
+    if (searchState.isIndexing || searchState.searchIndex.length > 0) return;
+    searchState.isIndexing = true;
+
+    var tempIndex = [];
     var idCounter = 1;
-    
-    // 1. فهرسة ملفات JSON المحملة
-    for (var filePath in searchState.jsonDataCache) {
-      var fileData = searchState.jsonDataCache[filePath];
-      var jsonData = fileData.data;
-      var target = fileData.target;
-      var fileName = fileData.name;
-      
-      if (jsonData.title) {
-        index.push({
-          id: 'json-' + idCounter++,
-          title: jsonData.title,
-          description: jsonData.description || `محتوى ${fileName}`,
-          type: fileData.type,
-          category: fileData.category,
-          loadTarget: target,
-          path: `📁 ${fileName} > ${jsonData.title}`,
-          icon: 'fa-book'
-        });
-      }
-      
-      // فهرسة الدروس أو التمارين الداخلية إن وجدت
-      const itemsList = jsonData.lessons || jsonData.problems || jsonData.exercises || jsonData.challenges;
-      if (Array.isArray(itemsList)) {
-        itemsList.forEach((item, idx) => {
-          const itemTitle = item.title || item.question || `عنصر ${idx + 1}`;
-          index.push({
-            id: 'sub-' + idCounter++,
-            title: itemTitle,
-            description: item.hint || item.explanation || fileName,
-            type: fileData.type,
-            category: fileData.category,
-            loadTarget: target,
-            path: `📁 ${fileName} > ${itemTitle}`,
-            icon: 'fa-star'
-          });
-        });
-      }
-    }
-    
-    // 2. فهرسة المسائل من النافذة (Window)
-    if (window.beginnerProblems && window.beginnerProblems.length) {
-      window.beginnerProblems.forEach((p, idx) => {
-        index.push({
-          id: 'beg-prob-' + idx,
+
+    // فهرسة الملفات المباشرة من DOM والـ Window
+    if (window.beginnerProblems && Array.isArray(window.beginnerProblems)) {
+      window.beginnerProblems.forEach(function(p, idx) {
+        tempIndex.push({
+          id: 'beg-' + idx,
           title: p.question || 'مسألة مبتدئة',
-          description: p.hint || '',
-          type: 'exercise',
-          category: 'تمرين',
-          loadTarget: 'beginner',
+          description: p.hint || p.explanation || '',
+          target: 'beginner',
           path: 'الرئيسية > المستوى المبتدئ',
           icon: 'fa-pen'
         });
       });
     }
 
-    searchState.searchIndex = index;
+    // جلب ملفات JSON
+    for (var i = 0; i < searchState.jsonFilesList.length; i++) {
+      var file = searchState.jsonFilesList[i];
+      try {
+        var res = await fetch(file.path);
+        if (!res.ok) continue;
+        var data = await res.json();
+
+        var correctTarget = resolveCorrectTarget(file.type, file.type, file.level);
+
+        if (data.title) {
+          tempIndex.push({
+            id: 'json-' + idCounter++,
+            title: data.title,
+            description: data.description || file.name,
+            target: correctTarget,
+            path: '📁 ' + file.name + ' > ' + data.title,
+            icon: file.type === 'lesson' ? 'fa-book' : 'fa-layer-group'
+          });
+        }
+
+        var subItems = data.lessons || data.problems || data.exercises || data.challenges;
+        if (Array.isArray(subItems)) {
+          subItems.forEach(function(item) {
+            var itemTitle = item.title || item.question || '';
+            if (itemTitle) {
+              tempIndex.push({
+                id: 'sub-' + idCounter++,
+                title: itemTitle,
+                description: item.hint || item.explanation || item.description || file.name,
+                target: correctTarget,
+                path: '📁 ' + file.name + ' > ' + itemTitle,
+                icon: 'fa-star'
+              });
+            }
+          });
+        }
+      } catch (e) {
+        console.warn('⚠️ فشل جلب:', file.path);
+      }
+    }
+
+    searchState.searchIndex = tempIndex;
+    searchState.isIndexing = false;
+    console.log('✅ تم بناء الفهرس بنجاح بدون تكرار:', tempIndex.length, 'عنصر');
   }
-  
+
+  // ✅ 3. التهيئة وربط الأحداث
   function initSearch() {
     if (searchState.isInitialized) return;
-    
+
     var els = {
       toggle: document.getElementById('search-toggle'),
       overlay: document.getElementById('search-overlay'),
@@ -130,161 +121,164 @@
       results: document.getElementById('search-results'),
       noResults: document.getElementById('search-no-results')
     };
-    
+
     if (!els.toggle || !els.overlay || !els.input) {
-      setTimeout(initSearch, 500);
+      setTimeout(initSearch, 400);
       return;
     }
-    
+
     searchState.elements = els;
     searchState.isInitialized = true;
-    
-    buildSearchIndex();
-    loadJsonFiles();
-    bindEvents();
-  }
-  
-  function bindEvents() {
-    var els = searchState.elements;
-    
-    els.toggle.addEventListener('click', (e) => { e.preventDefault(); openSearch(); });
-    if (els.close) els.close.addEventListener('click', (e) => { e.preventDefault(); closeSearch(); });
-    els.overlay.addEventListener('click', (e) => { if (e.target === els.overlay) closeSearch(); });
-    
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && searchState.isOpen) closeSearch();
+
+    // بدء الفهرسة في الخلفية مرة واحدة فقط عند فتح الصفحة
+    initIndexOnce();
+
+    els.toggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      openSearch();
     });
-    
-    if (els.input) {
-      els.input.addEventListener('input', (e) => {
-        var query = e.target.value.trim();
-        searchState.lastSearchQuery = query;
-        
-        if (searchState.searchTimer) clearTimeout(searchState.searchTimer);
-        
-        if (!query) {
-          clearResults();
-          return;
-        }
-        
-        // مؤقت مستقر لمنع الوميض والاختفاء المفاجئ
-        searchState.searchTimer = setTimeout(() => {
-          performSearch(query);
-        }, 200);
+
+    if (els.close) {
+      els.close.addEventListener('click', function(e) {
+        e.preventDefault();
+        closeSearch();
       });
     }
+
+    els.overlay.addEventListener('click', function(e) {
+      if (e.target === els.overlay) closeSearch();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && searchState.isOpen) closeSearch();
+    });
+
+    // ⚡ معالجة الإدخال بشكل ثابت ومستقر منعاً للوميض
+    els.input.addEventListener('input', function(e) {
+      var query = e.target.value.trim().toLowerCase();
+
+      if (searchState.searchTimer) clearTimeout(searchState.searchTimer);
+
+      if (!query) {
+        clearResults();
+        return;
+      }
+
+      // البحث المحلي السريع جداً دون إعادة مسح الفهرس
+      searchState.searchTimer = setTimeout(function() {
+        executeSearch(query);
+      }, 100);
+    });
   }
-  
+
   function openSearch() {
     var els = searchState.elements;
     if (!els) return;
+
     els.overlay.style.display = 'flex';
-    setTimeout(() => {
+    setTimeout(function() {
       els.overlay.classList.add('active');
       els.overlay.setAttribute('aria-hidden', 'false');
     }, 10);
+
     searchState.isOpen = true;
-    setTimeout(() => { if (els.input) els.input.focus(); }, 100);
+    setTimeout(function() { if (els.input) els.input.focus(); }, 100);
     document.body.style.overflow = 'hidden';
+
+    // التاكد من وجود الفهرس عند الفتح
+    if (searchState.searchIndex.length === 0) {
+      initIndexOnce();
+    }
   }
-  
+
   function closeSearch() {
     var els = searchState.elements;
     if (!els) return;
+
     els.overlay.classList.remove('active');
     els.overlay.setAttribute('aria-hidden', 'true');
-    setTimeout(() => { els.overlay.style.display = 'none'; }, 300);
+    setTimeout(function() { els.overlay.style.display = 'none'; }, 250);
+
     clearResults();
     if (els.input) els.input.value = '';
     document.body.style.overflow = '';
     searchState.isOpen = false;
   }
-  
+
   function clearResults() {
     var els = searchState.elements;
     if (!els) return;
     if (els.results) els.results.innerHTML = '';
     if (els.noResults) els.noResults.hidden = true;
-    searchState.currentResults = [];
   }
-  
-  function performSearch(query) {
-    var index = searchState.searchIndex;
-    if (!query || index.length === 0) {
-      clearResults();
-      return;
-    }
-    
-    var q = query.toLowerCase();
-    
-    // مطابقة مرنة تدعم البحث بالحرف الأول والثاني وما بعده دون اختفاء
-    var matched = index.filter(item => {
-      var title = (item.title || '').toLowerCase();
-      var desc = (item.description || '').toLowerCase();
-      return title.includes(q) || desc.includes(q);
-    }).slice(0, 25);
-    
-    searchState.currentResults = matched;
+
+  // ✅ 4. تنفيذ البحث في الذاكرة دون الوميض
+  function executeSearch(query) {
     var els = searchState.elements;
     if (!els || !els.results) return;
-    
-    if (matched.length === 0) {
+
+    var index = searchState.searchIndex;
+    if (!index || index.length === 0) return;
+
+    var matches = index.filter(function(item) {
+      var title = (item.title || '').toLowerCase();
+      var desc = (item.description || '').toLowerCase();
+      return title.indexOf(query) !== -1 || desc.indexOf(query) !== -1;
+    }).slice(0, 20);
+
+    if (matches.length === 0) {
       if (els.noResults) {
         els.noResults.hidden = false;
-        els.noResults.textContent = '❌ لا توجد نتائج مطابقة لـ "' + query + '"';
+        els.noResults.textContent = '❌ لا توجد نتائج لـ "' + query + '"';
       }
       els.results.innerHTML = '';
     } else {
       if (els.noResults) els.noResults.hidden = true;
-      
+
       var fragment = document.createDocumentFragment();
-      matched.forEach(item => {
+
+      matches.forEach(function(item) {
         var div = document.createElement('div');
         div.className = 'search-result-item';
-        div.style.cssText = 'padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); cursor: pointer; display: flex; align-items: center; gap: 10px; background: var(--card-bg, #fff);';
+        div.style.cssText = 'padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.06); cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--card-bg, #ffffff);';
+
         div.innerHTML = `
-          <div style="width: 38px; height: 38px; border-radius: 10px; background: var(--accent-color, #3498db); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-            <i class="fas ${item.icon || 'fa-search'}"></i>
+          <div style="width: 38px; height: 38px; border-radius: 8px; background: var(--accent-color, #3498db); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <i class="fas ${item.icon}"></i>
           </div>
           <div style="flex: 1; overflow: hidden;">
-            <div style="font-weight: bold; font-size: 0.95rem; color: var(--text-primary);">${escapeHtml(item.title)}</div>
-            <div style="font-size: 0.75rem; opacity: 0.7; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(item.path)}</div>
+            <div style="font-weight: bold; font-size: 0.95rem; color: var(--text-primary, #333);">${escapeHtml(item.title)}</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary, #777); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(item.path)}</div>
           </div>
         `;
-        
-                div.addEventListener('click', (e) => {
+
+        div.addEventListener('click', function(e) {
           e.preventDefault();
           closeSearch();
-          
-          if (typeof window.loadContent === 'function' && item.loadTarget) {
-            let finalTarget = item.loadTarget;
-            
-            // تصحيح جذري لأي target خاطئ قد يسبب خطأ "صفحة غير معروفة"
-            if (finalTarget === 'lesson' || finalTarget === 'lessons') {
-              finalTarget = 'learn-beginner'; // أو المستوى الافتراضي المناسب
-            }
-            
-            console.log('🚀 الانتقال إلى الهدف الصحيح:', finalTarget);
-            window.loadContent(finalTarget);
+
+          var target = item.target;
+          console.log('🚀 الانتقال الآمن إلى الصفحة:', target);
+
+          if (typeof window.loadContent === 'function') {
+            window.loadContent(target);
           }
         });
 
-        
         fragment.appendChild(div);
       });
-      
+
       els.results.innerHTML = '';
       els.results.appendChild(fragment);
     }
   }
-  
+
   function escapeHtml(text) {
     if (!text) return '';
     var div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
   }
-  
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initSearch);
   } else {

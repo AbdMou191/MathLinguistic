@@ -652,24 +652,39 @@ window.isAppInstalled = checkInstallStatus;
     initPWAInstall(); // ✅ استدعاء دالة تثبيت PWA
     
     // ✅ تسجيل Service Worker والتحديث التلقائي الفوري
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/MathLinguistic/sw.js')
-    .then(reg => {
-      console.log('✅ SW مسجل:', reg.scope);
-      reg.addEventListener('updatefound', () => {
-        const newWorker = reg.installing;
-        if (newWorker) {
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('🔄 تم تثبيت تحديث جديد، جاري إعادة التحميل تلقائياً...');
-              window.location.reload();
+    // ✅ تسجيل Service Worker ونظام زر التحديث اليدوي
+    if ('serviceWorker' in navigator) {
+      let deferredWorker = null;
+
+      navigator.serviceWorker.register('/MathLinguistic/sw.js')
+        .then(reg => {
+          console.log('✅ SW مسجل:', reg.scope);
+
+          // مراقبة ما إذا كان هناك تحديث جديد جاهز في الخلفية
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            if (newWorker) {
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('🔄 يتوفر تحديث جديد للمنصة!');
+                  deferredWorker = newWorker;
+                  showAppUpdateBanner(deferredWorker);
+                }
+              });
             }
           });
+        })
+        .catch(err => console.error('❌ خطأ في تسجيل SW:', err));
+
+      // إعادة تحميل التطبيق تلقائياً عند تفعيل النسخة الجديدة بنجاح
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          window.location.reload();
+          refreshing = true;
         }
       });
-    })
-    .catch(err => console.error('❌ خطأ في تسجيل SW:', err));
-}
+    }
 
     
     menuToggle?.addEventListener('click', toggleSidebar);
@@ -682,6 +697,39 @@ if ('serviceWorker' in navigator) {
         if (e.target === searchOverlay) closeSearch();
       });
     }
+    
+    // 🔄 دالة إظهار زر التحديث وإعادة التشغيل
+function showAppUpdateBanner(worker) {
+  // التأكد من عدم تكرار ظهور البنر إذا كان موجوداً مسبقاً
+  if (document.getElementById('app-update-banner')) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'app-update-banner';
+  banner.innerHTML = `
+    <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #fff; padding: 14px 22px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); z-index: 10000; text-align: center; font-family: 'Cairo', sans-serif; display: flex; align-items: center; gap: 15px; max-width: 90%; width: 380px;">
+      <div style="flex: 1; text-align: right;">
+        <div style="font-weight: 700; font-size: 14px; margin-bottom: 2px;">✨ يتوفر تحديث جديد!</div>
+        <div style="font-size: 12px; opacity: 0.9;">انقر للتحديث والحصول على أحدث الميزات.</div>
+      </div>
+      <button id="execute-update-btn" style="background: #fff; color: #2563eb; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Cairo', sans-serif; font-size: 13px; white-space: nowrap; transition: 0.2s;">
+        تحديث الآن
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(banner);
+
+  // تفاعل زر التحديث لتفعيل النسخة الجديدة وإعادة تشغيل التطبيق
+  document.getElementById('execute-update-btn').addEventListener('click', () => {
+    if (worker) {
+      // إرسال أمر للـ Service Worker لتخطي الانتظار وتنشيط النسخة الجديدة فوراً
+      worker.postMessage({ type: 'SKIP_WAITING' });
+    }
+    // إعادة تحميل الصفحة كإجراء احتياطي فوري
+    window.location.reload();
+  });
+}
+
     
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeSearch();

@@ -18,7 +18,7 @@
     lastSearchQuery: '',
     jsonDataCache: {},
     isLoadingJson: false,
-    jsonFilesList: [
+        jsonFilesList: [
       { path: '/MathLinguistic/data/lessons/beginner.json', category: 'درس', type: 'lesson', level: 'مبتدئ', name: 'دروس المبتدئين', target: 'learn-beginner' },
       { path: '/MathLinguistic/data/lessons/intermediate.json', category: 'درس', type: 'lesson', level: 'متوسط', name: 'دروس المتوسط', target: 'learn-intermediate' },
       { path: '/MathLinguistic/data/lessons/advanced.json', category: 'درس', type: 'lesson', level: 'متقدم', name: 'دروس المتقدم', target: 'learn-advanced' },
@@ -29,6 +29,7 @@
       { path: '/MathLinguistic/data/levels/complex.json', category: 'مستوى', type: 'level', level: 'معقد', name: 'مستوى المعقد', target: 'complex' },
       { path: '/MathLinguistic/data/achievements.json', category: 'إنجاز', type: 'achievement', level: 'عام', name: 'الإنجازات', target: 'achievements' }
     ]
+
   };
   
   async function loadJsonFiles() {

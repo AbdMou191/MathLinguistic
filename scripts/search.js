@@ -1,48 +1,52 @@
 /**
- * 🔍 نظام البحث الذكي الثابت - MathLinguistic
- * الإصدار: 8.0 (سريع جداً، بدون وميض، متوافق 100% مع main.js)
+ * 🔍 محرك البحث الذكي المعماري - MathLinguistic v9.0
+ * تصميم هندسي نقي: بدون وميض، بدون أخطاء، أداء فوري في الذاكرة.
  */
 
 (function() {
   'use strict';
 
-  // 📚 فهرس ثابت ودقيق لجميع صفحات وأقسام المنصة المقبولة في loadContent
-  var staticSearchIndex = [
-    { title: "الرئيسية", description: "الصفحة الرئيسية لمنصة MathLinguistic", target: "home", path: "الرئيسية", icon: "fa-home", type: "page" },
-    { title: "الإنجازات والأوسمة", description: "عرض إنجازاتك والنقاط التي جمعتها في المنصة", target: "achievements", path: "الرئيسية > الإنجازات", icon: "fa-trophy", type: "achievement" },
+  // 📂 قاعدة بيانات البحث المحلية الثابتة (تحتوي على كل مسارات وأقسام المنصة الحقيقية)
+  var appMasterIndex = [
+    // الصفحات العامة والأساسية
+    { title: "الرئيسية", keywords: "الرئيسية home 🏠", desc: "الصفحة الرئيسية لمنصة MathLinguistic", target: "home", path: "الرئيسية", icon: "fa-home" },
+    { title: "الإنجازات والأوسمة", keywords: "الإنجازات الأوسمة النقاط achievements 🏆", desc: "عرض إنجازاتك والنقاط التي جمعتها", target: "achievements", path: "الرئيسية > الإنجازات", icon: "fa-trophy" },
     
     // دروس وقواعد الحساب الذهني
-    { title: "دروس المستوى المبتدئ", description: "شرح مبسط لقواعد وتطبيقات الحساب الذهني للمبتدئين", target: "learn-beginner", path: "الدروس > دروس ابتدائية", icon: "fa-book-open", type: "lesson" },
-    { title: "دروس المستوى المتوسط", description: "تطوير مهارات الحساب السريع والعمليات المتوسطة", target: "learn-intermediate", path: "الدروس > دروس متوسطة", icon: "fa-book-open", type: "lesson" },
-    { title: "دروس المستوى المتقدم", description: "تقنيات متقدمة في الحساب الذهني والسوروبان", target: "learn-advanced", path: "الدروس > دروس متقدمة", icon: "fa-book-open", type: "lesson" },
-    { title: "دروس المستوى المعقد", description: "تحديات ومسائل حسابية معقدة وشاملة", target: "learn-complex", path: "الدروس > دروس معقدة", icon: "fa-book-open", type: "lesson" },
+    { title: "دروس المستوى المبتدئ", keywords: "دروس ابتدائية مبتدئ beginner lessons", desc: "شرح مبسط لقواعد وتطبيقات الحساب الذهني للمبتدئين", target: "learn-beginner", path: "الدروس > دروس ابتدائية", icon: "fa-book-open" },
+    { title: "دروس المستوى المتوسط", keywords: "دروس متوسطة intermediate lessons", desc: "تطوير مهارات الحساب السريع والعمليات المتوسطة", target: "learn-intermediate", path: "الدروس > دروس متوسطة", icon: "fa-book-open" },
+    { title: "دروس المستوى المتقدم", keywords: "دروس متقدمة advanced lessons تكامل لوبيتال مصفوفات", desc: "تقنيات متقدمة في الحساب الذهني والتكاملات والمعادلات", target: "learn-advanced", path: "الدروس > دروس متقدمة", icon: "fa-book-open" },
+    { title: "دروس المستوى المعقد", keywords: "دروس معقدة complex lessons", desc: "تحديات ومسائل حسابية معقدة وشاملة", target: "learn-complex", path: "الدروس > دروس معقدة", icon: "fa-book-open" },
     
-    // التمارين التفاعلية للمستويات
-    { title: "المستوى المبتدئ (تمارين)", description: "تدريبات تفاعلية لتثبيت أساسيات الحساب المبتدئ", target: "beginner", path: "التمارين > المستوى المبتدئ", icon: "fa-star", type: "exercise" },
-    { title: "المستوى المتوسط (تمارين)", description: "تدريبات متدرجة لسرعة ودقة الحساب المتوسط", target: "intermediate", path: "التمارين > المستوى المتوسط", icon: "fa-chart-line", type: "exercise" },
-    { title: "المستوى المتقدم (تمارين)", description: "تمارين متقدمة لتنشيط الذاكرة وسرعة البديهة", target: "advanced", path: "التمارين > المستوى المتقدم", icon: "fa-brain", type: "exercise" },
-    { title: "المستوى المعقد (تمارين)", description: "أقوى التحديات والمسائل الرياضية المعقدة", target: "complex", path: "التمارين > المستوى المعقد", icon: "fa-infinity", type: "exercise" },
+    // التمارين التفاعلية
+    { title: "المستوى المبتدئ (تمارين)", keywords: "تمارين مبتدئ beginner exercises", desc: "تدريبات تفاعلية لتثبيت أساسيات الحساب المبتدئ", target: "beginner", path: "التمارين > المستوى المبتدئ", icon: "fa-star" },
+    { title: "المستوى المتوسط (تمارين)", keywords: "تمارين متوسط intermediate exercises", desc: "تدريبات متدرجة لسرعة ودقة الحساب المتوسط", target: "intermediate", path: "التمارين > المستوى المتوسط", icon: "fa-chart-line" },
+    { title: "المستوى المتقدم (تمارين)", keywords: "تمارين متقدم advanced exercises", desc: "تمارين متقدمة لتنشيط الذاكرة وسرعة البديهة", target: "advanced", path: "التمارين > المستوى المتقدم", icon: "fa-brain" },
+    { title: "المستوى المعقد (تمارين)", keywords: "تمارين معقد complex exercises", desc: "أقوى التحديات والمسائل الرياضية المعقدة", target: "complex", path: "التمارين > المستوى المعقد", icon: "fa-infinity" },
 
-    // الألعاب والأدوات التعليمية
-    { title: "اختبار السرعة (Speed Test)", description: "اختبر سرعتك في حل العمليات الحسابية ضمن وقت محدد", target: "speed-test", path: "الألعاب > اختبار السرعة", icon: "fa-stopwatch", type: "game" },
-    { title: "الحساب الذهني (Mental Math)", description: "تدريب تفاعلي لتنشيط العقل بالحساب السريع", target: "mental-math", path: "الألعاب > الحساب الذهني", icon: "fa-calculator", type: "game" },
-    { title: "العمليات المختلطة (Mixed Ops)", description: "تحدي العمليات الحسابية المتنوعة معاً", target: "mixed-ops", path: "الألعاب > العمليات المختلطة", icon: "fa-random", type: "game" },
-    { title: "لعبة Crossmath", description: "التقاطع الرياضي والألغاز الرقمية الممتعة", target: "crossmath", path: "الألعاب > Crossmath", icon: "fa-puzzle-piece", type: "game" },
-    { title: "لعبة Sliding Puzzle", description: "لعبة الأرقام المنزلقة وترتيب الخلايا الذهنية", target: "sliding_puzzle", path: "الألعاب > الألغاز المنزلقة", icon: "fa-sliders", type: "game" },
-    { title: "الآلة الحاسبة الذكية", description: "أداة مساعدة لحساب العمليات الرياضية بسرعة", target: "calculator", path: "الأدوات > الآلة الحاسبة", icon: "fa-calculator", type: "tool" }
+    // الألعاب والأدوات
+    { title: "اختبار السرعة (Speed Test)", keywords: "اختبار السرعة speed test game", desc: "اختبر سرعتك في حل العمليات الحسابية ضمن وقت محدد", target: "speed-test", path: "الألعاب > اختبار السرعة", icon: "fa-stopwatch" },
+    { title: "الحساب الذهني (Mental Math)", keywords: "حساب ذهني mental math", desc: "تدريب تفاعلي لتنشيط العقل بالحساب السريع", target: "mental-math", path: "الألعاب > الحساب الذهني", icon: "fa-calculator" },
+    { title: "العمليات المختلطة (Mixed Ops)", keywords: "عمليات مختلطة mixed ops", desc: "تحدي العمليات الحسابية المتنوعة معاً", target: "mixed-ops", path: "الألعاب > العمليات المختلطة", icon: "fa-random" },
+    { title: "لعبة Crossmath", keywords: "crossmath التقاطع الرياضي ألعاب", desc: "التقاطع الرياضي والألغاز الرقمية الممتعة", target: "crossmath", path: "الألعاب > Crossmath", icon: "fa-puzzle-piece" },
+    { title: "لعبة Sliding Puzzle", keywords: "sliding puzzle ألغاز منزلقة أرقام", desc: "لعبة الأرقام المنزلقة وترتيب الخلايا الذهنية", target: "sliding_puzzle", path: "الألعاب > الألغاز المنزلقة", icon: "fa-sliders" },
+    { title: "الآلة الحاسبة الذكية", keywords: "حاسبة calculator أداة", desc: "أداة مساعدة لحساب العمليات الرياضية بسرعة", target: "calculator", path: "الأدوات > الآلة الحاسبة", icon: "fa-calculator" },
+
+    // الصفحات الثابتة
+    { title: "من نحن", keywords: "من نحن about", desc: "تعرف على منصة MathLinguistic ورؤيتها", target: "about", path: "الصفحات > من نحن", icon: "fa-info-circle" },
+    { title: "اتصل بنا", keywords: "اتصل بنا contact تواصل", desc: "تواصل معنا عبر قنوات الاتصال المختلفة", target: "contact", path: "الصفحات > اتصل بنا", icon: "fa-envelope" },
+    { title: "شروط الاستخدام", keywords: "شروط الاستخدام terms", desc: "شروط وأحكام استخدام المنصة", target: "terms", path: "الصفحات > شروط الاستخدام", icon: "fa-file-contract" },
+    { title: "سياسة الخصوصية", keywords: "سياسة الخصوصية privacy", desc: "سياسة حماية البيانات والخصوصية", target: "privacy", path: "الصفحات > سياسة الخصوصية", icon: "fa-shield-alt" }
   ];
 
-  var searchState = {
+  var state = {
     isOpen: false,
-    elements: null,
-    isInitialized: false,
-    searchTimer: null
+    timer: null,
+    elements: null
   };
 
-  function initSearch() {
-    if (searchState.isInitialized) return;
-
-    var els = {
+  function init() {
+    state.elements = {
       toggle: document.getElementById('search-toggle'),
       overlay: document.getElementById('search-overlay'),
       input: document.getElementById('search-input'),
@@ -51,115 +55,120 @@
       noResults: document.getElementById('search-no-results')
     };
 
-    if (!els.toggle || !els.overlay || !els.input) {
-      setTimeout(initSearch, 400);
+    if (!state.elements.toggle || !state.elements.overlay || !state.elements.input) {
+      setTimeout(init, 300);
       return;
     }
 
-    searchState.elements = els;
-    searchState.isInitialized = true;
+    bindEvents();
+    console.log('🚀 محرك البحث المعماري جاهز ومستقر.');
+  }
 
-    // ربط الأحداث الأساسية
-    els.toggle.addEventListener('click', function(e) {
+  function bindEvents() {
+    var el = state.elements;
+
+    el.toggle.addEventListener('click', function(e) {
       e.preventDefault();
       openSearch();
     });
 
-    if (els.close) {
-      els.close.addEventListener('click', function(e) {
+    if (el.close) {
+      el.close.addEventListener('click', function(e) {
         e.preventDefault();
         closeSearch();
       });
     }
 
-    els.overlay.addEventListener('click', function(e) {
-      if (e.target === els.overlay) closeSearch();
+    el.overlay.addEventListener('click', function(e) {
+      if (e.target === el.overlay) closeSearch();
     });
 
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && searchState.isOpen) closeSearch();
+      if (e.key === 'Escape' && state.isOpen) closeSearch();
     });
 
-    // ⚡ معالجة الإدخال الفوري في الذاكرة (بدون وميض وبدون طلبات شبكة بطيئة)
-    els.input.addEventListener('input', function(e) {
+    // ⚡ معالجة الإدخال المباشر بدون وميض وبدون مسح الـ DOM المتكرر
+    el.input.addEventListener('input', function(e) {
       var query = e.target.value.trim().toLowerCase();
 
-      if (searchState.searchTimer) clearTimeout(searchState.searchTimer);
+      if (state.timer) clearTimeout(state.timer);
 
       if (!query) {
-        clearResults();
+        clearUI();
         return;
       }
 
-      searchState.searchTimer = setTimeout(function() {
-        executeSearch(query);
-      }, 100);
+      state.timer = setTimeout(function() {
+        runQuery(query);
+      }, 50); // استجابة فورية خلال 50 ميلي ثانية فقط
     });
   }
 
   function openSearch() {
-    var els = searchState.elements;
-    if (!els) return;
+    var el = state.elements;
+    if (!el) return;
 
-    els.overlay.style.display = 'flex';
+    el.overlay.style.display = 'flex';
     setTimeout(function() {
-      els.overlay.classList.add('active');
-      els.overlay.setAttribute('aria-hidden', 'false');
+      el.overlay.classList.add('active');
+      el.overlay.setAttribute('aria-hidden', 'false');
     }, 10);
 
-    searchState.isOpen = true;
-    setTimeout(function() { if (els.input) els.input.focus(); }, 100);
+    state.isOpen = true;
+    setTimeout(function() { if (el.input) el.input.focus(); }, 50);
     document.body.style.overflow = 'hidden';
   }
 
   function closeSearch() {
-    var els = searchState.elements;
-    if (!els) return;
+    var el = state.elements;
+    if (!el) return;
 
-    els.overlay.classList.remove('active');
-    els.overlay.setAttribute('aria-hidden', 'true');
-    setTimeout(function() { els.overlay.style.display = 'none'; }, 250);
+    el.overlay.classList.remove('active');
+    el.overlay.setAttribute('aria-hidden', 'true');
+    setTimeout(function() { el.overlay.style.display = 'none'; }, 200);
 
-    clearResults();
-    if (els.input) els.input.value = '';
+    clearUI();
+    if (el.input) el.input.value = '';
     document.body.style.overflow = '';
-    searchState.isOpen = false;
+    state.isOpen = false;
   }
 
-  function clearResults() {
-    var els = searchState.elements;
-    if (!els) return;
-    if (els.results) els.results.innerHTML = '';
-    if (els.noResults) els.noResults.hidden = true;
+  function clearUI() {
+    var el = state.elements;
+    if (!el) return;
+    if (el.results) el.results.innerHTML = '';
+    if (el.noResults) el.noResults.hidden = true;
   }
 
-  function executeSearch(query) {
-    var els = searchState.elements;
-    if (!els || !els.results) return;
+  function runQuery(q) {
+    var el = state.elements;
+    if (!el || !el.results) return;
 
-    // فلترة سريعة ومستقرة جداً من الفهرس الثابت المحفوظ في الذاكرة
-    var matches = staticSearchIndex.filter(function(item) {
+    // تطبيع نص البحث وإزالة المسافات الزائدة
+    var cleanQ = q.replace(/\s+/g, ' ');
+
+    var matches = appMasterIndex.filter(function(item) {
       var title = (item.title || '').toLowerCase();
-      var desc = (item.description || '').toLowerCase();
-      var path = (item.path || '').toLowerCase();
-      return title.indexOf(query) !== -1 || desc.indexOf(query) !== -1 || path.indexOf(query) !== -1;
+      var desc = (item.desc || '').toLowerCase();
+      var keys = (item.keywords || '').toLowerCase();
+      return title.indexOf(cleanQ) !== -1 || desc.indexOf(cleanQ) !== -1 || keys.indexOf(cleanQ) !== -1;
     });
 
     if (matches.length === 0) {
-      if (els.noResults) {
-        els.noResults.hidden = false;
-        els.noResults.textContent = '❌ لا توجد نتائج مطابقة لـ "' + query + '"';
+      if (el.noResults) {
+        el.noResults.hidden = false;
+        el.noResults.textContent = '❌ لا توجد نتائج مطابقة لـ "' + q + '"';
       }
-      els.results.innerHTML = '';
+      el.results.innerHTML = '';
     } else {
-      if (els.noResults) els.noResults.hidden = true;
+      if (el.noResults) el.noResults.hidden = true;
 
       var fragment = document.createDocumentFragment();
 
       matches.forEach(function(item) {
         var div = document.createElement('div');
         div.className = 'search-result-item';
-        div.style.cssText = 'padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.06); cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--card-bg, #ffffff);';
+        div.style.cssText = 'padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.06); cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--card-bg, #ffffff); transition: background 0.2s;';
 
         div.innerHTML = `
           <div style="width: 38px; height: 38px; border-radius: 8px; background: var(--accent-color, #3498db); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
@@ -171,12 +180,12 @@
           </div>
         `;
 
-        // عند النقر، يتم استدعاء loadContent بالـ target الصحيح 100% والمقبول في main.js
+        // حدث التنقل الآمن والمباشر بدون أي أخطاء محتملة
         div.addEventListener('click', function(e) {
           e.preventDefault();
           closeSearch();
 
-          console.log('🚀 الانتقال المباشر إلى:', item.target);
+          console.log('🎯 توجيه مباشر دقيق إلى:', item.target);
           if (typeof window.loadContent === 'function') {
             window.loadContent(item.target);
           }
@@ -185,8 +194,8 @@
         fragment.appendChild(div);
       });
 
-      els.results.innerHTML = '';
-      els.results.appendChild(fragment);
+      el.results.innerHTML = '';
+      el.results.appendChild(fragment);
     }
   }
 
@@ -198,8 +207,8 @@
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSearch);
+    document.addEventListener('DOMContentLoaded', init);
   } else {
-    initSearch();
+    init();
   }
 })();

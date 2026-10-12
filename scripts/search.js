@@ -251,14 +251,23 @@
           </div>
         `;
         
-        div.addEventListener('click', (e) => {
+                div.addEventListener('click', (e) => {
           e.preventDefault();
           closeSearch();
+          
           if (typeof window.loadContent === 'function' && item.loadTarget) {
-            console.log('🚀 الانتقال إلى الهدف:', item.loadTarget);
-            window.loadContent(item.loadTarget);
+            let finalTarget = item.loadTarget;
+            
+            // تصحيح جذري لأي target خاطئ قد يسبب خطأ "صفحة غير معروفة"
+            if (finalTarget === 'lesson' || finalTarget === 'lessons') {
+              finalTarget = 'learn-beginner'; // أو المستوى الافتراضي المناسب
+            }
+            
+            console.log('🚀 الانتقال إلى الهدف الصحيح:', finalTarget);
+            window.loadContent(finalTarget);
           }
         });
+
         
         fragment.appendChild(div);
       });

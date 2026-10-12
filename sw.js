@@ -102,27 +102,43 @@ self.addEventListener('activate', (event) => {
 });
 
 // 🌐 معالجة طلبات الجلب (Fetch)
+// 🌐 معالجة طلبات الجلب (Fetch)
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
   if (!url.href.includes('/MathLinguistic/')) return;
 
-  // 1. طلبات الصفحات (HTML Navigation)
+  // 1. طلبات الصفحات (HTML Navigation) - تم تعديلها لتصبح Cache First لتفتح بدون إنترنت فورا
   if (request.mode === 'navigate' || url.pathname.endsWith('.html')) {
     event.respondWith(
-      fetch(request)
-        .then(response => {
-          if (response.ok) {
-            const copy = response.clone();
-            caches.open(CORE_CACHE).then(cache => cache.put(request, copy));
+      caches.match(request, { ignoreSearch: true })
+        .then(cachedResponse => {
+          // إذا وجدنا الصفحة في الكاش، نعيدها فوراً وندير التحديث في الخلفية بهدوء
+          if (cachedResponse) {
+            // محاولة تحديث الكاش من الشبكة في الخلفية إن توفر إنترنت
+            fetch(request).then(networkResponse => {
+              if (networkResponse.ok) {
+                caches.open(CORE_CACHE).then(cache => cache.put(request, networkResponse));
+              }
+            }).catch(() => {});
+            
+            return cachedResponse;
           }
-          return response;
-        })
-        .catch(() => {
-          // إذا فشلت الشبكة، ابحث في الكاش أولاً عن الصفحة المطلوبة ثم offline.html
-          return caches.match(request, { ignoreSearch: true })
-            .then(cached => cached || caches.match('/MathLinguistic/offline.html', { ignoreSearch: true }));
+
+          // إذا لم تكن في الكاش، نحاول جلبها من الشبكة
+          return fetch(request)
+            .then(response => {
+              if (response.ok) {
+                const copy = response.clone();
+                caches.open(CORE_CACHE).then(cache => cache.put(request, copy));
+              }
+              return response;
+            })
+            .catch(() => {
+              // الحل الاحتياطي النهائي عند انقطاع الإنترنت وعدم وجود الصفحة في الكاش
+              return caches.match('/MathLinguistic/offline.html', { ignoreSearch: true });
+            });
         })
     );
     return;

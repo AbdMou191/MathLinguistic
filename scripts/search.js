@@ -1,115 +1,44 @@
 /**
- * 🔍 نظام البحث الذكي - MathLinguistic
- * الإصدار: 7.0 (مستقر بدون وميض ومعالجة كاملة للتوجيه)
+ * 🔍 نظام البحث الذكي الثابت - MathLinguistic
+ * الإصدار: 8.0 (سريع جداً، بدون وميض، متوافق 100% مع main.js)
  */
 
 (function() {
   'use strict';
 
+  // 📚 فهرس ثابت ودقيق لجميع صفحات وأقسام المنصة المقبولة في loadContent
+  var staticSearchIndex = [
+    { title: "الرئيسية", description: "الصفحة الرئيسية لمنصة MathLinguistic", target: "home", path: "الرئيسية", icon: "fa-home", type: "page" },
+    { title: "الإنجازات والأوسمة", description: "عرض إنجازاتك والنقاط التي جمعتها في المنصة", target: "achievements", path: "الرئيسية > الإنجازات", icon: "fa-trophy", type: "achievement" },
+    
+    // دروس وقواعد الحساب الذهني
+    { title: "دروس المستوى المبتدئ", description: "شرح مبسط لقواعد وتطبيقات الحساب الذهني للمبتدئين", target: "learn-beginner", path: "الدروس > دروس ابتدائية", icon: "fa-book-open", type: "lesson" },
+    { title: "دروس المستوى المتوسط", description: "تطوير مهارات الحساب السريع والعمليات المتوسطة", target: "learn-intermediate", path: "الدروس > دروس متوسطة", icon: "fa-book-open", type: "lesson" },
+    { title: "دروس المستوى المتقدم", description: "تقنيات متقدمة في الحساب الذهني والسوروبان", target: "learn-advanced", path: "الدروس > دروس متقدمة", icon: "fa-book-open", type: "lesson" },
+    { title: "دروس المستوى المعقد", description: "تحديات ومسائل حسابية معقدة وشاملة", target: "learn-complex", path: "الدروس > دروس معقدة", icon: "fa-book-open", type: "lesson" },
+    
+    // التمارين التفاعلية للمستويات
+    { title: "المستوى المبتدئ (تمارين)", description: "تدريبات تفاعلية لتثبيت أساسيات الحساب المبتدئ", target: "beginner", path: "التمارين > المستوى المبتدئ", icon: "fa-star", type: "exercise" },
+    { title: "المستوى المتوسط (تمارين)", description: "تدريبات متدرجة لسرعة ودقة الحساب المتوسط", target: "intermediate", path: "التمارين > المستوى المتوسط", icon: "fa-chart-line", type: "exercise" },
+    { title: "المستوى المتقدم (تمارين)", description: "تمارين متقدمة لتنشيط الذاكرة وسرعة البديهة", target: "advanced", path: "التمارين > المستوى المتقدم", icon: "fa-brain", type: "exercise" },
+    { title: "المستوى المعقد (تمارين)", description: "أقوى التحديات والمسائل الرياضية المعقدة", target: "complex", path: "التمارين > المستوى المعقد", icon: "fa-infinity", type: "exercise" },
+
+    // الألعاب والأدوات التعليمية
+    { title: "اختبار السرعة (Speed Test)", description: "اختبر سرعتك في حل العمليات الحسابية ضمن وقت محدد", target: "speed-test", path: "الألعاب > اختبار السرعة", icon: "fa-stopwatch", type: "game" },
+    { title: "الحساب الذهني (Mental Math)", description: "تدريب تفاعلي لتنشيط العقل بالحساب السريع", target: "mental-math", path: "الألعاب > الحساب الذهني", icon: "fa-calculator", type: "game" },
+    { title: "العمليات المختلطة (Mixed Ops)", description: "تحدي العمليات الحسابية المتنوعة معاً", target: "mixed-ops", path: "الألعاب > العمليات المختلطة", icon: "fa-random", type: "game" },
+    { title: "لعبة Crossmath", description: "التقاطع الرياضي والألغاز الرقمية الممتعة", target: "crossmath", path: "الألعاب > Crossmath", icon: "fa-puzzle-piece", type: "game" },
+    { title: "لعبة Sliding Puzzle", description: "لعبة الأرقام المنزلقة وترتيب الخلايا الذهنية", target: "sliding_puzzle", path: "الألعاب > الألغاز المنزلقة", icon: "fa-sliders", type: "game" },
+    { title: "الآلة الحاسبة الذكية", description: "أداة مساعدة لحساب العمليات الرياضية بسرعة", target: "calculator", path: "الأدوات > الآلة الحاسبة", icon: "fa-calculator", type: "tool" }
+  ];
+
   var searchState = {
     isOpen: false,
     elements: null,
     isInitialized: false,
-    searchIndex: [],
-    isIndexing: false,
-    searchTimer: null,
-    jsonFilesList: [
-      { path: '/MathLinguistic/data/lessons/beginner.json', category: 'درس', type: 'lesson', level: 'beginner', name: 'دروس المبتدئين' },
-      { path: '/MathLinguistic/data/lessons/intermediate.json', category: 'درس', type: 'lesson', level: 'intermediate', name: 'دروس المتوسط' },
-      { path: '/MathLinguistic/data/lessons/advanced.json', category: 'درس', type: 'lesson', level: 'mischief', name: 'دروس المتقدم' },
-      { path: '/MathLinguistic/data/lessons/complex.json', category: 'درس', type: 'lesson', level: 'complex', name: 'دروس المعقد' },
-      { path: '/MathLinguistic/data/levels/beginner.json', category: 'مستوى', type: 'level', level: 'beginner', name: 'مستوى المبتدئين' },
-      { path: '/MathLinguistic/data/levels/intermediate.json', category: 'مستوى', type: 'level', level: 'intermediate', name: 'مستوى المتوسط' },
-      { path: '/MathLinguistic/data/levels/advanced.json', category: 'مستوى', type: 'level', level: 'advanced', name: 'مستوى المتقدم' },
-      { path: '/MathLinguistic/data/levels/complex.json', category: 'مستوى', type: 'level', level: 'complex', name: 'مستوى المعقد' },
-      { path: '/MathLinguistic/data/achievements.json', category: 'إنجاز', type: 'achievement', level: 'all', name: 'الإنجازات' }
-    ]
+    searchTimer: null
   };
 
-  // ✅ 1. خريطة تحويل الأهداف المباشرة لمنع خطأ "صفحة غير معروفة"
-  function resolveCorrectTarget(rawTarget, type, level) {
-    if (!rawTarget || rawTarget === 'lesson' || rawTarget === 'lessons') {
-      if (level && level !== 'all') {
-        return 'learn-' + level; // تحويل lesson + beginner إلى learn-beginner
-      }
-      return 'learn-beginner';
-    }
-    if (rawTarget === 'level' || rawTarget === 'levels') {
-      return level || 'beginner';
-    }
-    return rawTarget;
-  }
-
-  // ✅ 2. جلب الملفات وبناء الفهرس مرة واحدة فقط في البداية
-  async function initIndexOnce() {
-    if (searchState.isIndexing || searchState.searchIndex.length > 0) return;
-    searchState.isIndexing = true;
-
-    var tempIndex = [];
-    var idCounter = 1;
-
-    // فهرسة الملفات المباشرة من DOM والـ Window
-    if (window.beginnerProblems && Array.isArray(window.beginnerProblems)) {
-      window.beginnerProblems.forEach(function(p, idx) {
-        tempIndex.push({
-          id: 'beg-' + idx,
-          title: p.question || 'مسألة مبتدئة',
-          description: p.hint || p.explanation || '',
-          target: 'beginner',
-          path: 'الرئيسية > المستوى المبتدئ',
-          icon: 'fa-pen'
-        });
-      });
-    }
-
-    // جلب ملفات JSON
-    for (var i = 0; i < searchState.jsonFilesList.length; i++) {
-      var file = searchState.jsonFilesList[i];
-      try {
-        var res = await fetch(file.path);
-        if (!res.ok) continue;
-        var data = await res.json();
-
-        var correctTarget = resolveCorrectTarget(file.type, file.type, file.level);
-
-        if (data.title) {
-          tempIndex.push({
-            id: 'json-' + idCounter++,
-            title: data.title,
-            description: data.description || file.name,
-            target: correctTarget,
-            path: '📁 ' + file.name + ' > ' + data.title,
-            icon: file.type === 'lesson' ? 'fa-book' : 'fa-layer-group'
-          });
-        }
-
-        var subItems = data.lessons || data.problems || data.exercises || data.challenges;
-        if (Array.isArray(subItems)) {
-          subItems.forEach(function(item) {
-            var itemTitle = item.title || item.question || '';
-            if (itemTitle) {
-              tempIndex.push({
-                id: 'sub-' + idCounter++,
-                title: itemTitle,
-                description: item.hint || item.explanation || item.description || file.name,
-                target: correctTarget,
-                path: '📁 ' + file.name + ' > ' + itemTitle,
-                icon: 'fa-star'
-              });
-            }
-          });
-        }
-      } catch (e) {
-        console.warn('⚠️ فشل جلب:', file.path);
-      }
-    }
-
-    searchState.searchIndex = tempIndex;
-    searchState.isIndexing = false;
-    console.log('✅ تم بناء الفهرس بنجاح بدون تكرار:', tempIndex.length, 'عنصر');
-  }
-
-  // ✅ 3. التهيئة وربط الأحداث
   function initSearch() {
     if (searchState.isInitialized) return;
 
@@ -130,9 +59,7 @@
     searchState.elements = els;
     searchState.isInitialized = true;
 
-    // بدء الفهرسة في الخلفية مرة واحدة فقط عند فتح الصفحة
-    initIndexOnce();
-
+    // ربط الأحداث الأساسية
     els.toggle.addEventListener('click', function(e) {
       e.preventDefault();
       openSearch();
@@ -153,7 +80,7 @@
       if (e.key === 'Escape' && searchState.isOpen) closeSearch();
     });
 
-    // ⚡ معالجة الإدخال بشكل ثابت ومستقر منعاً للوميض
+    // ⚡ معالجة الإدخال الفوري في الذاكرة (بدون وميض وبدون طلبات شبكة بطيئة)
     els.input.addEventListener('input', function(e) {
       var query = e.target.value.trim().toLowerCase();
 
@@ -164,7 +91,6 @@
         return;
       }
 
-      // البحث المحلي السريع جداً دون إعادة مسح الفهرس
       searchState.searchTimer = setTimeout(function() {
         executeSearch(query);
       }, 100);
@@ -184,11 +110,6 @@
     searchState.isOpen = true;
     setTimeout(function() { if (els.input) els.input.focus(); }, 100);
     document.body.style.overflow = 'hidden';
-
-    // التاكد من وجود الفهرس عند الفتح
-    if (searchState.searchIndex.length === 0) {
-      initIndexOnce();
-    }
   }
 
   function closeSearch() {
@@ -212,24 +133,22 @@
     if (els.noResults) els.noResults.hidden = true;
   }
 
-  // ✅ 4. تنفيذ البحث في الذاكرة دون الوميض
   function executeSearch(query) {
     var els = searchState.elements;
     if (!els || !els.results) return;
 
-    var index = searchState.searchIndex;
-    if (!index || index.length === 0) return;
-
-    var matches = index.filter(function(item) {
+    // فلترة سريعة ومستقرة جداً من الفهرس الثابت المحفوظ في الذاكرة
+    var matches = staticSearchIndex.filter(function(item) {
       var title = (item.title || '').toLowerCase();
       var desc = (item.description || '').toLowerCase();
-      return title.indexOf(query) !== -1 || desc.indexOf(query) !== -1;
-    }).slice(0, 20);
+      var path = (item.path || '').toLowerCase();
+      return title.indexOf(query) !== -1 || desc.indexOf(query) !== -1 || path.indexOf(query) !== -1;
+    });
 
     if (matches.length === 0) {
       if (els.noResults) {
         els.noResults.hidden = false;
-        els.noResults.textContent = '❌ لا توجد نتائج لـ "' + query + '"';
+        els.noResults.textContent = '❌ لا توجد نتائج مطابقة لـ "' + query + '"';
       }
       els.results.innerHTML = '';
     } else {
@@ -252,15 +171,14 @@
           </div>
         `;
 
+        // عند النقر، يتم استدعاء loadContent بالـ target الصحيح 100% والمقبول في main.js
         div.addEventListener('click', function(e) {
           e.preventDefault();
           closeSearch();
 
-          var target = item.target;
-          console.log('🚀 الانتقال الآمن إلى الصفحة:', target);
-
+          console.log('🚀 الانتقال المباشر إلى:', item.target);
           if (typeof window.loadContent === 'function') {
-            window.loadContent(target);
+            window.loadContent(item.target);
           }
         });
 

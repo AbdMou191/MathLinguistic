@@ -14,90 +14,51 @@
   "categories": ["education", "games", "productivity"],
   "prefer_related_applications": false,
   
-  "screenshots": [
-    {
-      "src": "screenshots/home.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "الصفحة الرئيسية لمستويات الرياضيات"
-    },
-    {
-      "src": "screenshots/level.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "واجهة لعبة التحدي الرياضي"
-    }
-  ],
-  
-  "shortcuts": [
-    {
-      "name": "مستوى المبتدئ",
-      "short_name": "مبتدئ",
-      "description": "ابدأ بمستوى المبتدئ",
-      "url": "/MathLinguistic/?level=beginner",
-      "icons": [{ "src": "icons/icon-96.webp", "sizes": "96x96" }]
-    },
-    {
-      "name": "تحدي السرعة",
-      "short_name": "سرعة",
-      "description": "اختبر سرعتك في الحساب",
-      "url": "/MathLinguistic/?game=speed",
-      "icons": [{ "src": "icons/icon-96.webp", "sizes": "96x96" }]
-    },
-    {
-      "name": "الإنجازات",      "short_name": "إنجازات",
-      "description": "شاهد تقدمك والمكافآت",
-      "url": "/MathLinguistic/?page=achievements",
-      "icons": [{ "src": "icons/icon-96.webp", "sizes": "96x96" }]
-    }
-  ],
-  
   "icons": [
     {
-      "src": "icons/icon-48.png",
+      "src": "/MathLinguistic/icons/icon-48.png",
       "sizes": "48x48",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-72.png",
+      "src": "/MathLinguistic/icons/icon-72.png",
       "sizes": "72x72",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-96.png",
+      "src": "/MathLinguistic/icons/icon-96.png",
       "sizes": "96x96",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-144.png",
+      "src": "/MathLinguistic/icons/icon-144.png",
       "sizes": "144x144",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-192.png",
+      "src": "/MathLinguistic/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icons/icon-192.webp",
+      "src": "/MathLinguistic/icons/icon-192.webp",
       "sizes": "192x192",
       "type": "image/webp",
       "purpose": "any maskable"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "/MathLinguistic/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
-    },    {
-      "src": "icons/icon-512.webp",
+    },
+    {
+      "src": "/MathLinguistic/icons/icon-512.webp",
       "sizes": "512x512",
       "type": "image/webp",
       "purpose": "any maskable"

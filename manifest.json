@@ -1,4 +1,5 @@
 {
+  "id": "/MathLinguistic/",
   "name": "MathLinguistic - الحساب الذهني",
   "short_name": "MathLing",
   "description": "تطبيق تعليمي ذكي للحساب الذهني والتحديات الرياضية مع نظام إنجازات ومستويات متدرجة.",
@@ -13,13 +14,14 @@
   
   "categories": ["education", "games", "productivity"],
   "prefer_related_applications": false,
-  
+  "related_applications": [],
+
   "screenshots": [
     {
       "src": "/MathLinguistic/screenshots/home.png",
       "sizes": "1200x630",
       "type": "image/png",
-      "form_factor": "narrow",
+      "form_factor": "wide",
       "label": "الصفحة الرئيسية لمستويات الرياضيات"
     },
     {

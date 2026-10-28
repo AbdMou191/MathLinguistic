@@ -656,7 +656,7 @@ window.isAppInstalled = checkInstallStatus;
     if ('serviceWorker' in navigator) {
       let deferredWorker = null;
 
-      navigator.serviceWorker.register('/MathLinguistic/sw.js')
+      navigator.serviceWorker.register('./sw.js')
         .then(reg => {
           console.log('✅ SW مسجل:', reg.scope);
 

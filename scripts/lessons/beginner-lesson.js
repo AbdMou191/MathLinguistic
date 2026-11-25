@@ -210,8 +210,8 @@ function renderLessonPage() {
         </div>
 
         <div class="lessons-list-container">
-            ${paginatedLessons.map(lesson => `
-                <div class="lesson-card">
+            ${paginatedLessons.map((lesson, localIndex) => `
+                <div class="lesson-card" data-search-lesson-index="${start + localIndex}">
                     <div class="lesson-card-header">
                         <i class="fas ${lesson.icon} lesson-icon"></i>
                         <h3 class="lesson-card-title">${lesson.title}</h3>

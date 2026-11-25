@@ -27,6 +27,33 @@
     return (d.textContent || '').replace(/\s+/g, ' ').trim();
   }
 
+
+
+// استخراج جميع النصوص من عناصر JSON
+function collectSearchableText(value, key) {
+  if (value === null || value === undefined) return '';
+
+  // تجاهل البيانات التقنية غير المفيدة للبحث
+  if (['icon', 'image', 'image_url', 'url', 'audio', 'video', 'id'].includes(key)) {
+    return '';
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(function(item) {
+      return collectSearchableText(item, '');
+    }).join(' ');
+  }
+
+  if (typeof value === 'object') {
+    return Object.keys(value).map(function(k) {
+      return collectSearchableText(value[k], k);
+    }).join(' ');
+  }
+
+  return String(value);
+}
+
+
   /* ================= 📂 الأقسام الثابتة (العناوين الرئيسية) ================= */
 
   var STATIC_ENTRIES = [
@@ -156,6 +183,11 @@
 
       Promise.all(jobs).then(function () {
         self.isBuilt = true;
+        console.log('📊 إحصائيات الفهرس:', {
+  total: self.index.length,
+  lessons: self.index.filter(x => x.type === 'lesson').length,
+  exercises: self.index.filter(x => x.type === 'exercise').length
+});
         self.isBuilding = false;
         console.log('✅ اكتمل فهرس البحث: ' + self.index.length + ' عنصراً');
         // إعادة تشغيل البحث الحالي إن وُجد (main.js يعرضها أثناء البناء)
@@ -163,48 +195,59 @@
       });
     },
 
-    _indexSource: function (src, data) {
-      var items = (data && (data.lessons || data.problems)) || (Array.isArray(data) ? data : []);
-      for (var i = 0; i < items.length; i++) {
-        var it = items[i] || {};
-        var num = it.id || (i + 1);
-        var entry;
+    
+_indexSource: function (src, data) {
+  var items = (data && (data.lessons || data.problems)) ||
+              (Array.isArray(data) ? data : []);
 
-        if (src.type === 'lesson') {
-          var title = stripHtml(it.title) || ('درس ' + num);
-          entry = {
-            id: 'lesson-' + src.level + '-' + i,
-            type: 'lesson',
-            target: src.target,
-            itemIndex: i,
-            icon: it.icon || src.meta.icon,
-            title: title,
-            path: 'الدروس > ' + src.meta.name + ' > الدرس ' + num,
-            category: 'درس • رقم ' + num
-          };
-          entry.searchText = normalizeText(
-            title + ' ' + stripHtml(it.explanation).slice(0, 150) + ' ' +
-            stripHtml(it.golden_rule || '').slice(0, 80) + ' درس ' + num + ' ' + num
-          );
-        } else {
-          var q = stripHtml(it.question || it.problem || '').slice(0, 90);
-          entry = {
-            id: 'ex-' + src.level + '-' + i,
-            type: 'exercise',
-            target: src.target,
-            itemIndex: i,
-            icon: src.meta.icon,
-            title: 'تمرين ' + num + (q ? ' — ' + q.slice(0, 35) : ''),
-            path: 'التمارين > ' + src.meta.name + ' > تمرين ' + num,
-            category: 'تمرين • رقم ' + num
-          };
-          entry.searchText = normalizeText(
-            'تمرين مساله ' + num + ' ' + q + ' ' + stripHtml(it.hint || '').slice(0, 60)
-          );
-        }
-        this.index.push(entry);
-      }
-    },
+  for (var i = 0; i < items.length; i++) {
+    var it = items[i] || {};
+    var num = it.id || (i + 1);
+    var entry;
+
+    var fullText = normalizeText(
+      collectSearchableText(it, '')
+    );
+
+    if (src.type === 'lesson') {
+      var title = stripHtml(it.title) || ('درس ' + num);
+
+      entry = {
+        id: 'lesson-' + src.level + '-' + i,
+        type: 'lesson',
+        target: src.target,
+        itemIndex: i,
+        icon: it.icon || src.meta.icon,
+        title: title,
+        path: 'الدروس > ' + src.meta.name + ' > الدرس ' + num,
+        category: 'درس • رقم ' + num,
+        searchText: normalizeText(
+          fullText + ' درس ' + num
+        )
+      };
+
+    } else {
+      var q = stripHtml(it.question || it.problem || '');
+
+      entry = {
+        id: 'ex-' + src.level + '-' + i,
+        type: 'exercise',
+        target: src.target,
+        itemIndex: i,
+        icon: src.meta.icon,
+        title: 'تمرين ' + num + (q ? ' — ' + q.slice(0, 35) : ''),
+        path: 'التمارين > ' + src.meta.name + ' > تمرين ' + num,
+        category: 'تمرين • رقم ' + num,
+        searchText: normalizeText(
+          fullText + ' تمرين مسألة ' + num
+        )
+      };
+    }
+
+    this.index.push(entry);
+  }
+},
+
 
     /* البحث: تطابق جزئي أولاً ثم تطابق كل الكلمات كاحتياط */
     search: function (query) {

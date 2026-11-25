@@ -93,6 +93,12 @@ function collectSearchableText(value, key) {
     complex:      { name: 'المعقد',  icon: 'fa-infinity' }
   };
 
+  // عدد العناصر في كل صفحة كما هو معرّف في ملفات العرض الفعلية.
+  var PAGE_SIZES = {
+    lesson: { beginner: 5, intermediate: 3, advanced: 2, complex: 3 },
+    exercise: { beginner: 10, intermediate: 10, advanced: 5, complex: 5 }
+  };
+
   var DATA_SOURCES = [];
   LEVELS.forEach(function (level) {
     DATA_SOURCES.push({
@@ -174,23 +180,36 @@ function collectSearchableText(value, key) {
       self.isBuilding = true;
       console.log('🔍 بدء بناء فهرس البحث العميق...');
 
+      var loaded = 0;
+      var failed = [];
       var jobs = DATA_SOURCES.map(function (src) {
         return fetch(src.url)
-          .then(function (r) { return r.ok ? r.json() : null; })
-          .catch(function () { return null; })
-          .then(function (data) { if (data) self._indexSource(src, data); });
+          .then(function (response) {
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            return response.json();
+          })
+          .then(function (data) {
+            self._indexSource(src, data);
+            loaded++;
+            console.log('✅ فُهرس الملف:', src.url);
+          })
+          .catch(function (error) {
+            failed.push(src.url);
+            console.error('❌ تعذر تحميل مصدر البحث:', src.url, error);
+          });
       });
 
       Promise.all(jobs).then(function () {
         self.isBuilt = true;
-        console.log('📊 إحصائيات الفهرس:', {
-  total: self.index.length,
-  lessons: self.index.filter(x => x.type === 'lesson').length,
-  exercises: self.index.filter(x => x.type === 'exercise').length
-});
         self.isBuilding = false;
+        console.log('📊 إحصائيات الفهرس:', {
+          loadedFiles: loaded,
+          failedFiles: failed,
+          total: self.index.length,
+          lessons: self.index.filter(function (x) { return x.type === 'lesson'; }).length,
+          exercises: self.index.filter(function (x) { return x.type === 'exercise'; }).length
+        });
         console.log('✅ اكتمل فهرس البحث: ' + self.index.length + ' عنصراً');
-        // إعادة تشغيل البحث الحالي إن وُجد (main.js يعرضها أثناء البناء)
         if (typeof window.refreshSearchUI === 'function') window.refreshSearchUI();
       });
     },
@@ -217,9 +236,10 @@ _indexSource: function (src, data) {
         type: 'lesson',
         target: src.target,
         itemIndex: i,
+        page: Math.floor(i / PAGE_SIZES.lesson[src.level]) + 1,
         icon: it.icon || src.meta.icon,
         title: title,
-        path: 'الدروس > ' + src.meta.name + ' > الدرس ' + num,
+        path: 'الدروس > ' + src.meta.name + ' > الدرس ' + num + ' > الصفحة ' + (Math.floor(i / PAGE_SIZES.lesson[src.level]) + 1),
         category: 'درس • رقم ' + num,
         searchText: normalizeText(
           fullText + ' درس ' + num
@@ -234,9 +254,10 @@ _indexSource: function (src, data) {
         type: 'exercise',
         target: src.target,
         itemIndex: i,
+        page: Math.floor(i / PAGE_SIZES.exercise[src.level]) + 1,
         icon: src.meta.icon,
         title: 'تمرين ' + num + (q ? ' — ' + q.slice(0, 35) : ''),
-        path: 'التمارين > ' + src.meta.name + ' > تمرين ' + num,
+        path: 'التمارين > ' + src.meta.name + ' > تمرين ' + num + ' > الصفحة ' + (Math.floor(i / PAGE_SIZES.exercise[src.level]) + 1),
         category: 'تمرين • رقم ' + num,
         searchText: normalizeText(
           fullText + ' تمرين مسألة ' + num
@@ -278,21 +299,9 @@ _indexSource: function (src, data) {
         return;
       }
 
-      var targetIndex = (item.type === 'lesson') ? item.itemIndex : null;
-      var pending = null;
-      try {
-        // بعض دروس (متوسط) تدعم targetIndex وتتكفل بالتمرير والتمييز ذاتياً
-        pending = window.loadContent(item.target, true, targetIndex);
-      } catch (e) {
-        pending = null;
-      }
-
-      // ضمان الوصول للصفحة الصحيحة حتى مع الملفات التي لا تدعم targetIndex
-      if (pending && typeof pending.then === 'function') {
-        pending.then(function () { waitForRendered(item); });
-        pending.catch(function () { waitForRendered(item); });
-      } else {
-        waitForRendered(item);
+      // نمرر الفهرس الصفري للدروس والتمارين؛ main.js يتولى اختيار الصفحة الدقيقة.
+      if (typeof window.loadContent === 'function') {
+        window.loadContent(item.target, true, item.itemIndex);
       }
     }
   };

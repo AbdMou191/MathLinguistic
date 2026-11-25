@@ -184,6 +184,11 @@ async function loadContent(target, usePushState = true, targetIndex = null) {
     } else {
       throw new Error(`الدالة ${functionName} غير موجودة`);
     }
+
+    // عند فتح نتيجة بحث عميقة، انتقل إلى صفحة العنصر نفسه في جميع المستويات.
+    if (Number.isInteger(targetIndex) && targetIndex >= 0) {
+      navigateToSearchItem(target, targetIndex);
+    }
     
     if (usePushState) {
       history.pushState({ page: target, index: targetIndex }, '', `#${target}`);
@@ -204,6 +209,47 @@ async function loadContent(target, usePushState = true, targetIndex = null) {
     }
     isNavigationLocked = false;
   }
+}
+
+// ==========================================
+// 🔎 الانتقال الدقيق إلى عنصر قادم من نتائج البحث
+// ==========================================
+function navigateToSearchItem(target, itemIndex) {
+  const routes = {
+    'learn-beginner':     { perPage: 5,  change: page => window.changeLessonPage && window.changeLessonPage(page), selector: '[data-search-lesson-index="INDEX"]' },
+    'learn-intermediate': { perPage: 3,  change: page => window.changeIntLessonPage && window.changeIntLessonPage(page), selector: '[data-idx="INDEX"]' },
+    'learn-advanced':     { perPage: 2,  change: page => window.changeAdvLessonPage && window.changeAdvLessonPage(page), selector: '[data-search-lesson-index="INDEX"]' },
+    'learn-complex':      { perPage: 3,  change: page => window.changeCpxLessonPage && window.changeCpxLessonPage(page), selector: '[data-lesson-index="INDEX"]' },
+    'beginner':           { perPage: 10, change: page => window.begShowProblems && window.begShowProblems(page), selector: '[data-idx="INDEX"]' },
+    'intermediate':       { perPage: 10, change: page => window.intShowProblems && window.intShowProblems(page), selector: '[data-idx="INDEX"]' },
+    'advanced':           { perPage: 5,  change: page => window.advShowProblems && window.advShowProblems(page), selector: '[data-idx="INDEX"]' },
+    'complex':            { perPage: 5,  change: page => window.showProblems && window.showProblems(page), selector: '[data-idx="INDEX"]' }
+  };
+  const route = routes[target];
+  if (!route) return;
+
+  const page = Math.floor(itemIndex / route.perPage) + 1;
+  route.change(page);
+
+  // انتظر تحديث DOM بعد تغيير الصفحة ثم مرّر إلى العنصر وأبرزه.
+  window.setTimeout(() => {
+    const selector = route.selector.replace('INDEX', String(itemIndex));
+    const element = document.querySelector('#main-content ' + selector);
+    if (!element) {
+      console.warn('لم يتم العثور على العنصر المطلوب من البحث:', target, itemIndex);
+      return;
+    }
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    element.style.transition = 'box-shadow .35s ease, outline .35s ease';
+    element.style.outline = '3px solid var(--accent-color)';
+    element.style.outlineOffset = '3px';
+    element.style.boxShadow = '0 0 0 6px rgba(243, 156, 18, .14)';
+    window.setTimeout(() => {
+      element.style.outline = '';
+      element.style.outlineOffset = '';
+      element.style.boxShadow = '';
+    }, 2800);
+  }, 180);
 }
 
 // ==========================================

@@ -62,9 +62,14 @@ window.loadIntermediatePage = async function(problemData) {
         }
 
         // تنظيف الأسئلة
+                // تنظيف الأسئلة ب
         intProblems = intProblems.map(p => {
-            let cleanQ = (p.question || "").replace(/\?\s*/g, '').split('=')[0].trim();
-            p.question = cleanQ + " =";
+            let q = (p.question || "").trim();
+            // إذا لم تكن تحتوي على علامة يساوي، أضفها بشكل نظيف
+            if (!q.includes('=') && !q.includes('\\(') && !q.includes('$')) {
+                q = q.replace(/\?\s*/g, '') + " =";
+            }
+            p.question = q;
             return p;
         });
 
@@ -506,6 +511,8 @@ function intRenderPagination() {
     }).join('');
 }
 
+
+window.intShowProblems = intShowProblems;
 // ✅ تغيير الصفحة
 window.intChPg = function(dir) {
     const total = Math.ceil(intProblems.length / INT_PER_PAGE);

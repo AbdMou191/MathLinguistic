@@ -356,7 +356,7 @@ function showProblems(page) {    currentComplexPage = page;
         const hintDone = purchasedHints[idx] === true;
         
         return `
-        <div class="cmp-box">
+        <div class="cmp-box" data-idx="${idx}" id="problem-${idx}">
             <div class="cmp-bar">
                 <div class="cmp-num">مسألة ${idx + 1}</div>
                 <div class="cmp-hb ${hintDone?'done':''}" onclick="tglHint(${idx});return false" title="${hintDone?'عرض التلميح':'شراء (15 نقطة)'}">
@@ -550,6 +550,8 @@ function chPg(dir) {
     showProblems(np);
 }
 
+
+window.showProblems = showProblems;
 window.chPg = chPg;
 window.rstPg = rstPg;
 window.chkAll = chkAll;

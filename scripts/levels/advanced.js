@@ -332,7 +332,7 @@ function advShowProblems(page) {
         const hintDone = advPurchasedHints[idx] === true;
         
         return `
-        <div class="adv-box">
+        <div class="adv-box" data-idx="${idx}" id="problem-${idx}">
             <div class="adv-bar">
                 <div class="adv-num">مسألة ${idx + 1}</div>
                 <div class="adv-hb ${hintDone?'done':''}" onclick="advTglHint(${idx});return false" title="${hintDone?'عرض التلميح':'شراء (10 نقاط)'}">
@@ -490,6 +490,8 @@ function advChPg(dir) {
     if (np < 1 || np > total) return;
     advShowProblems(np);}
 
+
+window.advShowProblems = advShowProblems;
 // ✅ دوال عامة للوصول من الخارج
 window.advChPg = advChPg;
 window.advRstPg = advRstPg;

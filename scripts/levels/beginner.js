@@ -541,6 +541,8 @@ function begRenderPagination() {
     }).join('');
 }
 
+
+window.begShowProblems = begShowProblems;
 // ✅ تغيير الصفحة
 window.begChPg = function(dir) {
     const total = Math.ceil(begProblems.length / BEG_PER_PAGE);

@@ -1,14 +1,4 @@
-search_js = r'''/**
- * 🔍 محرك البحث الشامل - MathLinguistic v10.0
- * ---------------------------------------------------------------
- * ✅ يستبدل النظام القديم بالكامل (ملف واحد فقط، بدون تعديل main.js)
- * ✅ يعرّف window.SearchIndexer بالضبط كما يتوقعه main.js:
- *    isBuilt / index / search(query) / openResult(item)
- * ✅ يفهرس الدروس والتمارين فعلياً من ملفات JSON (عناوين + أرقام)
- * ✅ يفتح الصفحة المطلوبة مباشرة ويتمرّر للعنصر المطلوب
- * ✅ لا يربط أي أحداث واجهة — main.js هو المسؤول الوحيد عن الواجهة
- */
-
+search_js = r
 (function () {
   'use strict';
 
@@ -306,10 +296,3 @@ search_js = r'''/**
     init();
   }
 })();
-'''
-
-with open('/mnt/agents/output/search.js', 'w', encoding='utf-8') as f:
-    f.write(search_js)
-
-print('حجم الملف:', len(search_js), 'حرف')
-print('عدد الأسطر:', search_js.count(chr(10)) + 1)

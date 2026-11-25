@@ -1,4 +1,4 @@
-search_js = r
+
 (function () {
   'use strict';
 
